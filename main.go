@@ -29,45 +29,73 @@ func main() {
 	deviceMap.Place(dmx.NewChannel(1), devA)
 	deviceMap.Place(dmx.NewChannel(5), devB)
 
-	myScene := scene.New(map[*fixture.Fixture]scene.FixtureCue{
-		fixA: {
-			{&scene.ColorEffect{
-				Color: types.Color{
-					R: 1, G: 0, B: 0,
+	myScene := scene.New([]*scene.Step{
+		{
+			Effects: map[*fixture.Fixture][]scene.Effect{
+				fixA: {
+					&scene.ColorEffect{
+						Color: types.Color{
+							R: 1, G: 0, B: 1,
+						},
+					}, &scene.StrobeEffect{
+						Frequency: 0.5,
+					},
 				},
-			}, &scene.StrobeEffect{
-				Frequency: 0.5,
-			}},
-			{&scene.ColorEffect{
-				Color: types.Color{
-					R: 0, G: 1, B: 0,
+				fixB: {
+					&scene.ColorEffect{
+						Color: types.Color{
+							R: 1, G: 1, B: 1,
+						},
+					},
 				},
-			}},
-			nil,
-			{&scene.ColorEffect{
-				Color: types.Color{
-					R: 1, G: 1, B: 1,
-				},
-			}, &scene.StrobeEffect{
-				Frequency: 0.5,
-			}},
+			},
 		},
-		fixB: {
-			{&scene.ColorEffect{
-				Color: types.Color{
-					R: 1, G: 1, B: 1,
+		{
+			Effects: map[*fixture.Fixture][]scene.Effect{
+				fixA: {
+					&scene.ColorEffect{
+						Color: types.Color{
+							R: 0, G: 1, B: 0,
+						},
+					},
 				},
-			}},
-			{&scene.ColorEffect{
-				Color: types.Color{
-					R: 0, G: 0, B: 0,
+				fixB: {
+					&scene.StrobeEffect{
+						Frequency: 1,
+					},
 				},
-			}},
-			{&scene.ColorEffect{
-				Color: types.Color{
-					R: 1, G: 0, B: 1,
+			},
+		},
+		{
+			Effects: map[*fixture.Fixture][]scene.Effect{
+				fixB: {
+					&scene.ColorEffect{
+						Color: types.Color{
+							R: 1, G: 0, B: 1,
+						},
+					},
 				},
-			}},
+			},
+		},
+		{
+			Effects: map[*fixture.Fixture][]scene.Effect{
+				fixA: {
+					&scene.ColorEffect{
+						Color: types.Color{
+							R: 1, G: 1, B: 1,
+						},
+					}, &scene.StrobeEffect{
+						Frequency: 0.5,
+					},
+				},
+				fixB: {
+					&scene.ColorEffect{
+						Color: types.Color{
+							R: 1, G: 0, B: 1,
+						},
+					},
+				},
+			},
 		},
 	})
 

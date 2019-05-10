@@ -6,7 +6,7 @@ import (
 )
 
 func Run(ctx context.Context, scene *Scene, stepTicker <-chan time.Time, onEval chan<- bool) {
-	numSteps := scene.ComputeNumSteps()
+	numSteps := len(scene.Sequence)
 	step := 0
 	for {
 		select {

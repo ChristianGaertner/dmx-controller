@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/scene"
@@ -29,7 +28,7 @@ func main() {
 	deviceMap.Place(dmx.NewChannel(1), devA)
 	deviceMap.Place(dmx.NewChannel(5), devB)
 
-	myScene := scene.New([]*scene.Step{
+	sequence := []*scene.Step{
 		{
 			Effects: map[*fixture.Fixture][]scene.Effect{
 				fixA: {
@@ -97,17 +96,21 @@ func main() {
 				},
 			},
 		},
-	})
+	}
 
-	stepTicker := scene.NewDynamicTicker(1 * time.Second)
+	myScene := scene.New(sequence, 1500*time.Millisecond, 0, 0)
+
+	ticker := scene.NewTicker()
+
 	onEval := make(chan bool)
-
-	go scene.Run(ctx, myScene, stepTicker.C, onEval)
-	go stepTicker.Run(ctx)
+	go scene.Run(ctx, myScene, ticker.TimeCode, onEval)
 	go deviceMap.RenderLoop(ctx, onEval, buffer)
 	go buffer.Render(ctx, &renderer, onExit)
 
-	_, _ = fmt.Scanln()
+
+	ticker.Run(ctx)
+
+
 
 	cancel()
 	<-onExit

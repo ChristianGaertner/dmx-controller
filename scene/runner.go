@@ -2,16 +2,17 @@ package scene
 
 import (
 	"context"
+	"github.com/ChristianGaertner/dmx-controller/types"
 	"time"
 )
 
-func Run(ctx context.Context, scene *Scene, stepTicker <-chan time.Time, onEval chan<- bool) {
+func Run(ctx context.Context, scene *Scene, timeCode <-chan types.TimeCode, onEval chan<- bool) {
 	numSteps := len(scene.Sequence)
 	step := 0
 	for {
 		select {
-		case <-stepTicker:
-			scene.Eval(step)
+		case tc := <-timeCode:
+			scene.Eval(tc)
 			onEval <- true
 		case <-ctx.Done():
 			return
@@ -20,35 +21,41 @@ func Run(ctx context.Context, scene *Scene, stepTicker <-chan time.Time, onEval 
 	}
 }
 
-type dynamicTicker struct {
-	C     <-chan time.Time
-	c     chan time.Time
-	stop  chan<- bool
-	delay time.Duration
+type Ticker struct {
+	timeTicker       *time.Ticker
+	TimeCode         <-chan types.TimeCode
+	t                chan types.TimeCode
+	tickerResolution time.Duration
 }
 
-func NewDynamicTicker(initialDuration time.Duration) *dynamicTicker {
-	c := make(chan time.Time)
-	return &dynamicTicker{
-		delay: initialDuration,
-		stop:  make(chan bool),
-		C:     c,
-		c:     c,
+func NewTicker() *Ticker {
+	tickerResolution := 50 * time.Millisecond
+	ticker := time.NewTicker(tickerResolution)
+
+	ch := make(chan types.TimeCode)
+
+	return &Ticker{
+		timeTicker:       ticker,
+		TimeCode:         ch,
+		t:                ch,
+		tickerResolution: tickerResolution,
 	}
 }
 
-func (d *dynamicTicker) Run(ctx context.Context) {
+func (t *Ticker) Run(ctx context.Context) {
+	var tc types.TimeCode
 	for {
 		select {
 		case <-ctx.Done():
 			return
-		default:
-			d.c <- time.Now()
-			time.Sleep(d.delay)
+		case <-t.timeTicker.C:
+			t.t <- tc
+			tc += types.TimeCode(t.tickerResolution)
 		}
 	}
 }
 
-func (d *dynamicTicker) SetDelay(dur time.Duration) {
-	d.delay = dur
+func (t *Ticker) Stop() {
+	t.timeTicker.Stop()
+	close(t.t)
 }

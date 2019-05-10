@@ -28,8 +28,12 @@ func main() {
 	deviceMap.Place(dmx.NewChannel(1), devA)
 	deviceMap.Place(dmx.NewChannel(5), devB)
 
+	cD := 3 * time.Second
 	sequence := []*scene.Step{
 		{
+			Timings: scene.Timings{
+				Duration: &cD,
+			},
 			Effects: map[*fixture.Fixture][]scene.Effect{
 				fixA: {
 					&scene.ColorEffect{
@@ -107,10 +111,7 @@ func main() {
 	go deviceMap.RenderLoop(ctx, onEval, buffer)
 	go buffer.Render(ctx, &renderer, onExit)
 
-
 	ticker.Run(ctx)
-
-
 
 	cancel()
 	<-onExit

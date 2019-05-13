@@ -14,6 +14,7 @@ type sequencedStep struct {
 	Step  *Step
 	Start types.TimeCode
 	End   types.TimeCode
+	Timings Timings
 }
 
 func (s *Step) Eval() {

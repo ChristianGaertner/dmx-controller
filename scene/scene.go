@@ -36,28 +36,55 @@ func (s *Scene) Duration() time.Duration {
 }
 
 func computeSequence(steps []*Step, sceneTimings Timings) []*sequencedStep {
-
-	getDuration := func(step *Step) time.Duration {
-		if step.Timings.Duration != nil {
-			return *step.Timings.Duration
-		}
-
-		return *sceneTimings.Duration
-	}
-
 	var sequence []*sequencedStep
 
 	var prevEnd types.TimeCode
 	for _, step := range steps {
-		end := prevEnd + types.TimeCode(getDuration(step))
+
+		timings := computeTimings(step, sceneTimings)
+
+		end := prevEnd + types.TimeCode(*timings.Duration)
+
 		sequence = append(sequence, &sequencedStep{
 			Step:  step,
 			Start: prevEnd,
 			End:   end,
+			Timings: timings,
 		})
 
 		prevEnd = end
 	}
 
 	return sequence
+}
+
+func computeTimings(step *Step, sceneTimings Timings) Timings {
+	getDuration := func(step *Step) *time.Duration {
+		if step.Timings.Duration != nil {
+			return step.Timings.Duration
+		}
+
+		return sceneTimings.Duration
+	}
+
+	getFadeUp := func(step *Step) *time.Duration {
+		if step.Timings.FadeUp != nil {
+			return step.Timings.FadeUp
+		}
+		return sceneTimings.FadeUp
+	}
+
+	getFadeDown := func(step *Step) *time.Duration {
+		if step.Timings.FadeDown != nil {
+			return step.Timings.FadeDown
+		}
+
+		return getFadeUp(step)
+	}
+
+	return Timings{
+		Duration: getDuration(step),
+		FadeUp:   getFadeUp(step),
+		FadeDown: getFadeDown(step),
+	}
 }

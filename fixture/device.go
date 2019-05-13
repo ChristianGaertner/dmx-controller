@@ -31,6 +31,10 @@ func (d *Device) Set(channel dmx.Channel, value byte) {
 	d.values[channel.ToSliceIndex()] = value
 }
 
+func (d *Device) Get(channel dmx.Channel) byte {
+	return d.values[channel.ToSliceIndex()]
+}
+
 type DeviceMap struct {
 	devices map[int]*Device
 }

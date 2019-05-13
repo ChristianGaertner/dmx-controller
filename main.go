@@ -21,8 +21,8 @@ func main() {
 	devA := fixture.NewDevice(4)
 	devB := fixture.NewDevice(4)
 
-	fixA := &fixture.Fixture{Device: devA}
-	fixB := &fixture.Fixture{Device: devB}
+	fixA := &fixture.SimpleFixture{Device: devA}
+	fixB := &fixture.SimpleFixture{Device: devB}
 
 	deviceMap := fixture.NewDeviceMap()
 	deviceMap.Place(dmx.NewChannel(1), devA)
@@ -34,7 +34,7 @@ func main() {
 			Timings: scene.Timings{
 				Duration: &cD,
 			},
-			Values: map[*fixture.Fixture][]scene.Value{
+			Values: map[fixture.Fixture][]scene.Value{
 				fixA: {
 					&scene.ColorValue{
 						Color: types.Color{
@@ -54,7 +54,7 @@ func main() {
 			},
 		},
 		{
-			Values: map[*fixture.Fixture][]scene.Value{
+			Values: map[fixture.Fixture][]scene.Value{
 				fixA: {
 					&scene.ColorValue{
 						Color: types.Color{
@@ -70,7 +70,7 @@ func main() {
 			},
 		},
 		{
-			Values: map[*fixture.Fixture][]scene.Value{
+			Values: map[fixture.Fixture][]scene.Value{
 				fixB: {
 					&scene.ColorValue{
 						Color: types.Color{
@@ -81,7 +81,7 @@ func main() {
 			},
 		},
 		{
-			Values: map[*fixture.Fixture][]scene.Value{
+			Values: map[fixture.Fixture][]scene.Value{
 				fixA: {
 					&scene.ColorValue{
 						Color: types.Color{

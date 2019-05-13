@@ -6,14 +6,14 @@ import (
 )
 
 type Value interface {
-	Apply(f *fixture.Fixture)
+	Apply(f fixture.Fixture)
 }
 
 type ColorValue struct {
 	Color types.Color
 }
 
-func (a *ColorValue) Apply(f *fixture.Fixture) {
+func (a *ColorValue) Apply(f fixture.Fixture) {
 	f.SetColor(a.Color)
 }
 
@@ -21,6 +21,6 @@ type StrobeValue struct {
 	Frequency types.Frequency
 }
 
-func (s *StrobeValue) Apply(f *fixture.Fixture) {
+func (s *StrobeValue) Apply(f fixture.Fixture) {
 	f.SetStrobe(s.Frequency)
 }

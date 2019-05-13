@@ -6,7 +6,7 @@ import (
 )
 
 type Step struct {
-	Values  map[*fixture.Fixture][]Value
+	Values  map[fixture.Fixture][]Value
 	Timings Timings
 }
 

@@ -6,7 +6,7 @@ import (
 )
 
 type Step struct {
-	Effects map[*fixture.Fixture][]Effect
+	Values  map[*fixture.Fixture][]Value
 	Timings Timings
 }
 
@@ -17,8 +17,8 @@ type sequencedStep struct {
 }
 
 func (s *Step) Eval() {
-	for fix, effects := range s.Effects {
-		for _, fx := range effects {
+	for fix, values := range s.Values {
+		for _, fx := range values {
 			fx.Apply(fix)
 		}
 	}

@@ -7,8 +7,6 @@ import (
 )
 
 func Run(ctx context.Context, scene *Scene, timeCode <-chan types.TimeCode, onEval chan<- bool) {
-	numSteps := len(scene.sequence)
-	step := 0
 	for {
 		select {
 		case tc := <-timeCode:
@@ -17,7 +15,6 @@ func Run(ctx context.Context, scene *Scene, timeCode <-chan types.TimeCode, onEv
 		case <-ctx.Done():
 			return
 		}
-		step = (step + 1) % numSteps
 	}
 }
 

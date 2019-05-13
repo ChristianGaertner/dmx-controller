@@ -34,18 +34,18 @@ func main() {
 			Timings: scene.Timings{
 				Duration: &cD,
 			},
-			Effects: map[*fixture.Fixture][]scene.Effect{
+			Values: map[*fixture.Fixture][]scene.Value{
 				fixA: {
-					&scene.ColorEffect{
+					&scene.ColorValue{
 						Color: types.Color{
 							R: 1, G: 0, B: 1,
 						},
-					}, &scene.StrobeEffect{
+					}, &scene.StrobeValue{
 						Frequency: 0.5,
 					},
 				},
 				fixB: {
-					&scene.ColorEffect{
+					&scene.ColorValue{
 						Color: types.Color{
 							R: 1, G: 1, B: 1,
 						},
@@ -54,25 +54,25 @@ func main() {
 			},
 		},
 		{
-			Effects: map[*fixture.Fixture][]scene.Effect{
+			Values: map[*fixture.Fixture][]scene.Value{
 				fixA: {
-					&scene.ColorEffect{
+					&scene.ColorValue{
 						Color: types.Color{
 							R: 0, G: 1, B: 0,
 						},
 					},
 				},
 				fixB: {
-					&scene.StrobeEffect{
+					&scene.StrobeValue{
 						Frequency: 1,
 					},
 				},
 			},
 		},
 		{
-			Effects: map[*fixture.Fixture][]scene.Effect{
+			Values: map[*fixture.Fixture][]scene.Value{
 				fixB: {
-					&scene.ColorEffect{
+					&scene.ColorValue{
 						Color: types.Color{
 							R: 1, G: 0, B: 1,
 						},
@@ -81,18 +81,18 @@ func main() {
 			},
 		},
 		{
-			Effects: map[*fixture.Fixture][]scene.Effect{
+			Values: map[*fixture.Fixture][]scene.Value{
 				fixA: {
-					&scene.ColorEffect{
+					&scene.ColorValue{
 						Color: types.Color{
 							R: 1, G: 1, B: 1,
 						},
-					}, &scene.StrobeEffect{
+					}, &scene.StrobeValue{
 						Frequency: 0.5,
 					},
 				},
 				fixB: {
-					&scene.ColorEffect{
+					&scene.ColorValue{
 						Color: types.Color{
 							R: 1, G: 0, B: 1,
 						},

@@ -22,8 +22,8 @@ func (s *StdOutRenderer) GetTicker(ctx context.Context) *time.Ticker {
 	return time.NewTicker(25 * time.Millisecond)
 }
 
-func getBar(value byte) string {
-	percent := float64(int(value)) / float64(byte(255))
+func getBar(value Value) string {
+	percent := float64(value) / float64(255)
 	bar := "["
 
 	for i := float64(0); i < 10; i++ {

@@ -6,16 +6,16 @@ import (
 )
 
 type Device struct {
-	values []byte
+	values []dmx.Value
 }
 
 func NewDevice(numChannels uint16) *Device {
 	return &Device{
-		values: make([]byte, numChannels),
+		values: make([]dmx.Value, numChannels),
 	}
 }
 
-func (d *Device) GetValues() []byte {
+func (d *Device) GetValues() []dmx.Value {
 	return d.values
 }
 
@@ -25,11 +25,11 @@ func (d *Device) Reset() {
 	}
 }
 
-func (d *Device) Set(channel dmx.Channel, value byte) {
+func (d *Device) Set(channel dmx.Channel, value dmx.Value) {
 	d.values[channel.ToSliceIndex()] = value
 }
 
-func (d *Device) Get(channel dmx.Channel) byte {
+func (d *Device) Get(channel dmx.Channel) dmx.Value {
 	return d.values[channel.ToSliceIndex()]
 }
 

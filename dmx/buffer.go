@@ -8,9 +8,11 @@ import (
 
 const UniverseSize = uint16(512)
 
+type Value byte
+
 type Buffer struct {
 	sync.RWMutex
-	channels []byte
+	channels []Value
 }
 
 type BufferRenderer interface {
@@ -20,11 +22,11 @@ type BufferRenderer interface {
 
 func NewBuffer() *Buffer {
 	return &Buffer{
-		channels: make([]byte, UniverseSize),
+		channels: make([]Value, UniverseSize),
 	}
 }
 
-func (b *Buffer) Apply(channel Channel, values []byte) {
+func (b *Buffer) Apply(channel Channel, values []Value) {
 	b.Lock()
 	defer b.Unlock()
 	copy(b.channels[channel.ToSliceIndex():], values)

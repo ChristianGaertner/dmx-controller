@@ -112,6 +112,11 @@ func main() {
 			onEval <- true
 		}
 
+		if res == "start" {
+			sceneCtx, cancelScene = context.WithCancel(ctx)
+			go scene.Run(sceneCtx, myScene, ticker.TimeCode, onEval)
+		}
+
 		if res == "exit" {
 			break
 		}

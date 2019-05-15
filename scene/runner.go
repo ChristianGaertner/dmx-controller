@@ -6,7 +6,22 @@ import (
 	"time"
 )
 
-func Run(ctx context.Context, scene *Scene, timeCode <-chan types.TimeCode, onEval chan<- bool) {
+func Run(ctx context.Context, scene *Scene, globalTimeCode <-chan types.TimeCode, onEval chan<- bool) {
+	initTc := <-globalTimeCode
+
+	timeCode := make(chan types.TimeCode)
+
+	go func() {
+		for {
+			select {
+			case tc := <-globalTimeCode:
+				timeCode <- tc - initTc
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
 	for {
 		select {
 		case tc := <-timeCode:

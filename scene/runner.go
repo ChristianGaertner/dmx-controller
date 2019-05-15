@@ -23,6 +23,7 @@ type Ticker struct {
 	TimeCode         <-chan types.TimeCode
 	t                chan types.TimeCode
 	tickerResolution time.Duration
+	Rate             float64
 }
 
 func NewTicker() *Ticker {
@@ -36,6 +37,7 @@ func NewTicker() *Ticker {
 		TimeCode:         ch,
 		t:                ch,
 		tickerResolution: tickerResolution,
+		Rate:             1,
 	}
 }
 
@@ -47,7 +49,7 @@ func (t *Ticker) Run(ctx context.Context) {
 			return
 		case <-t.timeTicker.C:
 			t.t <- tc
-			tc += types.TimeCode(t.tickerResolution)
+			tc += types.TimeCode(t.Rate * float64(t.tickerResolution))
 		}
 	}
 }

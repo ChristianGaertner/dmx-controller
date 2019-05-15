@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/scene"
@@ -89,7 +90,24 @@ func main() {
 	go deviceMap.RenderLoop(ctx, onEval, buffer)
 	go buffer.Render(ctx, &renderer, onExit)
 
-	ticker.Run(ctx)
+	go ticker.Run(ctx)
+
+	var res string
+	for {
+		_, _ = fmt.Scanln(&res)
+
+		if res == "+" {
+			ticker.Rate *= 2
+		}
+
+		if res == "-" {
+			ticker.Rate /= 2
+		}
+
+		if res == "exit" {
+			break
+		}
+	}
 
 	cancel()
 	<-onExit

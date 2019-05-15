@@ -47,6 +47,12 @@ func (dM *DeviceMap) Place(channel dmx.Channel, d *Device) {
 	dM.devices[channel.ToSliceIndex()] = d
 }
 
+func (dM *DeviceMap) Reset() {
+	for _, device := range dM.devices {
+		device.Reset()
+	}
+}
+
 func (dM *DeviceMap) Render(buffer *dmx.Buffer) {
 	for i, device := range dM.devices {
 		values := device.GetValues()

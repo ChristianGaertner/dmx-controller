@@ -81,16 +81,18 @@ func main() {
 		},
 	}
 
-	myScene := scene.New(sequence, 1500*time.Millisecond, 500*time.Millisecond, 500*time.Millisecond)
+	myScene := scene.New(sequence, 2000*time.Millisecond, 500*time.Millisecond, 500*time.Millisecond)
 
 	ticker := scene.NewTicker()
 
 	onEval := make(chan bool)
-	go scene.Run(ctx, myScene, ticker.TimeCode, onEval)
 	go deviceMap.RenderLoop(ctx, onEval, buffer)
 	go buffer.Render(ctx, &renderer, onExit)
-
 	go ticker.Run(ctx)
+
+	sceneCtx, cancelScene := context.WithCancel(ctx)
+
+	go scene.Run(sceneCtx, myScene, ticker.TimeCode, onEval)
 
 	var res string
 	for {
@@ -102,6 +104,12 @@ func main() {
 
 		if res == "-" {
 			ticker.Rate /= 2
+		}
+
+		if res == "stop" {
+			cancelScene()
+			deviceMap.Reset()
+			onEval <- true
 		}
 
 		if res == "exit" {

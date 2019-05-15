@@ -30,12 +30,12 @@ func main() {
 			Values: map[*fixture.Device]fixture.Fixture{
 				devA: {
 					Color: types.Color{
-						R: 1, G: 0, B: 1,
+						R: 1, G: 0, B: 0,
 					},
 				},
 				devB: {
 					Color: types.Color{
-						R: 1, G: 1, B: 1,
+						R: 1, G: 0, B: 0,
 					},
 				},
 			},
@@ -48,15 +48,8 @@ func main() {
 					},
 				},
 				devB: {
-					Strobe: 1,
-				},
-			},
-		},
-		{
-			Values: map[*fixture.Device]fixture.Fixture{
-				devB: {
 					Color: types.Color{
-						R: 1, G: 0, B: 1,
+						R: 0, G: 1, B: 0,
 					},
 				},
 			},
@@ -65,20 +58,29 @@ func main() {
 			Values: map[*fixture.Device]fixture.Fixture{
 				devA: {
 					Color: types.Color{
-						R: 1, G: 1, B: 1,
+						R: 0, G: 0, B: 1,
 					},
-					Strobe: 0.5,
 				},
 				devB: {
 					Color: types.Color{
-						R: 1, G: 0, B: 1,
+						R: 0, G: 0, B: 1,
 					},
+				},
+			},
+		},
+		{
+			Values: map[*fixture.Device]fixture.Fixture{
+				devA: {
+					Strobe: 1,
+				},
+				devB: {
+					Strobe: 1,
 				},
 			},
 		},
 	}
 
-	myScene := scene.New(sequence, 1500*time.Millisecond, 0, 0)
+	myScene := scene.New(sequence, 1500*time.Millisecond, 500*time.Millisecond, 500*time.Millisecond)
 
 	ticker := scene.NewTicker()
 

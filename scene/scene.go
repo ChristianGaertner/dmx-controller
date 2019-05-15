@@ -23,11 +23,13 @@ func New(sequence []*Step, duration, fadeUp, fadeDown time.Duration) *Scene {
 }
 
 func (s *Scene) Eval(tc types.TimeCode) {
+	var prev *sequencedStep
 	for _, step := range s.sequence {
 		if step.Start <= tc && step.End >= tc {
-			step.Step.Eval()
+			step.Eval(int64(tc-step.Start), prev)
 			return
 		}
+		prev = step
 	}
 }
 
@@ -79,7 +81,11 @@ func computeTimings(step *Step, sceneTimings Timings) Timings {
 			return step.Timings.FadeDown
 		}
 
-		return getFadeUp(step)
+		if step.Timings.FadeUp != nil {
+			return step.Timings.FadeUp
+		}
+
+		return sceneTimings.FadeDown
 	}
 
 	return Timings{

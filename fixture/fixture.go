@@ -18,9 +18,9 @@ func (f *Fixture) ApplyTo(d *Device) {
 	d.Set(dmx.NewChannel(4), byte(float64(f.Strobe)*255))
 }
 
-func Lerp(a, b *Fixture, t float64) *Fixture {
+func Lerp(a, b *Fixture, percentUp, percentDown float64) *Fixture {
 	return &Fixture{
-		Color:  types.LerpColor(a.Color, b.Color, t),
-		Strobe: types.LerpFrequency(a.Strobe, b.Strobe, t),
+		Color:  types.LerpColor(a.Color, b.Color, percentUp, percentDown),
+		Strobe: types.LerpFrequency(a.Strobe, b.Strobe, percentUp, percentDown),
 	}
 }

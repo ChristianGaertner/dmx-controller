@@ -19,16 +19,20 @@ type DimmerSine struct {
 func (ds *DimmerSine) Generate(tc types.TimeCode) StepOutput {
 	output := make(StepOutput)
 
-	f := 0.3
+	phaseOffset := math.Pi * 2 * ds.Phase / float64(len(ds.Devices))
 
 	for i, dev := range ds.Devices {
 
-		t := tc + types.TimeCode(i*int(ds.Phase))
+		scaled := (float64(tc) / float64(ds.Speed.AsDuration())) * math.Pi * 2
 
+		sin := math.Sin(scaled + phaseOffset*float64(i))
 
+		if sin < 0 {
+			sin = 0
+		}
 
 		output[dev] = fixture.Fixture{
-			Dimmer: types.NewDimmerValue(math.Sin(float64(t)*f+0)*0.5 + 0.5),
+			Dimmer: types.NewDimmerValue(sin),
 		}
 	}
 

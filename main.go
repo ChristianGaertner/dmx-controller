@@ -21,81 +21,57 @@ func main() {
 	devA := fixture.NewDevice(4)
 	devB := fixture.NewDevice(4)
 
-	fixA := &fixture.SimpleFixture{Device: devA}
-	fixB := &fixture.SimpleFixture{Device: devB}
-
 	deviceMap := fixture.NewDeviceMap()
 	deviceMap.Place(dmx.NewChannel(1), devA)
 	deviceMap.Place(dmx.NewChannel(5), devB)
 
-	cD := 3 * time.Second
 	sequence := []*scene.Step{
 		{
-			Timings: scene.Timings{
-				Duration: &cD,
-			},
-			Values: map[fixture.Fixture][]scene.Value{
-				fixA: {
-					&scene.ColorValue{
-						Color: types.Color{
-							R: 1, G: 0, B: 1,
-						},
-					}, &scene.StrobeValue{
-						Frequency: 0.5,
+			Values: map[*fixture.Device]fixture.Fixture{
+				devA: {
+					Color: types.Color{
+						R: 1, G: 0, B: 1,
 					},
 				},
-				fixB: {
-					&scene.ColorValue{
-						Color: types.Color{
-							R: 1, G: 1, B: 1,
-						},
+				devB: {
+					Color: types.Color{
+						R: 1, G: 1, B: 1,
 					},
 				},
 			},
 		},
 		{
-			Values: map[fixture.Fixture][]scene.Value{
-				fixA: {
-					&scene.ColorValue{
-						Color: types.Color{
-							R: 0, G: 1, B: 0,
-						},
+			Values: map[*fixture.Device]fixture.Fixture{
+				devA: {
+					Color: types.Color{
+						R: 0, G: 1, B: 0,
 					},
 				},
-				fixB: {
-					&scene.StrobeValue{
-						Frequency: 1,
+				devB: {
+					Strobe: 1,
+				},
+			},
+		},
+		{
+			Values: map[*fixture.Device]fixture.Fixture{
+				devB: {
+					Color: types.Color{
+						R: 1, G: 0, B: 1,
 					},
 				},
 			},
 		},
 		{
-			Values: map[fixture.Fixture][]scene.Value{
-				fixB: {
-					&scene.ColorValue{
-						Color: types.Color{
-							R: 1, G: 0, B: 1,
-						},
+			Values: map[*fixture.Device]fixture.Fixture{
+				devA: {
+					Color: types.Color{
+						R: 1, G: 1, B: 1,
 					},
+					Strobe: 0.5,
 				},
-			},
-		},
-		{
-			Values: map[fixture.Fixture][]scene.Value{
-				fixA: {
-					&scene.ColorValue{
-						Color: types.Color{
-							R: 1, G: 1, B: 1,
-						},
-					}, &scene.StrobeValue{
-						Frequency: 0.5,
-					},
-				},
-				fixB: {
-					&scene.ColorValue{
-						Color: types.Color{
-							R: 1, G: 0, B: 1,
-						},
+				devB: {
+					Color: types.Color{
+						R: 1, G: 0, B: 1,
 					},
 				},
 			},

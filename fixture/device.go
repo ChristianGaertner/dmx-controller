@@ -6,14 +6,12 @@ import (
 )
 
 type Device struct {
-	NumChannels uint16
-	values      []byte
+	values []byte
 }
 
 func NewDevice(numChannels uint16) *Device {
 	return &Device{
-		NumChannels: numChannels,
-		values:      make([]byte, numChannels),
+		values: make([]byte, numChannels),
 	}
 }
 

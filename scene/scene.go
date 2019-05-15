@@ -46,9 +46,9 @@ func computeSequence(steps []*Step, sceneTimings Timings) []*sequencedStep {
 		end := prevEnd + types.TimeCode(*timings.Duration)
 
 		sequence = append(sequence, &sequencedStep{
-			Step:  step,
-			Start: prevEnd,
-			End:   end,
+			Step:    step,
+			Start:   prevEnd,
+			End:     end,
 			Timings: timings,
 		})
 

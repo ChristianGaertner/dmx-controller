@@ -6,21 +6,19 @@ import (
 )
 
 type Step struct {
-	Values  map[fixture.Fixture][]Value
+	Values  map[*fixture.Device]fixture.Fixture
 	Timings Timings
 }
 
 type sequencedStep struct {
-	Step  *Step
-	Start types.TimeCode
-	End   types.TimeCode
+	Step    *Step
+	Start   types.TimeCode
+	End     types.TimeCode
 	Timings Timings
 }
 
 func (s *Step) Eval() {
-	for fix, values := range s.Values {
-		for _, fx := range values {
-			fx.Apply(fix)
-		}
+	for dev, fix := range s.Values {
+		fix.ApplyTo(dev)
 	}
 }

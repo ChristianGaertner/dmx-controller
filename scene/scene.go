@@ -26,7 +26,7 @@ func (s *Scene) Eval(tc types.TimeCode) {
 	var prev *sequencedStep
 	for _, step := range s.sequence {
 		if step.Start <= tc && step.End >= tc {
-			step.Eval(int64(tc-step.Start), prev)
+			step.Eval(tc-step.Start, prev)
 			return
 		}
 		prev = step

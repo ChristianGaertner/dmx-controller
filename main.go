@@ -14,28 +14,32 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	buffer := dmx.NewBuffer()
-	renderer := dmx.StdOutRenderer{NumChannels: 8}
+	renderer := dmx.StdOutRenderer{NumChannels: 10}
 	//renderer := dmx.NilRenderer{}
 
 	onExit := make(chan bool)
 
-	devA := fixture.NewDevice(4)
-	devB := fixture.NewDevice(4)
+	devA := fixture.NewDevice(5)
+	devB := fixture.NewDevice(5)
 
 	deviceMap := fixture.NewDeviceMap()
 	deviceMap.Place(dmx.NewChannel(1), devA)
-	deviceMap.Place(dmx.NewChannel(5), devB)
+	deviceMap.Place(dmx.NewChannel(6), devB)
+
+	d := 10 * time.Second
 
 	sequence := []*scene.Step{
 		{
 			Values: map[*fixture.Device]fixture.Fixture{
 				devA: {
-					Color: types.Color{
+					Dimmer: types.NewDimmerValue(1),
+					Color: &types.Color{
 						R: 1, G: 0, B: 0,
 					},
 				},
 				devB: {
-					Color: types.Color{
+					Dimmer: types.NewDimmerValue(1),
+					Color: &types.Color{
 						R: 1, G: 0, B: 0,
 					},
 				},
@@ -44,44 +48,48 @@ func main() {
 		{
 			Values: map[*fixture.Device]fixture.Fixture{
 				devA: {
-					Color: types.Color{
+					Dimmer: types.NewDimmerValue(1),
+					Color: &types.Color{
 						R: 0, G: 1, B: 0,
 					},
 				},
 				devB: {
-					Color: types.Color{
+					Dimmer: types.NewDimmerValue(1),
+					Color: &types.Color{
 						R: 0, G: 1, B: 0,
 					},
 				},
 			},
 		},
 		{
-			Values: map[*fixture.Device]fixture.Fixture{
-				devA: {
-					Color: types.Color{
-						R: 0, G: 0, B: 1,
+			Timings: scene.Timings{
+				Duration: &d,
+			},
+			Effects: []scene.Effect{
+				&scene.DimmerSine{
+					Devices: []*fixture.Device{
+						devA, devB,
 					},
-				},
-				devB: {
-					Color: types.Color{
-						R: 0, G: 0, B: 1,
-					},
+					Phase: 1,
+					Speed: types.BPM(30),
 				},
 			},
-		},
-		{
 			Values: map[*fixture.Device]fixture.Fixture{
 				devA: {
-					Strobe: 1,
+					Color: &types.Color{
+						R: 1, G: 1, B: 1,
+					},
 				},
 				devB: {
-					Strobe: 1,
+					Color: &types.Color{
+						R: 1, G: 1, B: 1,
+					},
 				},
 			},
 		},
 	}
 
-	myScene := scene.New(sequence, 2000*time.Millisecond, 500*time.Millisecond, 500*time.Millisecond)
+	myScene := scene.New(sequence, 1500*time.Millisecond, 500*time.Millisecond, 500*time.Millisecond)
 
 	ticker := scene.NewTicker()
 

@@ -3,10 +3,12 @@ package scene
 import (
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/types"
+	"time"
 )
 
 type Step struct {
-	Values  map[*fixture.Device]fixture.Fixture
+	Values  StepOutput
+	Effects []Effect
 	Timings Timings
 }
 
@@ -17,34 +19,16 @@ type sequencedStep struct {
 	Timings Timings
 }
 
-func (s *sequencedStep) Eval(t int64, prev *sequencedStep) {
-	if t > s.FadeDuration() {
-		// no fading required at this point
-		for dev, fix := range s.Step.Values {
-			fix.ApplyTo(dev)
-		}
-	}
+func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) {
+	percentUp := calcPercent(tc, *s.Timings.FadeUp)
+	percentDown := calcPercent(tc, *s.Timings.FadeDown)
 
-	// we need to fade
-	percentUp := float64(1)
-	percentDown := float64(1)
+	fxOutput := s.Step.applyEffects(tc)
+	fxOutput = append(fxOutput, s.Step.Values)
 
-	if *s.Timings.FadeUp > 0 {
-		percentUp = float64(t) / float64(*s.Timings.FadeUp)
-		if percentUp > 1 {
-			percentUp = 1
-		}
-	}
+	stepOutput := MergeStepOutput(fxOutput...)
 
-	if *s.Timings.FadeDown > 0 {
-		percentDown = float64(t) / float64(*s.Timings.FadeDown)
-		if percentDown > 1 {
-			percentDown = 1
-		}
-	}
-
-	for dev, fix := range s.Step.Values {
-
+	for dev, fix := range stepOutput {
 		var fixPrev fixture.Fixture
 		if prev != nil {
 			if p, ok := prev.Step.Values[dev]; ok {
@@ -53,9 +37,29 @@ func (s *sequencedStep) Eval(t int64, prev *sequencedStep) {
 		}
 
 		fixture.Lerp(&fixPrev, &fix, percentUp, percentDown).ApplyTo(dev)
+	}
+}
 
+func (s *Step) applyEffects(tc types.TimeCode) []StepOutput {
+	var out []StepOutput
+	for _, fx := range s.Effects {
+		out = append(out, fx.Generate(tc))
+	}
+	return out
+}
+
+func calcPercent(tc types.TimeCode, d time.Duration) float64 {
+	p := float64(1)
+
+	if d > 0 {
+		p = float64(tc) / float64(d)
 	}
 
+	if p > 1 {
+		p = 1
+	}
+
+	return p
 }
 
 func (s *sequencedStep) FadeDuration() int64 {

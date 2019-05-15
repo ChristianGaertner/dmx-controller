@@ -10,6 +10,10 @@ const UniverseSize = uint16(512)
 
 type Value byte
 
+func NewValue(v byte) *Value {
+	return (*Value)(&v)
+}
+
 type Buffer struct {
 	sync.RWMutex
 	channels []Value

@@ -26,7 +26,7 @@ func main() {
 	deviceMap.Place(dmx.NewChannel(1), devA)
 	deviceMap.Place(dmx.NewChannel(6), devB)
 
-	d := 10 * time.Second
+	d := 3 * time.Second
 
 	sequence := []*scene.Step{
 		//{
@@ -70,8 +70,34 @@ func main() {
 					Devices: []*fixture.Device{
 						devA, devB,
 					},
-					Phase: -0.2,
-					Speed: types.BPM(120),
+					Phase: -0.5,
+					Speed: types.BPM(60),
+				},
+			},
+			Values: map[*fixture.Device]fixture.Fixture{
+				devA: {
+					Color: &types.Color{
+						R: 1, G: 1, B: 1,
+					},
+				},
+				devB: {
+					Color: &types.Color{
+						R: 1, G: 1, B: 1,
+					},
+				},
+			},
+		},
+		{
+			Timings: scene.Timings{
+				Duration: &d,
+			},
+			Effects: []scene.Effect{
+				&scene.DimmerSine{
+					Devices: []*fixture.Device{
+						devA, devB,
+					},
+					Phase: 0.5,
+					Speed: types.BPM(30),
 				},
 			},
 			Values: map[*fixture.Device]fixture.Fixture{

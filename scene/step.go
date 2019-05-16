@@ -23,15 +23,17 @@ func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) {
 	percentUp := calcPercent(tc, *s.Timings.FadeUp)
 	percentDown := calcPercent(tc, *s.Timings.FadeDown)
 
-	fxOutput := s.Step.applyEffects(tc)
-	fxOutput = append(fxOutput, s.Step.Values)
+	output := s.Step.getStepOutput(tc)
 
-	stepOutput := MergeStepOutput(fxOutput...)
+	var prevOutput StepOutput
+	if prev != nil {
+		prevOutput = prev.Step.getStepOutput(tc)
+	}
 
-	for dev, fix := range stepOutput {
+	for dev, fix := range output {
 		var fixPrev fixture.Fixture
-		if prev != nil {
-			if p, ok := prev.Step.Values[dev]; ok {
+		if prevOutput != nil {
+			if p, ok := prevOutput[dev]; ok {
 				fixPrev = p
 			}
 		}
@@ -40,12 +42,14 @@ func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) {
 	}
 }
 
-func (s *Step) applyEffects(tc types.TimeCode) []StepOutput {
-	var out []StepOutput
+func (s *Step) getStepOutput(tc types.TimeCode) StepOutput {
+	out := []StepOutput{ s.Values }
+
 	for _, fx := range s.Effects {
 		out = append(out, fx.Generate(tc))
 	}
-	return out
+
+	return MergeStepOutput(out...)
 }
 
 func calcPercent(tc types.TimeCode, d time.Duration) float64 {

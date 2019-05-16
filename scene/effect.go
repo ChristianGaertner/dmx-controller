@@ -31,7 +31,7 @@ func (ds *DimmerSine) Generate(tc types.TimeCode) StepOutput {
 			sin = 0
 		}
 
-		output[dev] = fixture.Fixture{
+		output[dev] = fixture.Value{
 			Dimmer: types.NewDimmerValue(sin),
 		}
 	}

@@ -5,13 +5,13 @@ import (
 	"github.com/ChristianGaertner/dmx-controller/types"
 )
 
-type Fixture struct {
+type Value struct {
 	Dimmer *types.DimmerValue
 	Color  *types.Color
 	Strobe *types.Frequency
 }
 
-func (f *Fixture) ApplyTo(d *Device) {
+func (f *Value) ApplyTo(d *Device) {
 	if f.Dimmer != nil {
 		d.Set(dmx.NewChannel(1), dmx.Value(*f.Dimmer*255))
 	}
@@ -26,15 +26,15 @@ func (f *Fixture) ApplyTo(d *Device) {
 	}
 }
 
-func Lerp(a, b *Fixture, percentUp, percentDown float64) *Fixture {
-	return &Fixture{
+func Lerp(a, b *Value, percentUp, percentDown float64) *Value {
+	return &Value{
 		Dimmer: types.LerpDimmerValue(a.Dimmer, b.Dimmer, percentUp, percentDown),
 		Color:  types.LerpColor(a.Color, b.Color, percentUp, percentDown),
 		Strobe: types.LerpFrequency(a.Strobe, b.Strobe, percentUp, percentDown),
 	}
 }
 
-func Merge(a, b *Fixture) *Fixture {
+func Merge(a, b *Value) *Value {
 
 	var dimmer *types.DimmerValue
 	if a.Dimmer != nil && b.Dimmer == nil {
@@ -63,7 +63,7 @@ func Merge(a, b *Fixture) *Fixture {
 		strobe = b.Strobe
 	}
 
-	return &Fixture{
+	return &Value{
 		Dimmer: dimmer,
 		Color:  color,
 		Strobe: strobe,

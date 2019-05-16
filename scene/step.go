@@ -31,7 +31,7 @@ func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) {
 	}
 
 	for dev, fix := range output {
-		var fixPrev fixture.Fixture
+		var fixPrev fixture.Value
 		if prevOutput != nil {
 			if p, ok := prevOutput[dev]; ok {
 				fixPrev = p

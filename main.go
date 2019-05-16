@@ -30,7 +30,7 @@ func main() {
 
 	sequence := []*scene.Step{
 		//{
-		//	Values: map[*fixture.Device]fixture.Fixture{
+		//	Values: map[*fixture.Device]fixture.FixtureValue{
 		//		devA: {
 		//			Dimmer: types.NewDimmerValue(1),
 		//			Color: &types.Color{
@@ -46,7 +46,7 @@ func main() {
 		//	},
 		//},
 		//{
-		//	Values: map[*fixture.Device]fixture.Fixture{
+		//	Values: map[*fixture.Device]fixture.FixtureValue{
 		//		devA: {
 		//			Dimmer: types.NewDimmerValue(1),
 		//			Color: &types.Color{
@@ -74,7 +74,7 @@ func main() {
 					Speed: types.BPM(60),
 				},
 			},
-			Values: map[*fixture.Device]fixture.Fixture{
+			Values: map[*fixture.Device]fixture.Value{
 				devA: {
 					Color: &types.Color{
 						R: 1, G: 1, B: 1,
@@ -100,7 +100,7 @@ func main() {
 					Speed: types.BPM(30),
 				},
 			},
-			Values: map[*fixture.Device]fixture.Fixture{
+			Values: map[*fixture.Device]fixture.Value{
 				devA: {
 					Color: &types.Color{
 						R: 1, G: 1, B: 1,

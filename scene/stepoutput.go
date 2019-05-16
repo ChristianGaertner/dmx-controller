@@ -2,7 +2,7 @@ package scene
 
 import "github.com/ChristianGaertner/dmx-controller/fixture"
 
-type StepOutput map[*fixture.Device]fixture.Fixture
+type StepOutput map[*fixture.Device]fixture.Value
 
 func MergeStepOutput(outs ...StepOutput) StepOutput {
 	merged := make(StepOutput)

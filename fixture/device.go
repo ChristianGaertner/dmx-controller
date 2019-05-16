@@ -6,12 +6,14 @@ import (
 )
 
 type Device struct {
-	values []dmx.Value
+	values  []dmx.Value
+	Fixture Fixture
 }
 
-func NewDevice(numChannels uint16) *Device {
+func NewDevice(fixture Fixture) *Device {
 	return &Device{
-		values: make([]dmx.Value, numChannels),
+		values:  make([]dmx.Value, fixture.NumChannels()),
+		Fixture: fixture,
 	}
 }
 

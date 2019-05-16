@@ -38,7 +38,9 @@ func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) {
 			}
 		}
 
-		fixture.Lerp(&fixPrev, &fix, percentUp, percentDown).ApplyTo(dev)
+		finalValue := fixture.Lerp(&fixPrev, &fix, percentUp, percentDown)
+
+		dev.Fixture.ApplyValueTo(finalValue, dev)
 	}
 }
 

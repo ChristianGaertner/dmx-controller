@@ -19,8 +19,10 @@ func main() {
 
 	onExit := make(chan bool)
 
-	devA := fixture.NewDevice(5)
-	devB := fixture.NewDevice(5)
+	ledPar := fixture.LedParFixture()
+
+	devA := fixture.NewDevice(ledPar)
+	devB := fixture.NewDevice(ledPar)
 
 	deviceMap := fixture.NewDeviceMap()
 	deviceMap.Place(dmx.NewChannel(1), devA)

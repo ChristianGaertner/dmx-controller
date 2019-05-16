@@ -1,7 +1,6 @@
 package fixture
 
 import (
-	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/types"
 )
 
@@ -9,21 +8,6 @@ type Value struct {
 	Dimmer *types.DimmerValue
 	Color  *types.Color
 	Strobe *types.Frequency
-}
-
-func (f *Value) ApplyTo(d *Device) {
-	if f.Dimmer != nil {
-		d.Set(dmx.NewChannel(1), dmx.Value(*f.Dimmer*255))
-	}
-	if f.Color != nil {
-		d.Set(dmx.NewChannel(2), dmx.Value(f.Color.R*255))
-		d.Set(dmx.NewChannel(3), dmx.Value(f.Color.G*255))
-		d.Set(dmx.NewChannel(4), dmx.Value(f.Color.B*255))
-	}
-
-	if f.Strobe != nil {
-		d.Set(dmx.NewChannel(5), dmx.Value(float64(*f.Strobe)*255))
-	}
 }
 
 func Lerp(a, b *Value, percentUp, percentDown float64) *Value {

@@ -74,6 +74,8 @@ func main() {
 					},
 					Phase: -0.5,
 					Speed: types.BPM(60),
+					Min: 0.5,
+					Max: 1,
 				},
 			},
 			Values: map[*fixture.Device]fixture.Value{
@@ -98,8 +100,10 @@ func main() {
 					Devices: []*fixture.Device{
 						devA, devB,
 					},
-					Phase: 0.5,
-					Speed: types.BPM(30),
+					Phase: -0.5,
+					Speed: types.BPM(60),
+					Min: 0.5,
+					Max: 1,
 				},
 			},
 			Values: map[*fixture.Device]fixture.Value{

@@ -51,6 +51,7 @@ func LerpFrequency(a, b *Frequency, percentUp, percentDown float64) *Frequency {
 	return &f
 }
 
+// DimmerValue is in the range of 0 [off] to 1 [full]
 type DimmerValue float64
 
 func NewDimmerValue(v float64) *DimmerValue {

@@ -12,6 +12,8 @@ type Effect interface {
 
 type DimmerSine struct {
 	Devices []*fixture.Device
+	Min     types.DimmerValue
+	Max     types.DimmerValue
 	Phase   float64 // 0 = all in sync 1 = no overlap
 	Speed   types.BPM
 }
@@ -31,8 +33,11 @@ func (ds *DimmerSine) Generate(tc types.TimeCode) StepOutput {
 			sin = 0
 		}
 
+		value := float64(ds.Min) + sin * float64(ds.Max - ds.Min)
+
+
 		output[dev] = fixture.Value{
-			Dimmer: types.NewDimmerValue(sin),
+			Dimmer: types.NewDimmerValue(value),
 		}
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
+	"github.com/ChristianGaertner/dmx-controller/fixture/definition"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"time"
@@ -19,10 +20,25 @@ func main() {
 
 	onExit := make(chan bool)
 
-	ledPar := fixture.LedParFixture()
+	generic := fixture.DefinedFixture{
+		ActiveMode: 0,
+		Definition: &definition.Definition{
+			Modes: definition.Modes {
+				0: definition.Mode{
+					Channels: map[definition.ChannelType]definition.Capability {
+						definition.IntensityMasterDimmer: definition.NewSingleValueChannel(dmx.NewChannel(1)),
+						definition.IntensityRed: definition.NewSingleValueChannel(dmx.NewChannel(2)),
+						definition.IntensityGreen: definition.NewSingleValueChannel(dmx.NewChannel(3)),
+						definition.IntensityBlue: definition.NewSingleValueChannel(dmx.NewChannel(4)),
+						definition.StrobeSlowToFast: definition.NewSingleValueChannel(dmx.NewChannel(5)),
+					},
+				},
+			},
+		},
+	}
 
-	devA := fixture.NewDevice(ledPar)
-	devB := fixture.NewDevice(ledPar)
+	devA := fixture.NewDevice(generic)
+	devB := fixture.NewDevice(generic)
 
 	deviceMap := fixture.NewDeviceMap()
 	deviceMap.Place(dmx.NewChannel(1), devA)

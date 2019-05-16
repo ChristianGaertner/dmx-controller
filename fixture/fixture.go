@@ -1,34 +1,46 @@
 package fixture
 
-import "github.com/ChristianGaertner/dmx-controller/dmx"
+import (
+	"github.com/ChristianGaertner/dmx-controller/fixture/definition"
+)
 
 type Fixture interface {
 	NumChannels() uint16
 	ApplyValueTo(value *Value, d *Device)
 }
 
-type ledParFixture struct {
-	numChannels uint16
+type DefinedFixture struct {
+	Definition *definition.Definition
+	ActiveMode definition.ModeID
 }
 
-func LedParFixture() Fixture {
-	return ledParFixture{numChannels: 5}
+func (f DefinedFixture) NumChannels() uint16 {
+	// TODO
+	return 5
 }
 
-func (l ledParFixture) NumChannels() uint16 {
-	return l.numChannels
+func (f DefinedFixture) ApplyValueTo(value *Value, d *Device) {
+	mode := f.Definition.Modes[f.ActiveMode]
+
+	if capa, ok := mode.Channels[definition.IntensityMasterDimmer]; value.Dimmer != nil && ok {
+		set(d, float64(*value.Dimmer), capa)
+	}
+
+	if capa, ok := mode.Channels[definition.IntensityRed]; value.Color != nil && ok {
+		set(d, value.Color.R, capa)
+	}
+	if capa, ok := mode.Channels[definition.IntensityGreen]; value.Color != nil && ok {
+		set(d, value.Color.G, capa)
+	}
+	if capa, ok := mode.Channels[definition.IntensityBlue]; value.Color != nil && ok {
+		set(d, value.Color.B, capa)
+	}
+
+	if capa, ok := mode.Channels[definition.StrobeSlowToFast]; value.Strobe != nil && ok {
+		set(d, float64(*value.Strobe), capa)
+	}
 }
 
-func (l ledParFixture) ApplyValueTo(value *Value, d *Device) {
-	if value.Dimmer != nil {
-		d.Set(dmx.NewChannel(1), dmx.Value(*value.Dimmer*255))
-	}
-	if value.Color != nil {
-		d.Set(dmx.NewChannel(2), dmx.Value(value.Color.R*255))
-		d.Set(dmx.NewChannel(3), dmx.Value(value.Color.G*255))
-		d.Set(dmx.NewChannel(4), dmx.Value(value.Color.B*255))
-	}
-	if value.Strobe != nil {
-		d.Set(dmx.NewChannel(5), dmx.Value(float64(*value.Strobe)*255))
-	}
+func set(d *Device, value float64, capa definition.Capability) {
+	d.Set(capa.Channel, capa.MapValue(value))
 }

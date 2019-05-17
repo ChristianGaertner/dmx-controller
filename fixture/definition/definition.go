@@ -4,10 +4,10 @@ import "github.com/ChristianGaertner/dmx-controller/dmx"
 
 type ModeID uint32
 
-type ChannelType int
+type CapabilityType int
 
 const (
-	IntensityMasterDimmer ChannelType = iota
+	IntensityMasterDimmer CapabilityType = iota
 	IntensityRed
 	IntensityGreen
 	IntensityBlue
@@ -22,7 +22,8 @@ type Definition struct {
 }
 
 type Mode struct {
-	Channels map[ChannelType]Capability
+	NumChannels  uint16
+	Capabilities map[CapabilityType]Capability
 }
 
 type Capability struct {

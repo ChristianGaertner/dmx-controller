@@ -15,28 +15,27 @@ type DefinedFixture struct {
 }
 
 func (f DefinedFixture) NumChannels() uint16 {
-	// TODO
-	return 5
+	return f.Definition.Modes[f.ActiveMode].NumChannels
 }
 
 func (f DefinedFixture) ApplyValueTo(value *Value, d *Device) {
 	mode := f.Definition.Modes[f.ActiveMode]
 
-	if capa, ok := mode.Channels[definition.IntensityMasterDimmer]; value.Dimmer != nil && ok {
+	if capa, ok := mode.Capabilities[definition.IntensityMasterDimmer]; value.Dimmer != nil && ok {
 		set(d, float64(*value.Dimmer), capa)
 	}
 
-	if capa, ok := mode.Channels[definition.IntensityRed]; value.Color != nil && ok {
+	if capa, ok := mode.Capabilities[definition.IntensityRed]; value.Color != nil && ok {
 		set(d, value.Color.R, capa)
 	}
-	if capa, ok := mode.Channels[definition.IntensityGreen]; value.Color != nil && ok {
+	if capa, ok := mode.Capabilities[definition.IntensityGreen]; value.Color != nil && ok {
 		set(d, value.Color.G, capa)
 	}
-	if capa, ok := mode.Channels[definition.IntensityBlue]; value.Color != nil && ok {
+	if capa, ok := mode.Capabilities[definition.IntensityBlue]; value.Color != nil && ok {
 		set(d, value.Color.B, capa)
 	}
 
-	if capa, ok := mode.Channels[definition.StrobeSlowToFast]; value.Strobe != nil && ok {
+	if capa, ok := mode.Capabilities[definition.StrobeSlowToFast]; value.Strobe != nil && ok {
 		set(d, float64(*value.Strobe), capa)
 	}
 }

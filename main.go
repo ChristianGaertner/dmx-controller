@@ -27,14 +27,15 @@ func main() {
 	generic := fixture.DefinedFixture{
 		ActiveMode: 0,
 		Definition: &definition.Definition{
-			Modes: definition.Modes {
+			Modes: definition.Modes{
 				0: definition.Mode{
-					Channels: map[definition.ChannelType]definition.Capability {
+					NumChannels: 5,
+					Capabilities: map[definition.CapabilityType]definition.Capability{
 						definition.IntensityMasterDimmer: definition.NewSingleValueChannel(dmx.NewChannel(1)),
-						definition.IntensityRed: definition.NewSingleValueChannel(dmx.NewChannel(2)),
-						definition.IntensityGreen: definition.NewSingleValueChannel(dmx.NewChannel(3)),
-						definition.IntensityBlue: definition.NewSingleValueChannel(dmx.NewChannel(4)),
-						definition.StrobeSlowToFast: definition.NewSingleValueChannel(dmx.NewChannel(5)),
+						definition.IntensityRed:          definition.NewSingleValueChannel(dmx.NewChannel(2)),
+						definition.IntensityGreen:        definition.NewSingleValueChannel(dmx.NewChannel(3)),
+						definition.IntensityBlue:         definition.NewSingleValueChannel(dmx.NewChannel(4)),
+						definition.StrobeSlowToFast:      definition.NewSingleValueChannel(dmx.NewChannel(5)),
 					},
 				},
 			},
@@ -94,8 +95,8 @@ func main() {
 					},
 					Phase: -0.5,
 					Speed: types.BPM(60),
-					Min: 0.5,
-					Max: 1,
+					Min:   0.5,
+					Max:   1,
 				},
 			},
 			Values: map[*fixture.Device]fixture.Value{
@@ -122,8 +123,8 @@ func main() {
 					},
 					Phase: -0.5,
 					Speed: types.BPM(60),
-					Min: 0.5,
-					Max: 1,
+					Min:   0.5,
+					Max:   1,
 				},
 			},
 			Values: map[*fixture.Device]fixture.Value{

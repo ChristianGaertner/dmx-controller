@@ -8,7 +8,7 @@ import (
 
 const UniverseSize = uint16(512)
 
-type Value byte
+type Value = byte
 
 type Buffer struct {
 	sync.RWMutex
@@ -16,7 +16,7 @@ type Buffer struct {
 }
 
 type BufferRenderer interface {
-	Render(ctx context.Context, buffer *Buffer)
+	Render(ctx context.Context, buffer *Buffer) error
 	GetTicker(ctx context.Context) *time.Ticker
 }
 
@@ -39,7 +39,11 @@ func (b *Buffer) Render(ctx context.Context, renderer BufferRenderer, onExit cha
 		select {
 		case <-ticker.C:
 			b.RLock()
-			renderer.Render(ctx, b)
+			err := renderer.Render(ctx, b)
+			if err != nil {
+				// TODO handle error in a better way?
+				panic(err)
+			}
 			b.RUnlock()
 		case <-ctx.Done():
 			ticker.Stop()

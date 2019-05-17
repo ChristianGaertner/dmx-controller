@@ -15,8 +15,12 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	buffer := dmx.NewBuffer()
-	renderer := dmx.StdOutRenderer{NumChannels: 10}
-	//renderer := dmx.NilRenderer{}
+	renderer := &dmx.StdOutRenderer{NumChannels: 10}
+	//renderer := &dmx.NilRenderer{}
+	//renderer, err := dmx.NewEnttecRenderer()
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	onExit := make(chan bool)
 
@@ -143,7 +147,7 @@ func main() {
 
 	onEval := make(chan bool)
 	go deviceMap.RenderLoop(ctx, onEval, buffer)
-	go buffer.Render(ctx, &renderer, onExit)
+	go buffer.Render(ctx, renderer, onExit)
 	go ticker.Run(ctx)
 
 	sceneCtx, cancelScene := context.WithCancel(ctx)

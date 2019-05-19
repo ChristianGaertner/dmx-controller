@@ -3,6 +3,7 @@ package fixture
 import (
 	"github.com/ChristianGaertner/dmx-controller/fixture/definition"
 	"github.com/ChristianGaertner/dmx-controller/types"
+	"math"
 )
 
 type Fixture interface {
@@ -32,7 +33,11 @@ func (f DefinedFixture) ApplyValueTo(value *Value, d *Device) {
 		if value.Dimmer != nil {
 			dimmer = float64(*value.Dimmer)
 		}
-		color = types.LerpColor(color, &types.Color{}, dimmer, dimmer)
+		color = &types.Color{
+			R: math.Min(color.R, dimmer),
+			G: math.Min(color.G, dimmer),
+			B: math.Min(color.B, dimmer),
+		}
 	}
 
 	if capa, ok := mode.Capabilities[definition.IntensityRed]; color != nil && ok {

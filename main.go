@@ -56,38 +56,38 @@ func main() {
 	d := 3 * time.Second
 
 	sequence := []*scene.Step{
-		//{
-		//	Values: map[*fixture.Device]fixture.FixtureValue{
-		//		devA: {
-		//			Dimmer: types.NewDimmerValue(1),
-		//			Color: &types.Color{
-		//				R: 1, G: 0, B: 0,
-		//			},
-		//		},
-		//		devB: {
-		//			Dimmer: types.NewDimmerValue(1),
-		//			Color: &types.Color{
-		//				R: 1, G: 0, B: 0,
-		//			},
-		//		},
-		//	},
-		//},
-		//{
-		//	Values: map[*fixture.Device]fixture.FixtureValue{
-		//		devA: {
-		//			Dimmer: types.NewDimmerValue(1),
-		//			Color: &types.Color{
-		//				R: 0, G: 1, B: 0,
-		//			},
-		//		},
-		//		devB: {
-		//			Dimmer: types.NewDimmerValue(1),
-		//			Color: &types.Color{
-		//				R: 0, G: 1, B: 0,
-		//			},
-		//		},
-		//	},
-		//},
+		{
+			Values: map[fixture.DeviceIdentifier]fixture.Value{
+				devA.Uuid: {
+					Dimmer: types.NewDimmerValue(1),
+					Color: &types.Color{
+						R: 1, G: 0, B: 0,
+					},
+				},
+				devB.Uuid: {
+					Dimmer: types.NewDimmerValue(1),
+					Color: &types.Color{
+						R: 1, G: 0, B: 0,
+					},
+				},
+			},
+		},
+		{
+			Values: map[fixture.DeviceIdentifier]fixture.Value{
+				devA.Uuid: {
+					Dimmer: types.NewDimmerValue(1),
+					Color: &types.Color{
+						R: 0, G: 1, B: 0,
+					},
+				},
+				devB.Uuid: {
+					Dimmer: types.NewDimmerValue(1),
+					Color: &types.Color{
+						R: 0, G: 1, B: 0,
+					},
+				},
+			},
+		},
 		{
 			Timings: scene.Timings{
 				Duration: &d,

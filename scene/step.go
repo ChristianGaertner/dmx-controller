@@ -19,7 +19,7 @@ type sequencedStep struct {
 	Timings Timings
 }
 
-func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) {
+func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep, pool *fixture.DevicePool) {
 	percentUp := calcPercent(tc, *s.Timings.FadeUp)
 	percentDown := calcPercent(tc, *s.Timings.FadeDown)
 
@@ -30,15 +30,17 @@ func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) {
 		prevOutput = prev.Step.getStepOutput(tc)
 	}
 
-	for dev, fix := range output {
+	for devId, fix := range output {
 		var fixPrev fixture.Value
 		if prevOutput != nil {
-			if p, ok := prevOutput[dev]; ok {
+			if p, ok := prevOutput[devId]; ok {
 				fixPrev = p
 			}
 		}
 
 		finalValue := fixture.Lerp(&fixPrev, &fix, percentUp, percentDown)
+
+		dev := pool.Get(devId)
 
 		dev.Fixture.ApplyValueTo(finalValue, dev)
 	}

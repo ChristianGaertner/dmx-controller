@@ -40,12 +40,12 @@ func (t *EffectType) UnmarshalText(data []byte) error {
 }
 
 type DimmerSine struct {
-	Type    EffectType        `json:"type"`
-	Devices []*fixture.Device `json:"devices"`
-	Min     types.DimmerValue `json:"min"`
-	Max     types.DimmerValue `json:"max"`
-	Phase   float64           `json:"phase"` // 0 = all in sync 1 = no overlap
-	Speed   types.BPM         `json:"speed"`
+	Type    EffectType                 `json:"type"`
+	Devices []fixture.DeviceIdentifier `json:"devices"`
+	Min     types.DimmerValue          `json:"min"`
+	Max     types.DimmerValue          `json:"max"`
+	Phase   float64                    `json:"phase"` // 0 = all in sync 1 = no overlap
+	Speed   types.BPM                  `json:"speed"`
 }
 
 func (ds *DimmerSine) Generate(tc types.TimeCode) StepOutput {

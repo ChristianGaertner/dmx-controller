@@ -5,15 +5,17 @@ import (
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 )
 
+type DeviceIdentifier string
+
 type Device struct {
-	Uuid    string
+	Uuid    DeviceIdentifier
 	values  []dmx.Value
 	Fixture Fixture
 }
 
 func NewDevice(uuid string, fixture Fixture) *Device {
 	return &Device{
-		Uuid:    uuid,
+		Uuid:    DeviceIdentifier(uuid),
 		values:  make([]dmx.Value, fixture.NumChannels()),
 		Fixture: fixture,
 	}
@@ -35,6 +37,26 @@ func (d *Device) Set(channel dmx.Channel, value dmx.Value) {
 
 func (d *Device) Get(channel dmx.Channel) dmx.Value {
 	return d.values[channel.ToSliceIndex()]
+}
+
+type DevicePool struct {
+	devices map[DeviceIdentifier]*Device
+}
+
+func PoolFromDeviceMap(dm *DeviceMap) *DevicePool {
+	devices := make(map[DeviceIdentifier]*Device)
+
+	for _, dev := range dm.devices {
+		devices[dev.Uuid] = dev
+	}
+
+	return &DevicePool{
+		devices: devices,
+	}
+}
+
+func (p *DevicePool) Get(dev DeviceIdentifier) *Device {
+	return p.devices[dev]
 }
 
 type DeviceMap struct {

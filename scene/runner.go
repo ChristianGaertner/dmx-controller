@@ -2,11 +2,12 @@ package scene
 
 import (
 	"context"
+	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"time"
 )
 
-func Run(ctx context.Context, scene *Scene, globalTimeCode <-chan types.TimeCode, onEval chan<- bool) {
+func Run(ctx context.Context, scene *Scene, pool *fixture.DevicePool, globalTimeCode <-chan types.TimeCode, onEval chan<- bool) {
 	initTc := <-globalTimeCode
 
 	timeCode := make(chan types.TimeCode)
@@ -25,7 +26,7 @@ func Run(ctx context.Context, scene *Scene, globalTimeCode <-chan types.TimeCode
 	for {
 		select {
 		case tc := <-timeCode:
-			scene.Eval(tc)
+			scene.Eval(tc, pool)
 			onEval <- true
 		case <-ctx.Done():
 			return

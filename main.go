@@ -51,6 +51,8 @@ func main() {
 	deviceMap.Place(dmx.NewChannel(1), devA)
 	deviceMap.Place(dmx.NewChannel(6), devB)
 
+	devicePool := fixture.PoolFromDeviceMap(deviceMap)
+
 	d := 3 * time.Second
 
 	sequence := []*scene.Step{
@@ -93,8 +95,8 @@ func main() {
 			Effects: []scene.Effect{
 				&scene.DimmerSine{
 					Type: scene.DimmerSineType,
-					Devices: []*fixture.Device{
-						devA, devB,
+					Devices: []fixture.DeviceIdentifier{
+						devA.Uuid, devB.Uuid,
 					},
 					Phase: -0.5,
 					Speed: types.BPM(60),
@@ -102,13 +104,13 @@ func main() {
 					Max:   1,
 				},
 			},
-			Values: map[*fixture.Device]fixture.Value{
-				devA: {
+			Values: map[fixture.DeviceIdentifier]fixture.Value{
+				devA.Uuid: {
 					Color: &types.Color{
 						R: 1, G: 1, B: 1,
 					},
 				},
-				devB: {
+				devB.Uuid: {
 					Color: &types.Color{
 						R: 1, G: 1, B: 1,
 					},
@@ -122,8 +124,8 @@ func main() {
 			Effects: []scene.Effect{
 				&scene.DimmerSine{
 					Type: scene.DimmerSineType,
-					Devices: []*fixture.Device{
-						devA, devB,
+					Devices: []fixture.DeviceIdentifier{
+						devA.Uuid, devB.Uuid,
 					},
 					Phase: -0.5,
 					Speed: types.BPM(60),
@@ -131,13 +133,13 @@ func main() {
 					Max:   1,
 				},
 			},
-			Values: map[*fixture.Device]fixture.Value{
-				devA: {
+			Values: map[fixture.DeviceIdentifier]fixture.Value{
+				devA.Uuid: {
 					Color: &types.Color{
 						R: 1, G: 1, B: 1,
 					},
 				},
-				devB: {
+				devB.Uuid: {
 					Color: &types.Color{
 						R: 1, G: 1, B: 1,
 					},
@@ -157,7 +159,7 @@ func main() {
 
 	sceneCtx, cancelScene := context.WithCancel(ctx)
 
-	go scene.Run(sceneCtx, myScene, ticker.TimeCode, onEval)
+	go scene.Run(sceneCtx, myScene, devicePool, ticker.TimeCode, onEval)
 
 	var res string
 	for {
@@ -179,7 +181,7 @@ func main() {
 
 		if res == "start" {
 			sceneCtx, cancelScene = context.WithCancel(ctx)
-			go scene.Run(sceneCtx, myScene, ticker.TimeCode, onEval)
+			go scene.Run(sceneCtx, myScene, devicePool, ticker.TimeCode, onEval)
 		}
 
 		if res == "exit" {

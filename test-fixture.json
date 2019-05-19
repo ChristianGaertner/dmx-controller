@@ -31,7 +31,8 @@
       }
     },
     "1": {
-      "numChannels": 5,
+      "numChannels": 4,
+      "hasVirtualDimmer": true,
       "capabilities": {
         "IntensityRed": {
           "channel": 1,
@@ -48,13 +49,8 @@
           "rangeStart": 0,
           "rangeEnd": 255
         },
-        "IntensityMasterDimmer": {
-          "channel": 4,
-          "rangeStart": 0,
-          "rangeEnd": 255
-        },
         "StrobeSlowToFast": {
-          "channel": 5,
+          "channel": 4,
           "rangeStart": 0,
           "rangeEnd": 255
         }

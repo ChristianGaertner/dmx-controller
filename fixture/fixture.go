@@ -2,6 +2,7 @@ package fixture
 
 import (
 	"github.com/ChristianGaertner/dmx-controller/fixture/definition"
+	"github.com/ChristianGaertner/dmx-controller/types"
 )
 
 type Fixture interface {
@@ -25,14 +26,23 @@ func (f DefinedFixture) ApplyValueTo(value *Value, d *Device) {
 		set(d, float64(*value.Dimmer), capa)
 	}
 
-	if capa, ok := mode.Capabilities[definition.IntensityRed]; value.Color != nil && ok {
-		set(d, value.Color.R, capa)
+	color := value.Color
+	if color != nil && mode.HasVirtualDimmer {
+		var dimmer float64
+		if value.Dimmer != nil {
+			dimmer = float64(*value.Dimmer)
+		}
+		color = types.LerpColor(color, &types.Color{}, dimmer, dimmer)
 	}
-	if capa, ok := mode.Capabilities[definition.IntensityGreen]; value.Color != nil && ok {
-		set(d, value.Color.G, capa)
+
+	if capa, ok := mode.Capabilities[definition.IntensityRed]; color != nil && ok {
+		set(d, color.R, capa)
 	}
-	if capa, ok := mode.Capabilities[definition.IntensityBlue]; value.Color != nil && ok {
-		set(d, value.Color.B, capa)
+	if capa, ok := mode.Capabilities[definition.IntensityGreen]; color != nil && ok {
+		set(d, color.G, capa)
+	}
+	if capa, ok := mode.Capabilities[definition.IntensityBlue]; color != nil && ok {
+		set(d, color.B, capa)
 	}
 
 	if capa, ok := mode.Capabilities[definition.StrobeSlowToFast]; value.Strobe != nil && ok {

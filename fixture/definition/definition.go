@@ -21,8 +21,9 @@ func FromJson(data []byte) (*Definition, error) {
 }
 
 type Mode struct {
-	NumChannels  uint16                        `json:"numChannels"`
-	Capabilities map[CapabilityType]Capability `json:"capabilities"`
+	NumChannels      uint16                        `json:"numChannels"`
+	Capabilities     map[CapabilityType]Capability `json:"capabilities"`
+	HasVirtualDimmer bool                          `json:"hasVirtualDimmer"`
 }
 
 type Capability struct {

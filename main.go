@@ -35,13 +35,17 @@ func main() {
 		panic(err)
 	}
 
-	generic := fixture.DefinedFixture{
+	genericA := fixture.DefinedFixture{
 		ActiveMode: 0,
 		Definition: def,
 	}
+	genericB := fixture.DefinedFixture{
+		ActiveMode: 1,
+		Definition: def,
+	}
 
-	devA := fixture.NewDevice(generic)
-	devB := fixture.NewDevice(generic)
+	devA := fixture.NewDevice(genericA)
+	devB := fixture.NewDevice(genericB)
 
 	deviceMap := fixture.NewDeviceMap()
 	deviceMap.Place(dmx.NewChannel(1), devA)

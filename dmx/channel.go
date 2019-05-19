@@ -1,5 +1,10 @@
 package dmx
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 type ChannelIndex uint16
 
 type Channel struct {
@@ -22,4 +27,19 @@ func NewChannelFromIndex(index int) Channel {
 		panic("Invalid channel index")
 	}
 	return NewChannel(ChannelIndex(index + 1))
+}
+
+func (c *Channel) MarshalJSON() ([]byte, error) {
+	return json.Marshal(c.value)
+}
+
+func (c *Channel) UnmarshalJSON(data []byte) error {
+	var i int
+
+	if err := json.Unmarshal(data, &i); err != nil {
+		return fmt.Errorf("Channel should be a number, got %s", data)
+	}
+
+	*c = NewChannel(ChannelIndex(i))
+	return nil
 }

@@ -1,0 +1,64 @@
+{
+  "modes": {
+    "0": {
+      "numChannels": 5,
+      "capabilities": {
+        "IntensityMasterDimmer": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityRed": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 4,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "StrobeSlowToFast": {
+          "channel": 5,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    },
+    "1": {
+      "numChannels": 5,
+      "capabilities": {
+        "IntensityRed": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityMasterDimmer": {
+          "channel": 4,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "StrobeSlowToFast": {
+          "channel": 5,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    }
+  }
+}

@@ -8,6 +8,7 @@ import (
 	"github.com/ChristianGaertner/dmx-controller/fixture/definition"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/types"
+	"io/ioutil"
 	"time"
 )
 
@@ -24,22 +25,19 @@ func main() {
 
 	onExit := make(chan bool)
 
+	data, err := ioutil.ReadFile("./test-fixture.json")
+	if err != nil {
+		panic(err)
+	}
+
+	def, err := definition.FromJson(data)
+	if err != nil {
+		panic(err)
+	}
+
 	generic := fixture.DefinedFixture{
 		ActiveMode: 0,
-		Definition: &definition.Definition{
-			Modes: definition.Modes{
-				0: definition.Mode{
-					NumChannels: 5,
-					Capabilities: map[definition.CapabilityType]definition.Capability{
-						definition.IntensityMasterDimmer: definition.NewSingleValueChannel(dmx.NewChannel(1)),
-						definition.IntensityRed:          definition.NewSingleValueChannel(dmx.NewChannel(2)),
-						definition.IntensityGreen:        definition.NewSingleValueChannel(dmx.NewChannel(3)),
-						definition.IntensityBlue:         definition.NewSingleValueChannel(dmx.NewChannel(4)),
-						definition.StrobeSlowToFast:      definition.NewSingleValueChannel(dmx.NewChannel(5)),
-					},
-				},
-			},
-		},
+		Definition: def,
 	}
 
 	devA := fixture.NewDevice(generic)

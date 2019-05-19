@@ -1,35 +1,34 @@
 package definition
 
-import "github.com/ChristianGaertner/dmx-controller/dmx"
+import (
+	"encoding/json"
+	"github.com/ChristianGaertner/dmx-controller/dmx"
+)
 
 type ModeID uint32
-
-type CapabilityType int
-
-const (
-	IntensityMasterDimmer CapabilityType = iota
-	IntensityRed
-	IntensityGreen
-	IntensityBlue
-
-	StrobeSlowToFast
-)
 
 type Modes map[ModeID]Mode
 
 type Definition struct {
-	Modes map[ModeID]Mode
+	Modes map[ModeID]Mode `json:"modes"`
+}
+
+func FromJson(data []byte) (*Definition, error) {
+	def := Definition{}
+	err := json.Unmarshal(data, &def)
+
+	return &def, err
 }
 
 type Mode struct {
-	NumChannels  uint16
-	Capabilities map[CapabilityType]Capability
+	NumChannels  uint16                        `json:"numChannels"`
+	Capabilities map[CapabilityType]Capability `json:"capabilities"`
 }
 
 type Capability struct {
-	Channel    dmx.Channel
-	RangeStart dmx.Value
-	RangeEnd   dmx.Value
+	Channel    dmx.Channel `json:"channel"`
+	RangeStart dmx.Value   `json:"rangeStart"`
+	RangeEnd   dmx.Value   `json:"rangeEnd"`
 }
 
 // MapValue converts any given input value [0..1] to a dmx value [0..255]

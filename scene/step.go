@@ -7,9 +7,9 @@ import (
 )
 
 type Step struct {
-	Values  StepOutput
-	Effects []Effect
-	Timings Timings
+	Values  StepOutput `json:"values"`
+	Effects []Effect   `json:"effects"`
+	Timings Timings    `json:"timings"`
 }
 
 type sequencedStep struct {
@@ -45,7 +45,7 @@ func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) {
 }
 
 func (s *Step) getStepOutput(tc types.TimeCode) StepOutput {
-	out := []StepOutput{ s.Values }
+	out := []StepOutput{s.Values}
 
 	for _, fx := range s.Effects {
 		out = append(out, fx.Generate(tc))

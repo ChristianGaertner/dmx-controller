@@ -6,12 +6,14 @@ import (
 )
 
 type Device struct {
+	Uuid    string
 	values  []dmx.Value
 	Fixture Fixture
 }
 
-func NewDevice(fixture Fixture) *Device {
+func NewDevice(uuid string, fixture Fixture) *Device {
 	return &Device{
+		Uuid:    uuid,
 		values:  make([]dmx.Value, fixture.NumChannels()),
 		Fixture: fixture,
 	}
@@ -72,4 +74,8 @@ func (dM *DeviceMap) RenderLoop(ctx context.Context, onRender <-chan bool, buffe
 			return
 		}
 	}
+}
+
+func (d *Device) MarshalText() ([]byte, error) {
+	return []byte(d.Uuid), nil
 }

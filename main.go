@@ -44,8 +44,8 @@ func main() {
 		Definition: def,
 	}
 
-	devA := fixture.NewDevice(genericA)
-	devB := fixture.NewDevice(genericB)
+	devA := fixture.NewDevice("devA", genericA)
+	devB := fixture.NewDevice("devB", genericB)
 
 	deviceMap := fixture.NewDeviceMap()
 	deviceMap.Place(dmx.NewChannel(1), devA)
@@ -92,6 +92,7 @@ func main() {
 			},
 			Effects: []scene.Effect{
 				&scene.DimmerSine{
+					Type: scene.DimmerSineType,
 					Devices: []*fixture.Device{
 						devA, devB,
 					},
@@ -120,6 +121,7 @@ func main() {
 			},
 			Effects: []scene.Effect{
 				&scene.DimmerSine{
+					Type: scene.DimmerSineType,
 					Devices: []*fixture.Device{
 						devA, devB,
 					},
@@ -187,4 +189,10 @@ func main() {
 
 	cancel()
 	<-onExit
+
+	j, err := myScene.MarshalJSON()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%s", j)
 }

@@ -1,6 +1,7 @@
 package scene
 
 import (
+	"encoding/json"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"time"
 )
@@ -93,4 +94,19 @@ func computeTimings(step *Step, sceneTimings Timings) Timings {
 		FadeUp:   getFadeUp(step),
 		FadeDown: getFadeDown(step),
 	}
+}
+
+func (s *Scene) MarshalJSON() ([]byte, error) {
+
+	var steps []Step
+
+	for _, s := range s.sequence {
+		steps = append(steps, *s.Step)
+	}
+
+	x := map[string]interface{}{
+		"steps":          steps,
+		"defaultTimings": s.defaultTimings,
+	}
+	return json.Marshal(x)
 }

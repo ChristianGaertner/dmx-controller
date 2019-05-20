@@ -14,7 +14,7 @@ export const StepValue: React.FunctionComponent<Props> = ({
     <div>
       <div className="bg-teal-900 p-2 flex flex-col">
         {Object.entries(value).map(
-          ([type, val]) => !!val && <span>{type}</span>
+          ([type, val]) => !!val && <span key={type}>{type}</span>
         )}
       </div>
       {effects.map((fx, i) => (

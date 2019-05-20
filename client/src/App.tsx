@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Sidebar } from "./Sidebar";
-import { SceneEditor } from "./editor/SceneEditor";
+import { Editor } from "./editor/Editor";
 import { SceneRunner } from "./live/SceneRunner";
 
 const App: React.FunctionComponent = () => {
@@ -10,7 +10,7 @@ const App: React.FunctionComponent = () => {
     <div className="flex flex-row">
       <Sidebar page={page} setPage={setPage} />
       {page === "live" && <SceneRunner />}
-      {page === "editor" && <SceneEditor />}
+      {page === "editor" && <Editor />}
     </div>
   );
 };

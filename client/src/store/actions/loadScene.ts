@@ -6,6 +6,9 @@ import { apiBasePath } from "./config";
 export const LOAD_SCENE_REQUEST = "LOAD_SCENE_REQUEST";
 export const LOAD_SCENE_RESPONSE = "LOAD_SCENE_RESPONSE";
 
+export const LOAD_SCENE_LIST_REQUEST = "LOAD_SCENE_LIST_REQUEST";
+export const LOAD_SCENE_LIST_RESPONSE = "LOAD_SCENE_LIST_RESPONSE";
+
 export interface LoadSceneRequestAction {
   type: "LOAD_SCENE_REQUEST";
   payload: {
@@ -18,6 +21,17 @@ export interface LoadSceneResponseAction {
   payload: {
     id: string;
     scene: Scene;
+  };
+}
+
+export interface LoadSceneListRequestAction {
+  type: "LOAD_SCENE_LIST_REQUEST";
+}
+
+export interface LoadSceneListResponseAction {
+  type: "LOAD_SCENE_LIST_RESPONSE";
+  payload: {
+    scenes: string[];
   };
 }
 
@@ -35,4 +49,18 @@ export const loadScene = (
   const scene = await res.json();
 
   dispatch({ type: LOAD_SCENE_RESPONSE, payload: { id, scene } });
+};
+
+export const loadSceneList = (): ThunkAction<
+  void,
+  AppState,
+  null,
+  LoadSceneListRequestAction | LoadSceneListResponseAction
+> => async dispatch => {
+  dispatch({ type: LOAD_SCENE_LIST_REQUEST });
+
+  const res = await fetch(`${apiBasePath}/resources/scene`);
+  const scenes = await res.json();
+
+  dispatch({ type: LOAD_SCENE_LIST_RESPONSE, payload: { scenes } });
 };

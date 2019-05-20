@@ -5,32 +5,39 @@ import { StepHeader } from "./StepHeader";
 import { Scene } from "../types";
 import { connect } from "react-redux";
 import { AppState } from "../store";
-import { getScene } from "../store/selectors";
 import { loadScene } from "../store/actions/loadScene";
+import {
+  getSceneForEditing,
+  getSelectedSceneId
+} from "../store/editor/selectors";
 
 type StateProps = {
+  sceneID: string | null;
   scene?: Scene;
 };
 
 type DispatchProps = {
-  loadScene: () => void;
+  loadScene: (sceneID: string) => void;
 };
 
 type Props = StateProps & DispatchProps;
 
-const devices = [
-  { name: "Par01", id: "devA" },
-  { name: "Par02", id: "devB" },
-  { name: "Par03", id: "devC" }
-];
+const devices = [{ name: "Par01", id: "devA" }, { name: "Par02", id: "devB" }];
 
 const SceneEditorComp: React.FunctionComponent<Props> = ({
+  sceneID,
   scene,
   loadScene
 }) => {
   React.useEffect(() => {
-    loadScene();
-  }, [loadScene]);
+    if (sceneID) {
+      loadScene(sceneID);
+    }
+  }, [sceneID, loadScene]);
+
+  if (!sceneID) {
+    return null;
+  }
 
   if (!scene) {
     return <h1>Loading...</h1>;
@@ -79,11 +86,12 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
 };
 
 const mapStateToProps = (state: AppState): StateProps => ({
-  scene: getScene(state, { id: "sc001" })
+  sceneID: getSelectedSceneId(state),
+  scene: getSceneForEditing(state)
 });
 
 const mapDispatchToProps: DispatchProps = {
-  loadScene: () => loadScene("sc001")
+  loadScene: loadScene
 };
 
 export const SceneEditor = connect(

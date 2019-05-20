@@ -23,6 +23,7 @@ func ListenAndServe(ctx context.Context, pool *fixture.DevicePool, timeCode <-ch
 
 	r := mux.NewRouter()
 
+	r.HandleFunc("/api/v1/resources/scene", getSceneIds).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene/{id}", getSceneHandler).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene", addSceneHandler).Methods("POST")
 
@@ -61,6 +62,19 @@ func getSceneHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func getSceneIds(w http.ResponseWriter, r *http.Request) {
+	var ids []string
+
+	for id := range scenes {
+		ids = append(ids, id)
+	}
+
+	err := json.NewEncoder(w).Encode(ids)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
 func runSceneHandler(ctx context.Context, pool *fixture.DevicePool, timeCode <-chan types.TimeCode, onEval chan<- bool) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
@@ -94,6 +108,7 @@ func stopSceneHandler() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if runningScene != nil {
 			runningScene.stop()
+			runningScene = nil
 		}
 		w.WriteHeader(http.StatusAccepted)
 	})

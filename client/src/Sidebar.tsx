@@ -1,14 +1,17 @@
 import * as React from 'react';
 import cx from 'classnames';
 
-export const Sidebar: React.FunctionComponent = props => (
+type Props = {
+    page: 'live' | 'editor';
+    setPage: (page: 'live' | 'editor') => void;
+}
+
+export const Sidebar: React.FunctionComponent<Props> = props => (
     <div className="bg-gray-1000 py-8 pr-4 border-l-4 border-blue-500 rounded-r-lg">
-
         <ul>
-            <SidebarItem label="Live" active={false}/>
-            <SidebarItem label="Program" active={true}/>
+            <SidebarItem label="Live" active={props.page === 'live'} onClick={() => props.setPage('live')}/>
+            <SidebarItem label="Editor" active={props.page === 'editor'} onClick={() => props.setPage('editor')}/>
         </ul>
-
     </div>
 );
 
@@ -34,7 +37,7 @@ const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({label, active, 
                     </g>
                 </svg>
             )}
-            {label === 'Program' && (
+            {label === 'Editor' && (
                 <svg viewBox="0 0 20 20" className="w-4 h-4 fill-current mr-2">
                     <g id="Page-1" stroke="none" strokeWidth="1" fillRule="evenodd">
                         <g id="icon-shape">

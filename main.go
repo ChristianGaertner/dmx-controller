@@ -15,8 +15,8 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	buffer := dmx.NewBuffer()
-	//renderer := &dmx.StdOutRenderer{NumChannels: 10}
-	renderer := &dmx.NilRenderer{}
+	renderer := &dmx.StdOutRenderer{NumChannels: 10}
+	//renderer := &dmx.NilRenderer{}
 	//renderer, err := dmx.NewEnttecRenderer()
 	//if err != nil {
 	//	panic(err)
@@ -58,7 +58,6 @@ func main() {
 	go deviceMap.RenderLoop(ctx, onEval, buffer)
 	go buffer.Render(ctx, renderer, onExit)
 	go ticker.Run(ctx)
-
 
 	err = server.ListenAndServe(ctx, devicePool, ticker.TimeCode, onEval)
 	fmt.Println(err)

@@ -15,8 +15,8 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	buffer := dmx.NewBuffer()
-	renderer := &dmx.StdOutRenderer{NumChannels: 10}
-	//renderer := &dmx.NilRenderer{}
+	//renderer := &dmx.StdOutRenderer{NumChannels: 10}
+	renderer := &dmx.NilRenderer{}
 	//renderer, err := dmx.NewEnttecRenderer()
 	//if err != nil {
 	//	panic(err)

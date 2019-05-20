@@ -23,15 +23,16 @@ func ListenAndServe(ctx context.Context, pool *fixture.DevicePool, timeCode <-ch
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/v1/resources/scene", addSceneHandler)
-	r.HandleFunc("/api/v1/run/scene/{id}", runSceneHandler(ctx, pool, timeCode, onEval))
-	r.HandleFunc("/api/v1/stop/scene", stopSceneHandler())
+	r.HandleFunc("/api/v1/resources/scene/{id}", getSceneHandler).Methods("GET")
+	r.HandleFunc("/api/v1/resources/scene", addSceneHandler).Methods("POST")
+
+	r.HandleFunc("/api/v1/run/scene/{id}", runSceneHandler(ctx, pool, timeCode, onEval)).Methods("POST")
+	r.HandleFunc("/api/v1/stop/scene", stopSceneHandler()).Methods("POST")
 
 	r.Use(panicMiddleware)
+	r.Use(corsMiddleware)
 
-	http.Handle("/", r)
-
-	return http.ListenAndServe(":8080", nil)
+	return http.ListenAndServe(":8080", r)
 }
 
 func addSceneHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,6 +44,21 @@ func addSceneHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	scenes[incomingScene.ID] = &incomingScene
+}
+
+func getSceneHandler(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+
+	target, ok := scenes[id]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	err := json.NewEncoder(w).Encode(target)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 func runSceneHandler(ctx context.Context, pool *fixture.DevicePool, timeCode <-chan types.TimeCode, onEval chan<- bool) http.HandlerFunc {
@@ -59,7 +75,7 @@ func runSceneHandler(ctx context.Context, pool *fixture.DevicePool, timeCode <-c
 		ctx, cancel := context.WithCancel(ctx)
 
 		runningScene = &runningSceneInfo{
-			ID: id,
+			ID:   id,
 			stop: cancel,
 		}
 

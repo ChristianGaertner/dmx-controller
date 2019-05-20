@@ -3,8 +3,20 @@ import {Device} from "./Device";
 import {StepValue} from "./StepValue";
 import {StepHeader} from "./StepHeader";
 import {Scene} from "../types";
+import {connect} from "react-redux";
+import {AppState} from "../store";
+import {getScene} from "../store/selectors";
+import {loadScene} from "../store/actions/loadScene";
 
-type Props = {}
+type StateProps = {
+    scene?: Scene;
+}
+
+type DispatchProps = {
+    loadScene: () => void;
+}
+
+type Props = StateProps & DispatchProps;
 
 const devices = [
     {name: 'Par01', id: 'devA'},
@@ -12,16 +24,11 @@ const devices = [
     {name: 'Par03', id: 'devC'},
 ];
 
-export const SceneEditor: React.FunctionComponent<Props> = props => {
-
-    const [scene, setScene] = React.useState<Scene | null>(null);
-
+const SceneEditorComp: React.FunctionComponent<Props> = ({scene, loadScene}) => {
     React.useEffect(() => {
+        loadScene();
+    }, [loadScene]);
 
-        fetch('http://localhost:8080/api/v1/resources/scene/sc001')
-            .then(r => r.json())
-            .then(r => setScene(r))
-    }, []);
 
     if (!scene) {
         return <h1>Loading...</h1>;
@@ -67,3 +74,13 @@ export const SceneEditor: React.FunctionComponent<Props> = props => {
         </div>
     );
 };
+
+const mapStateToProps = (state: AppState): StateProps => ({
+    scene: getScene(state, {id: 'sc001'}),
+});
+
+const mapDispatchToProps: DispatchProps = {
+    loadScene: () => loadScene('sc001'),
+};
+
+export const SceneEditor = connect(mapStateToProps, mapDispatchToProps)(SceneEditorComp);

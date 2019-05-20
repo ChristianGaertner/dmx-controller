@@ -1,6 +1,22 @@
 import * as React from 'react';
+import {connect} from "react-redux";
+import {AppState} from "../store";
+import {getRunningScene} from "../store/selectors";
+import {runScene} from "../store/actions/runScene";
+import cx from "classnames";
 
-export const SceneRunner: React.FunctionComponent = () => {
+type StateProps = {
+    runningScene: string | null;
+}
+
+type DispatchProps = {
+  runScene: (id: string) => void;
+  stopScene: () => void;
+};
+
+type Props = StateProps & DispatchProps;
+
+const SceneRunnerComp: React.FunctionComponent<Props> = ({runningScene, runScene, stopScene}) => {
 
     const [scenes, setScenes] = React.useState([]);
 
@@ -11,20 +27,14 @@ export const SceneRunner: React.FunctionComponent = () => {
             .then(setScenes)
     }, []);
 
-    const runScene = (id: string) => fetch(`http://localhost:8080/api/v1/run/scene/${id}`, {
-        method: 'POST',
-    });
-
-    const stopScene = () => fetch(`http://localhost:8080/api/v1/stop/scene`, {
-        method: 'POST',
-    });
-
-
     return (
         <div className="flex flex-row">
             <button
                 onClick={stopScene}
-                className="bg-red-900"
+                className={cx('bg-red-900', {
+                    'opacity-75': runningScene === null,
+                })}
+                disabled={runningScene === null}
             >
                 STOP ALL
             </button>
@@ -32,7 +42,10 @@ export const SceneRunner: React.FunctionComponent = () => {
                 <button
                     key={id}
                     onClick={() => runScene(id)}
-                    className="bg-green-900"
+                    className={cx('bg-green-900', {
+                        'opacity-75': id === runningScene,
+                    })}
+                    disabled={id === runningScene}
                 >
                     RUN {id}
                 </button>
@@ -40,3 +53,14 @@ export const SceneRunner: React.FunctionComponent = () => {
         </div>
     );
 };
+
+const mapStateToProps = (state: AppState): StateProps => ({
+   runningScene: getRunningScene(state),
+});
+
+const mapDispatchToProps: DispatchProps = {
+    runScene: runScene,
+    stopScene: () => runScene(null),
+};
+
+export const SceneRunner = connect(mapStateToProps, mapDispatchToProps)(SceneRunnerComp);

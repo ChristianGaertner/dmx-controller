@@ -14,8 +14,8 @@ export const StepValue: React.FunctionComponent<Props> = ({value, effects}) => (
                     <span>{type}</span>
                 ))}
             </div>
-            {effects.map(fx => (
-                <div className="bg-red-900">
+            {effects.map((fx, i) => (
+                <div key={i} className="bg-red-900">
                     {fx.type}
                 </div>
             ))}

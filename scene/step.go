@@ -7,9 +7,9 @@ import (
 )
 
 type Step struct {
-	Values  StepOutput `json:"values"`
-	Effects []Effect   `json:"effects"`
-	Timings Timings    `json:"timings"`
+	Values  StepOutput `json:"values,omitempty"`
+	Effects []Effect   `json:"effects,omitempty"`
+	Timings Timings    `json:"timings,omitempty"`
 }
 
 type sequencedStep struct {

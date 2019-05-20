@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/fixture/definition"
 	"github.com/ChristianGaertner/dmx-controller/scene"
-	"github.com/ChristianGaertner/dmx-controller/types"
 	"io/ioutil"
-	"time"
 )
 
 func main() {
@@ -53,102 +52,15 @@ func main() {
 
 	devicePool := fixture.PoolFromDeviceMap(deviceMap)
 
-	d := 3 * time.Second
-
-	sequence := []*scene.Step{
-		{
-			Values: map[fixture.DeviceIdentifier]fixture.Value{
-				devA.Uuid: {
-					Dimmer: types.NewDimmerValue(1),
-					Color: &types.Color{
-						R: 1, G: 0, B: 0,
-					},
-				},
-				devB.Uuid: {
-					Dimmer: types.NewDimmerValue(1),
-					Color: &types.Color{
-						R: 1, G: 0, B: 0,
-					},
-				},
-			},
-		},
-		{
-			Values: map[fixture.DeviceIdentifier]fixture.Value{
-				devA.Uuid: {
-					Dimmer: types.NewDimmerValue(1),
-					Color: &types.Color{
-						R: 0, G: 1, B: 0,
-					},
-				},
-				devB.Uuid: {
-					Dimmer: types.NewDimmerValue(1),
-					Color: &types.Color{
-						R: 0, G: 1, B: 0,
-					},
-				},
-			},
-		},
-		{
-			Timings: scene.Timings{
-				Duration: &d,
-			},
-			Effects: []scene.Effect{
-				&scene.DimmerSine{
-					Type: scene.DimmerSineType,
-					Devices: []fixture.DeviceIdentifier{
-						devA.Uuid, devB.Uuid,
-					},
-					Phase: -0.5,
-					Speed: types.BPM(60),
-					Min:   0.5,
-					Max:   1,
-				},
-			},
-			Values: map[fixture.DeviceIdentifier]fixture.Value{
-				devA.Uuid: {
-					Color: &types.Color{
-						R: 1, G: 1, B: 1,
-					},
-				},
-				devB.Uuid: {
-					Color: &types.Color{
-						R: 1, G: 1, B: 1,
-					},
-				},
-			},
-		},
-		{
-			Timings: scene.Timings{
-				Duration: &d,
-			},
-			Effects: []scene.Effect{
-				&scene.DimmerSine{
-					Type: scene.DimmerSineType,
-					Devices: []fixture.DeviceIdentifier{
-						devA.Uuid, devB.Uuid,
-					},
-					Phase: -0.5,
-					Speed: types.BPM(60),
-					Min:   0.5,
-					Max:   1,
-				},
-			},
-			Values: map[fixture.DeviceIdentifier]fixture.Value{
-				devA.Uuid: {
-					Color: &types.Color{
-						R: 1, G: 1, B: 1,
-					},
-				},
-				devB.Uuid: {
-					Color: &types.Color{
-						R: 1, G: 1, B: 1,
-					},
-				},
-			},
-		},
+	sceneData, err := ioutil.ReadFile("./test-scene.json")
+	if err != nil {
+		panic(err)
 	}
-
-	myScene := scene.New(sequence, 1500*time.Millisecond, 500*time.Millisecond, 500*time.Millisecond)
+	var myScene scene.Scene
+	err = json.Unmarshal(sceneData, &myScene)
+	if err != nil {
+		panic(err)
+	}
 
 	ticker := scene.NewTicker()
 
@@ -159,7 +71,7 @@ func main() {
 
 	sceneCtx, cancelScene := context.WithCancel(ctx)
 
-	go scene.Run(sceneCtx, myScene, devicePool, ticker.TimeCode, onEval)
+	go scene.Run(sceneCtx, &myScene, devicePool, ticker.TimeCode, onEval)
 
 	var res string
 	for {
@@ -181,7 +93,7 @@ func main() {
 
 		if res == "start" {
 			sceneCtx, cancelScene = context.WithCancel(ctx)
-			go scene.Run(sceneCtx, myScene, devicePool, ticker.TimeCode, onEval)
+			go scene.Run(sceneCtx, &myScene, devicePool, ticker.TimeCode, onEval)
 		}
 
 		if res == "exit" {

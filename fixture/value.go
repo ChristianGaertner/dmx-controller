@@ -5,9 +5,9 @@ import (
 )
 
 type Value struct {
-	Dimmer *types.DimmerValue `json:"dimmer"`
-	Color  *types.Color       `json:"color"`
-	Strobe *types.Frequency   `json:"strobe"`
+	Dimmer *types.DimmerValue `json:"dimmer,omitempty"`
+	Color  *types.Color       `json:"color,omitempty"`
+	Strobe *types.Frequency   `json:"strobe,omitempty"`
 }
 
 func Lerp(a, b *Value, percentUp, percentDown float64) *Value {

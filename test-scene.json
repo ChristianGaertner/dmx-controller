@@ -1,4 +1,5 @@
 {
+  "id": "sc001",
   "defaultTimings": {
     "duration": 1500000000,
     "fadeUp": 500000000,

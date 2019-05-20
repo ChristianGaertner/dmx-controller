@@ -7,17 +7,19 @@ import (
 )
 
 type Scene struct {
+	ID             string
 	defaultTimings Timings
 	sequence       []*sequencedStep
 }
 
-func New(sequence []*Step, duration, fadeUp, fadeDown time.Duration) *Scene {
+func New(id string, sequence []*Step, duration, fadeUp, fadeDown time.Duration) *Scene {
 	timings := Timings{
 		Duration: &duration,
 		FadeUp:   &fadeUp,
 		FadeDown: &fadeDown,
 	}
 	return &Scene{
+		ID:             id,
 		sequence:       computeSequence(sequence, timings),
 		defaultTimings: timings,
 	}

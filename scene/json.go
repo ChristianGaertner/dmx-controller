@@ -5,6 +5,7 @@ import (
 )
 
 type encodedScene struct {
+	ID             string  `json:"id"`
 	Steps          []*Step `json:"steps"`
 	DefaultTimings Timings `json:"defaultTimings"`
 }
@@ -18,6 +19,7 @@ func (s *Scene) MarshalJSON() ([]byte, error) {
 	}
 
 	x := encodedScene{
+		ID:             s.ID,
 		Steps:          steps,
 		DefaultTimings: s.defaultTimings,
 	}
@@ -32,7 +34,7 @@ func (s *Scene) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	*s = *New(x.Steps, *x.DefaultTimings.Duration, *x.DefaultTimings.FadeUp, *x.DefaultTimings.FadeDown)
+	*s = *New(x.ID, x.Steps, *x.DefaultTimings.Duration, *x.DefaultTimings.FadeUp, *x.DefaultTimings.FadeDown)
 	return nil
 }
 

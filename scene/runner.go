@@ -8,6 +8,13 @@ import (
 )
 
 func Run(ctx context.Context, scene *Scene, pool *fixture.DevicePool, globalTimeCode <-chan types.TimeCode, onEval chan<- bool) {
+	ctx, cancel := context.WithCancel(ctx)
+	defer func() {
+		err := recover()
+		if err != nil {
+			cancel()
+		}
+	}()
 	initTc := <-globalTimeCode
 
 	timeCode := make(chan types.TimeCode)
@@ -29,6 +36,7 @@ func Run(ctx context.Context, scene *Scene, pool *fixture.DevicePool, globalTime
 			scene.Eval(tc, pool)
 			onEval <- true
 		case <-ctx.Done():
+			onEval <- true
 			return
 		}
 	}

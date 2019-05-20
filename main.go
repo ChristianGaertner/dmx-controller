@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/fixture/definition"
 	"github.com/ChristianGaertner/dmx-controller/scene"
+	"github.com/ChristianGaertner/dmx-controller/server"
 	"io/ioutil"
 )
 
@@ -52,16 +52,6 @@ func main() {
 
 	devicePool := fixture.PoolFromDeviceMap(deviceMap)
 
-	sceneData, err := ioutil.ReadFile("./test-scene.json")
-	if err != nil {
-		panic(err)
-	}
-	var myScene scene.Scene
-	err = json.Unmarshal(sceneData, &myScene)
-	if err != nil {
-		panic(err)
-	}
-
 	ticker := scene.NewTicker()
 
 	onEval := make(chan bool)
@@ -69,44 +59,12 @@ func main() {
 	go buffer.Render(ctx, renderer, onExit)
 	go ticker.Run(ctx)
 
-	sceneCtx, cancelScene := context.WithCancel(ctx)
 
-	go scene.Run(sceneCtx, &myScene, devicePool, ticker.TimeCode, onEval)
+	err = server.ListenAndServe(ctx, devicePool, ticker.TimeCode, onEval)
+	fmt.Println(err)
 
-	var res string
-	for {
-		_, _ = fmt.Scanln(&res)
-
-		if res == "+" {
-			ticker.Rate *= 2
-		}
-
-		if res == "-" {
-			ticker.Rate /= 2
-		}
-
-		if res == "stop" {
-			cancelScene()
-			deviceMap.Reset()
-			onEval <- true
-		}
-
-		if res == "start" {
-			sceneCtx, cancelScene = context.WithCancel(ctx)
-			go scene.Run(sceneCtx, &myScene, devicePool, ticker.TimeCode, onEval)
-		}
-
-		if res == "exit" {
-			break
-		}
-	}
-
+	fmt.Println("Shutting down...")
 	cancel()
 	<-onExit
-
-	j, err := myScene.MarshalJSON()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%s", j)
+	fmt.Println("[SHUTDOWN]")
 }

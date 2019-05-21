@@ -3,7 +3,7 @@ import { SceneSelector } from "./SceneSelector";
 import { SceneEditor } from "./SceneEditor";
 import { DefaultTimings } from "./DefaultTimings";
 import { SaveButton } from "./SaveButton";
-import { StepValueEditor } from "./StepValueEditor";
+import { FixtureValueEditor } from "./FixtureValueEditor";
 
 type Props = {};
 
@@ -16,7 +16,7 @@ const EditorComp: React.FunctionComponent<Props> = () => {
         <SaveButton />
       </div>
       <SceneEditor />
-      <StepValueEditor />
+      <FixtureValueEditor />
     </div>
   );
 };

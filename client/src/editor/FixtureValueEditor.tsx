@@ -99,7 +99,7 @@ const mapDispatchToProps: DispatchProps = {
   set: setFixtureValue
 };
 
-export const StepValueEditor = connect(
+export const FixtureValueEditor = connect(
   mapStateToProps,
   mapDispatchToProps
 )(FixtureValueEditorComp);

@@ -75,7 +75,7 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
                   style={{ width: `${100 / steps.length}%` }}
                   className="align-top"
                 >
-                  {step.values[device.id] && (
+                  {
                     <StepValue
                       stepId={step.id}
                       deviceId={device.id}
@@ -84,7 +84,7 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
                         fx.devices.includes(device.id)
                       )}
                     />
-                  )}
+                  }
                 </td>
               ))}
             </tr>

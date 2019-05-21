@@ -77,6 +77,8 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
                 >
                   {step.values[device.id] && (
                     <StepValue
+                      stepId={step.id}
+                      deviceId={device.id}
                       value={step.values[device.id]}
                       effects={(step.effects || []).filter(fx =>
                         fx.devices.includes(device.id)

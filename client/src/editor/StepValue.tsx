@@ -1,18 +1,35 @@
 import * as React from "react";
 import { Effect, FixtureValue } from "../types";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { Action } from "../store/actionTypes";
+import { selectFixtureValue } from "../store/editor/actions";
 
-type Props = {
+type OwnProps = {
   value: FixtureValue;
   effects: Effect[];
+
+  stepId: string;
+  deviceId: string;
 };
 
-export const StepValue: React.FunctionComponent<Props> = ({
+type DispatchProps = {
+  editFixtureValue: () => void;
+};
+
+type Props = OwnProps & DispatchProps;
+
+const StepValueComp: React.FunctionComponent<Props> = ({
   value,
-  effects
+  effects,
+  editFixtureValue
 }) => (
   <div className="mx-2 p-2 text-sm">
     <div>
-      <div className="bg-blue-1000 border-2 border-transparent hover:border-blue-900 rounded p-2 flex flex-row items-center cursor-pointer">
+      <button
+        className="w-full bg-blue-1000 border-2 border-transparent hover:border-blue-900 rounded p-2 flex flex-row items-center cursor-pointer"
+        onClick={editFixtureValue}
+      >
         {!!value.color && (
           <span
             style={{
@@ -23,7 +40,7 @@ export const StepValue: React.FunctionComponent<Props> = ({
           />
         )}
         {(value.dimmer || 0) * 100}%
-      </div>
+      </button>
       {effects.map((fx, i) => (
         <div
           key={i}
@@ -42,3 +59,16 @@ export const StepValue: React.FunctionComponent<Props> = ({
     </div>
   </div>
 );
+
+const mapDispatchToProps = (
+  dispatch: Dispatch<Action>,
+  props: OwnProps
+): DispatchProps => ({
+  editFixtureValue: () =>
+    dispatch(selectFixtureValue(props.stepId, props.deviceId))
+});
+
+export const StepValue = connect(
+  undefined,
+  mapDispatchToProps
+)(StepValueComp);

@@ -11,14 +11,14 @@ export const LOAD_SCENE_LIST_REQUEST = "LOAD_SCENE_LIST_REQUEST";
 export const LOAD_SCENE_LIST_RESPONSE = "LOAD_SCENE_LIST_RESPONSE";
 
 export interface LoadSceneRequestAction extends BaseAction {
-  type: "LOAD_SCENE_REQUEST";
+  type: typeof LOAD_SCENE_REQUEST;
   payload: {
     id: string;
   };
 }
 
 export interface LoadSceneResponseAction extends BaseAction {
-  type: "LOAD_SCENE_RESPONSE";
+  type: typeof LOAD_SCENE_RESPONSE;
   payload: {
     id: string;
     scene: Scene;
@@ -26,11 +26,11 @@ export interface LoadSceneResponseAction extends BaseAction {
 }
 
 export interface LoadSceneListRequestAction extends BaseAction {
-  type: "LOAD_SCENE_LIST_REQUEST";
+  type: typeof LOAD_SCENE_LIST_REQUEST;
 }
 
 export interface LoadSceneListResponseAction extends BaseAction {
-  type: "LOAD_SCENE_LIST_RESPONSE";
+  type: typeof LOAD_SCENE_LIST_RESPONSE;
   payload: {
     scenes: string[];
   };

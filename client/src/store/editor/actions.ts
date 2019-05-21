@@ -1,4 +1,4 @@
-import { Timings } from "../../types";
+import { FixtureValue, Timings } from "../../types";
 import { BaseAction } from "../actionTypes";
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
@@ -11,10 +11,12 @@ export type EditorAction =
   | SelectScene
   | EditTimings
   | SaveSceneRequest
-  | SaveSceneResponse;
+  | SaveSceneResponse
+  | SelectStepValue
+  | SetFixtureValue;
 
-export interface SelectScene extends BaseAction {
-  type: "@editor/SELECT_SCENE";
+interface SelectScene extends BaseAction {
+  type: typeof SELECT_SCENE;
   payload: {
     id: string;
   };
@@ -27,8 +29,8 @@ export const selectSceneForEditing = (id: string) => ({
 
 export const EDIT_TIMINGS = "@editor/EDIT_TIMINGS";
 
-export interface EditTimings extends BaseAction {
-  type: "@editor/EDIT_TIMINGS";
+interface EditTimings extends BaseAction {
+  type: typeof EDIT_TIMINGS;
   payload: {
     timings: Timings;
   };
@@ -42,12 +44,12 @@ export const editTimings = (timings: Timings): EditTimings => ({
 export const SAVE_SCENE_REQUEST = "@editor/SAVE_SCENE_REQUEST";
 export const SAVE_SCENE_RESPONSE = "@editor/SAVE_SCENE_RESPONSE";
 
-export interface SaveSceneRequest extends BaseAction {
-  type: "@editor/SAVE_SCENE_REQUEST";
+interface SaveSceneRequest extends BaseAction {
+  type: typeof SAVE_SCENE_REQUEST;
 }
 
-export interface SaveSceneResponse extends BaseAction {
-  type: "@editor/SAVE_SCENE_RESPONSE";
+interface SaveSceneResponse extends BaseAction {
+  type: typeof SAVE_SCENE_RESPONSE;
 }
 
 export const saveScene = (): ThunkAction<
@@ -65,3 +67,43 @@ export const saveScene = (): ThunkAction<
 
   dispatch({ type: SAVE_SCENE_RESPONSE });
 };
+
+export const SELECT_FIXTURE_VALUE = "@editor/SELECT_FIXTURE_VALUE";
+interface SelectStepValue extends BaseAction {
+  type: typeof SELECT_FIXTURE_VALUE;
+  payload: {
+    stepId: string;
+    deviceId: string;
+  } | null;
+}
+
+export const selectFixtureValue = (
+  stepId: string,
+  deviceId: string
+): SelectStepValue => ({
+  type: SELECT_FIXTURE_VALUE,
+  payload: {
+    stepId,
+    deviceId
+  }
+});
+
+export const deselectFixtureValue = (): SelectStepValue => ({
+  type: SELECT_FIXTURE_VALUE,
+  payload: null
+});
+
+export const SET_FIXTURE_VALUE = "@editor/SET_FIXTURE_VALUE";
+interface SetFixtureValue extends BaseAction {
+  type: typeof SET_FIXTURE_VALUE;
+  payload: {
+    value: FixtureValue;
+  };
+}
+
+export const setFixtureValue = (value: FixtureValue) => ({
+  type: SET_FIXTURE_VALUE,
+  payload: {
+    value
+  }
+});

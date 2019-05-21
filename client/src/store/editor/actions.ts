@@ -13,7 +13,8 @@ export type EditorAction =
   | SaveSceneRequest
   | SaveSceneResponse
   | SelectStepValue
-  | SetFixtureValue;
+  | SetFixtureValue
+  | AddStep;
 
 interface SelectScene extends BaseAction {
   type: typeof SELECT_SCENE;
@@ -107,3 +108,10 @@ export const setFixtureValue = (value: FixtureValue) => ({
     value
   }
 });
+
+export const ADD_STEP = "@editor/ADD_STEP";
+interface AddStep extends BaseAction {
+  type: typeof ADD_STEP;
+}
+
+export const addStep = () => ({ type: ADD_STEP });

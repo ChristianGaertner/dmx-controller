@@ -1,3 +1,5 @@
+import uuid from "./uuid";
+
 export type Scene = {
   id: string;
   defaultTimings: Timings;
@@ -16,8 +18,18 @@ export type Step = {
     [K: string]: FixtureValue;
   };
   effects?: Effect[];
-  timings?: Timings;
+  timings: Timings;
 };
+
+export const NewStep = (): Step => ({
+  id: uuid(),
+  values: {},
+  timings: {
+    duration: null,
+    fadeUp: null,
+    fadeDown: null
+  }
+});
 
 export type FixtureValue = {
   dimmer?: number;

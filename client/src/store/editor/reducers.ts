@@ -4,10 +4,11 @@ import {
   SAVE_SCENE_RESPONSE,
   SELECT_SCENE,
   SELECT_FIXTURE_VALUE,
-  SET_FIXTURE_VALUE
+  SET_FIXTURE_VALUE,
+  ADD_STEP
 } from "./actions";
 import { Action } from "../actionTypes";
-import { Scene } from "../../types";
+import { NewStep, Scene } from "../../types";
 import { LOAD_SCENE_RESPONSE } from "../actions/loadScene";
 
 type EditorStore = {
@@ -93,6 +94,17 @@ export const editor = (
           ...state.scene,
           steps: steps
         } as Scene
+      };
+    case ADD_STEP:
+      if (!state.scene) {
+        return state;
+      }
+      return {
+        ...state,
+        scene: {
+          ...state.scene,
+          steps: [...state.scene.steps, NewStep()]
+        }
       };
     default:
       return state;

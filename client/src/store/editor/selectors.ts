@@ -6,3 +6,5 @@ export const getSelectedSceneId = (state: AppState) =>
 
 export const getSceneForEditing = (state: AppState): Scene | null =>
   state.editor.scene;
+
+export const isSaving = (state: AppState): boolean => state.editor.saving;

@@ -1,4 +1,9 @@
-import { EDIT_TIMINGS, SELECT_SCENE } from "./actions";
+import {
+  EDIT_TIMINGS,
+  SAVE_SCENE_REQUEST,
+  SAVE_SCENE_RESPONSE,
+  SELECT_SCENE
+} from "./actions";
 import { Action } from "../actionTypes";
 import { Scene } from "../../types";
 import { LOAD_SCENE_RESPONSE } from "../actions/loadScene";
@@ -6,10 +11,17 @@ import { LOAD_SCENE_RESPONSE } from "../actions/loadScene";
 type EditorStore = {
   selectedScene: string | null;
   scene: Scene | null;
+  saving: boolean;
+};
+
+const initialValue: EditorStore = {
+  selectedScene: null,
+  scene: null,
+  saving: false
 };
 
 export const editor = (
-  state: EditorStore = { selectedScene: null, scene: null },
+  state: EditorStore = initialValue,
   action: Action
 ): EditorStore => {
   switch (action.type) {
@@ -34,6 +46,16 @@ export const editor = (
           ...state.scene,
           defaultTimings: action.payload.timings
         } as Scene
+      };
+    case SAVE_SCENE_REQUEST:
+      return {
+        ...state,
+        saving: true
+      };
+    case SAVE_SCENE_RESPONSE:
+      return {
+        ...state,
+        saving: false
       };
     default:
       return state;

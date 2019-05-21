@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { AppState } from "../store";
 import { getRunningScene } from "../store/selectors";
 import { runScene } from "../store/actions/runScene";
-import cx from "classnames";
+import { Button, ButtonType } from "../components/Button";
 
 type StateProps = {
   runningScene: string | null;
@@ -30,28 +30,27 @@ const SceneRunnerComp: React.FunctionComponent<Props> = ({
   }, []);
 
   return (
-    <div className="flex flex-row">
-      <button
-        onClick={stopScene}
-        className={cx("bg-red-900", {
-          "opacity-75": runningScene === null
-        })}
-        disabled={runningScene === null}
-      >
-        STOP ALL
-      </button>
-      {scenes.map(id => (
-        <button
-          key={id}
-          onClick={() => runScene(id)}
-          className={cx("bg-green-900", {
-            "opacity-75": id === runningScene
-          })}
-          disabled={id === runningScene}
-        >
-          RUN {id}
-        </button>
-      ))}
+    <div className="flex flex-col">
+      <div className="bg-gray-900 p-4">
+        <span>{runningScene}</span>
+        <Button
+          type={ButtonType.RED}
+          label="STOP"
+          onClick={runningScene !== null ? stopScene : undefined}
+        />
+      </div>
+      <div className="flex">
+        <div />
+        {scenes.map(id => (
+          <div key={id}>
+            <Button
+              type={ButtonType.GREEN}
+              label={`RUN #${id}`}
+              onClick={runningScene === id ? undefined : () => runScene(id)}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

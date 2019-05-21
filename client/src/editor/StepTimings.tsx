@@ -58,5 +58,8 @@ export const StepTimings: React.FunctionComponent<Props> = ({
   </div>
 );
 
-export const formatNanoSeconds = (nano: number | null) =>
-  !!nano ? nano * 1e-9 : 0;
+export const formatNanoSeconds = (nano: number | null): string =>
+  parseFloat((!!nano ? nano * 1e-9 : 0).toFixed(2)).toString();
+
+export const parseIntoNanoSeconds = (seconds: string) =>
+  parseFloat(seconds) * 1e9;

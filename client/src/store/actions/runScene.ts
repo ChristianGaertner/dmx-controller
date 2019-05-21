@@ -1,10 +1,11 @@
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
 import { apiBasePath } from "./config";
+import { BaseAction } from "../actionTypes";
 
 export const RUN_SCENE = "RUN_SCENE";
 
-export interface RunSceneAction {
+export interface RunSceneAction extends BaseAction {
   type: "RUN_SCENE";
   payload: {
     id: string | null;

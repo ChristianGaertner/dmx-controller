@@ -6,6 +6,9 @@ import {
 } from "./actions/loadScene";
 import { RunSceneAction } from "./actions/runScene";
 import { EditorAction } from "./editor/actions";
+import { Action as ReduxAction } from "redux";
+
+export interface BaseAction extends ReduxAction<string> {}
 
 export type Action =
   | LoadSceneRequestAction

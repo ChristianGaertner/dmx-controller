@@ -13,7 +13,7 @@ import {
 
 type StateProps = {
   sceneID: string | null;
-  scene?: Scene;
+  scene: Scene | null;
 };
 
 type DispatchProps = {

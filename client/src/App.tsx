@@ -4,7 +4,7 @@ import { Editor } from "./editor/Editor";
 import { SceneRunner } from "./live/SceneRunner";
 
 const App: React.FunctionComponent = () => {
-  const [page, setPage] = React.useState<"live" | "editor">("live");
+  const [page, setPage] = React.useState<"live" | "editor">("editor");
 
   return (
     <div className="flex flex-row">

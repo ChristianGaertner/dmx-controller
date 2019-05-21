@@ -16,6 +16,10 @@ module.exports = {
         red: {
           ...colors.red,
           1000: "#421e1e"
+        },
+        blue: {
+          ...colors.blue,
+          1000: "#1c2238"
         }
       }
     }

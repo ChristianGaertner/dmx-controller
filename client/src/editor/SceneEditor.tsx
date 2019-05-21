@@ -47,13 +47,17 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
 
   return (
     <div className="p-8 flex w-full">
-      <table className="table-fixed">
+      <table className="table-fixed w-full">
         <thead>
           <tr>
             <th>Devices</th>
             {steps.map((step, i) => (
               <th key={i}>
-                <StepHeader index={i} timings={step.timings} />
+                <StepHeader
+                  index={i}
+                  timings={step.timings}
+                  defaultTimings={scene.defaultTimings}
+                />
               </th>
             ))}
           </tr>
@@ -66,7 +70,11 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
               </td>
 
               {steps.map((step, i) => (
-                <td key={i}>
+                <td
+                  key={i}
+                  style={{ width: `${100 / steps.length}%` }}
+                  className="align-top"
+                >
                   {step.values[device.id] && (
                     <StepValue
                       value={step.values[device.id]}

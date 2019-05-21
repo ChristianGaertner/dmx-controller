@@ -21,7 +21,7 @@ export type Step = {
 export type FixtureValue = {
   dimmer?: number;
   color?: Color;
-  Strobe?: number;
+  strobe?: number;
 };
 
 export type Effect = {

@@ -1,4 +1,4 @@
-const { colors } = require("tailwindcss/defaultTheme");
+const { colors, borderRadius } = require("tailwindcss/defaultTheme");
 
 module.exports = {
   theme: {
@@ -21,6 +21,10 @@ module.exports = {
           ...colors.blue,
           1000: "#1c2238"
         }
+      },
+      borderRadius: {
+        ...borderRadius,
+        xl: "1rem"
       }
     }
   },

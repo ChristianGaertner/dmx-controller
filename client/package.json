@@ -8,7 +8,8 @@
     "react-redux": "^7.0.3",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "tailwindcss": "^1.0.1"
+    "tailwindcss": "^1.0.1",
+    "redux-logger": "^3.0.6"
   },
   "scripts": {
     "start": "npm run watch:css & react-scripts start",
@@ -40,6 +41,7 @@
     "@types/react": "16.8.17",
     "@types/react-dom": "16.8.4",
     "@types/react-redux": "^7.0.9",
+    "@types/redux-logger": "^3.0.7",
     "autoprefixer": "^9.5.1",
     "classnames": "^2.2.6",
     "husky": "^2.3.0",

@@ -1,5 +1,4 @@
 import * as React from "react";
-import cx from "classnames";
 import { Timings } from "../types";
 import { formatNanoSeconds } from "./StepTimings";
 
@@ -20,7 +19,7 @@ export const DefaultTimings: React.FunctionComponent<Props> = ({ timings }) => (
         </svg>
         {formatNanoSeconds(timings.fadeUp)}s
       </div>
-      FadeUp
+      <span className="uppercase tracking-wide text-blue-600">FadeUp</span>
     </div>
 
     <div className="flex flex-col items-center text-blue-100">
@@ -28,7 +27,7 @@ export const DefaultTimings: React.FunctionComponent<Props> = ({ timings }) => (
         {formatNanoSeconds(timings.duration)}s / {formatBPM(timings.duration)}
         BPM
       </span>
-      <span>Duration</span>
+      <span className="uppercase tracking-wide text-blue-600">Duration</span>
     </div>
 
     <div className="flex flex-col items-center text-blue-100 ">
@@ -42,7 +41,7 @@ export const DefaultTimings: React.FunctionComponent<Props> = ({ timings }) => (
           </g>
         </svg>
       </div>
-      FadeDown
+      <span className="uppercase tracking-wide text-blue-600">FadeDown</span>
     </div>
   </div>
 );

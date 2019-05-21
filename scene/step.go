@@ -7,6 +7,7 @@ import (
 )
 
 type Step struct {
+	ID      string     `json:"id"`
 	Values  StepOutput `json:"values,omitempty"`
 	Effects []Effect   `json:"effects,omitempty"`
 	Timings Timings    `json:"timings,omitempty"`

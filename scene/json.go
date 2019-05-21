@@ -46,6 +46,12 @@ func (s *Step) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	var id string
+	err = json.Unmarshal(*objMap["id"], &id)
+	if err != nil {
+		return err
+	}
+
 	var values StepOutput
 
 	err = json.Unmarshal(*objMap["values"], &values)
@@ -94,6 +100,7 @@ func (s *Step) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	s.ID = id
 	s.Timings = timings
 	s.Values = values
 	s.Effects = effects

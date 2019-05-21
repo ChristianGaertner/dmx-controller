@@ -40,6 +40,7 @@ func (t *EffectType) UnmarshalText(data []byte) error {
 }
 
 type DimmerSine struct {
+	ID      string                     `json:"id"`
 	Type    EffectType                 `json:"type"`
 	Devices []fixture.DeviceIdentifier `json:"devices"`
 	Min     types.DimmerValue          `json:"min"`

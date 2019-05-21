@@ -11,6 +11,7 @@ export type Timings = {
 };
 
 export type Step = {
+  id: string;
   values: {
     [K: string]: FixtureValue;
   };
@@ -25,6 +26,7 @@ export type FixtureValue = {
 };
 
 export type Effect = {
+  id: string;
   type: string;
   devices: string[];
 } & {

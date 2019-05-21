@@ -26,7 +26,7 @@ const SceneSelectorComp: React.FunctionComponent<Props> = props => {
 
   return (
     <div className="flex flex-row">
-      <div className="relative">
+      <div className="relative flex">
         <select
           value={props.selectedScene || "-1"}
           onChange={e => props.selectScene(e.target.value)}

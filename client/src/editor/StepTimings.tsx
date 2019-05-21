@@ -11,7 +11,7 @@ export const StepTimings: React.FunctionComponent<Props> = ({
   timings,
   defaultTimings
 }) => (
-  <div className="flex justify-between">
+  <div className="flex-grow flex justify-between items-center">
     <div
       className={cx(
         "text-blue-100 text-sm font-hairline flex flex-row items-center",
@@ -58,4 +58,5 @@ export const StepTimings: React.FunctionComponent<Props> = ({
   </div>
 );
 
-const formatNanoSeconds = (nano: number | null) => (!!nano ? nano * 1e-9 : 0);
+export const formatNanoSeconds = (nano: number | null) =>
+  !!nano ? nano * 1e-9 : 0;

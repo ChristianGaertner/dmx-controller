@@ -1,13 +1,7 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { AppState } from "../store";
-import { DimmerSineEffect, Effect } from "../types";
-import { getEffectForEditing } from "../store/editor/selectors";
-import { Dialog } from "../components/Dialog";
-import { deselectEffect, setEffect } from "../store/editor/actions";
-import { getNameForType } from "./EffectValue";
-import { Input } from "../components/Input";
-import { Select } from "../components/Select";
+import { DimmerSineEffect } from "../../types";
+import { Select } from "../../components/Select";
+import { Input } from "../../components/Input";
 
 enum PhasePreset {
   P0_360 = "P0_360",
@@ -16,39 +10,12 @@ enum PhasePreset {
   CUSTOM = "CUSTOM",
 }
 
-type StateProps = {
-  effect: Effect | null;
-};
-
-type DispatchProps = {
-  set: (effect: Effect) => void;
-  close: () => void;
-};
-
-type Props = StateProps & DispatchProps;
-
-const EffectEditorComp: React.FunctionComponent<Props> = ({
-  effect,
-  close,
-  set,
-}) =>
-  effect && (
-    <Dialog title={getNameForType(effect.type)} onRequestClose={close}>
-      {effect.type === "DimmerSineType" && (
-        <DimmerSine effect={effect} set={set} />
-      )}
-    </Dialog>
-  );
-
-type DimmerSineProps = {
+type Props = {
   effect: DimmerSineEffect;
   set: (effect: DimmerSineEffect) => void;
 };
 
-const DimmerSine: React.FunctionComponent<DimmerSineProps> = ({
-  effect,
-  set,
-}) => (
+export const DimmerSine: React.FunctionComponent<Props> = ({ effect, set }) => (
   <div className="flex flex-col">
     <span>
       Min: ({(effect.min * 100).toFixed(0)}%){" "}
@@ -144,17 +111,3 @@ const presetToPhase = (phase: PhasePreset): number => {
       return 0.0001;
   }
 };
-
-const mapStateToProps = (state: AppState): StateProps => ({
-  effect: getEffectForEditing(state),
-});
-
-const mapDispatchToProps: DispatchProps = {
-  close: deselectEffect,
-  set: setEffect,
-};
-
-export const EffectEditor = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(EffectEditorComp);

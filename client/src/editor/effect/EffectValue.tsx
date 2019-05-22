@@ -1,10 +1,10 @@
 import * as React from "react";
 import cx from "classnames";
-import { Effect } from "../types";
+import { Effect } from "../../types";
 import { connect } from "react-redux";
-import { AppState } from "../store";
-import { onHighlightEffect, selectEffect } from "../store/editor/actions";
-import { getHighlightedEffectId } from "../store/editor/selectors";
+import { AppState } from "../../store";
+import { onHighlightEffect, selectEffect } from "../../store/editor/actions";
+import { getHighlightedEffectId } from "../../store/editor/selectors";
 
 type OwnProps = {
   effect: Effect;

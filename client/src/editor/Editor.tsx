@@ -6,7 +6,7 @@ import { SaveButton } from "./SaveButton";
 import { FixtureValueEditor } from "./FixtureValueEditor";
 import { StepEditor } from "./StepEditor";
 import { ResetButton } from "./ResetButton";
-import { EffectEditor } from "./EffectEditor";
+import { EffectEditor } from "./effect/EffectEditor";
 
 type Props = {};
 

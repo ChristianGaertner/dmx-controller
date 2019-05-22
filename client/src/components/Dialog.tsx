@@ -11,7 +11,7 @@ export const Dialog: React.FunctionComponent<Props> = ({
   onRequestClose,
   children,
 }) => (
-  <DialogSurface className="w-2/3 h-64" onRequestClose={onRequestClose}>
+  <DialogSurface className="w-2/3 my-32" onRequestClose={onRequestClose}>
     <div className="px-4 py-2 text-xl font-medium tracking-wide flex items-center justify-between">
       {title}
       {!!onRequestClose && <CloseButton onRequestClose={onRequestClose} />}

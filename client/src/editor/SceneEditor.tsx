@@ -13,7 +13,7 @@ import {
   getSelectedSceneId,
 } from "../store/editor/selectors";
 import { addEffect, addStep } from "../store/editor/actions";
-import { EffectValue } from "./EffectValue";
+import { EffectValue } from "./effect/EffectValue";
 import { AddButton } from "./components/AddButton";
 import { getDeviceIds } from "../store/selectors";
 

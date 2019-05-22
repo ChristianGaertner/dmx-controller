@@ -8,6 +8,10 @@ import {
 } from "./actions/loadScene";
 import { RUN_SCENE } from "./actions/runScene";
 import { editor } from "./editor/reducers";
+import {
+  LOAD_DEVICES_REQUEST,
+  LOAD_DEVICES_RESPONSE
+} from "./actions/loadDevices";
 
 export { editor };
 
@@ -73,5 +77,36 @@ export const running = (runningScene: string | null = null, action: Action) => {
       return action.payload.id;
     default:
       return runningScene;
+  }
+};
+
+type DeviceStore = {
+  ids: string[];
+  isFetching: boolean;
+};
+
+const initialDeviceStore: DeviceStore = {
+  ids: [],
+  isFetching: false
+};
+
+export const devices = (
+  state: DeviceStore = initialDeviceStore,
+  action: Action
+) => {
+  switch (action.type) {
+    case LOAD_DEVICES_REQUEST:
+      return {
+        ...state,
+        isFetching: true
+      };
+    case LOAD_DEVICES_RESPONSE:
+      return {
+        ...state,
+        isFetching: false,
+        ids: action.payload.devices
+      };
+    default:
+      return state;
   }
 };

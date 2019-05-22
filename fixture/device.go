@@ -59,6 +59,15 @@ func (p *DevicePool) Get(dev DeviceIdentifier) *Device {
 	return p.devices[dev]
 }
 
+func (p *DevicePool) GetIdentifiers() []DeviceIdentifier {
+	var ids []DeviceIdentifier
+	for id := range p.devices {
+		ids = append(ids, id)
+	}
+
+	return ids
+}
+
 type DeviceMap struct {
 	devices map[int]*Device
 }

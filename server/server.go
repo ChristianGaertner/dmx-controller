@@ -27,6 +27,8 @@ func ListenAndServe(ctx context.Context, pool *fixture.DevicePool, timeCode <-ch
 	r.HandleFunc("/api/v1/resources/scene/{id}", getSceneHandler).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene", addSceneHandler).Methods("POST")
 
+	r.HandleFunc("/api/v1/resources/device", getDeviceIds(pool)).Methods("GET")
+
 	r.HandleFunc("/api/v1/run/scene/{id}", runSceneHandler(ctx, pool, timeCode, onEval)).Methods("POST")
 	r.HandleFunc("/api/v1/stop/scene", stopSceneHandler()).Methods("POST")
 
@@ -112,4 +114,13 @@ func stopSceneHandler() http.HandlerFunc {
 		}
 		w.WriteHeader(http.StatusAccepted)
 	})
+}
+
+func getDeviceIds(pool *fixture.DevicePool) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := json.NewEncoder(w).Encode(pool.GetIdentifiers())
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
 }

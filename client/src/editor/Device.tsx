@@ -1,11 +1,11 @@
 import * as React from "react";
 
 type Props = {
-  device: { name: string; id: string };
+  id: string;
 };
 
-export const Device: React.FunctionComponent<Props> = ({ device }) => (
+export const Device: React.FunctionComponent<Props> = ({ id }) => (
   <div className="p-4">
-    <span className="uppercase tracking-wider">{device.name}</span>
+    <span className="uppercase tracking-wider">{id}</span>
   </div>
 );

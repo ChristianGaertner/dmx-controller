@@ -15,11 +15,13 @@ import {
 import { addEffect, addStep } from "../store/editor/actions";
 import { EffectValue } from "./EffectValue";
 import { AddButton } from "./components/AddButton";
+import { getDeviceIds } from "../store/selectors";
 
 type StateProps = {
   sceneID: string | null;
   scene: Scene | null;
   highlightedEffectDevices: string[] | null;
+  deviceIds: string[];
 };
 
 type DispatchProps = {
@@ -30,14 +32,13 @@ type DispatchProps = {
 
 type Props = StateProps & DispatchProps;
 
-const devices = [{ name: "Par01", id: "devA" }, { name: "Par02", id: "devB" }];
-
 const SceneEditorComp: React.FunctionComponent<Props> = ({
   sceneID,
   scene,
   loadScene,
   addStep,
   addEffect,
+  deviceIds,
   highlightedEffectDevices
 }) => {
   React.useEffect(() => {
@@ -86,17 +87,17 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {devices.map(device => (
+          {deviceIds.map(deviceId => (
             <tr
-              key={device.id}
+              key={deviceId}
               className={cx("bg-gray-1000", {
                 "bg-red-1000":
                   highlightedEffectDevices &&
-                  highlightedEffectDevices.includes(device.id)
+                  highlightedEffectDevices.includes(deviceId)
               })}
             >
               <td>
-                <Device device={device} />
+                <Device id={deviceId} />
               </td>
 
               {steps.map((step, i) => (
@@ -107,8 +108,8 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
                 >
                   <StepValue
                     stepId={step.id}
-                    deviceId={device.id}
-                    value={step.values[device.id]}
+                    deviceId={deviceId}
+                    value={step.values[deviceId]}
                   />
                 </td>
               ))}
@@ -123,7 +124,8 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
 const mapStateToProps = (state: AppState): StateProps => ({
   sceneID: getSelectedSceneId(state),
   scene: getSceneForEditing(state),
-  highlightedEffectDevices: getHighlightedEffectDevices(state)
+  highlightedEffectDevices: getHighlightedEffectDevices(state),
+  deviceIds: getDeviceIds(state)
 });
 
 const mapDispatchToProps: DispatchProps = {

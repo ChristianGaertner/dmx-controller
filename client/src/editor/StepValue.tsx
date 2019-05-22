@@ -1,14 +1,12 @@
 import * as React from "react";
-import { Effect, FixtureValue } from "../types";
+import { FixtureValue } from "../types";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { Action } from "../store/actionTypes";
 import { selectFixtureValue } from "../store/editor/actions";
-import { EffectValue } from "./EffectValue";
 
 type OwnProps = {
   value?: FixtureValue;
-  effects: Effect[];
 
   stepId: string;
   deviceId: string;
@@ -22,7 +20,6 @@ type Props = OwnProps & DispatchProps;
 
 const StepValueComp: React.FunctionComponent<Props> = ({
   value,
-  effects,
   editFixtureValue
 }) => (
   <div className="mx-2 p-2 text-sm">
@@ -56,9 +53,6 @@ const StepValueComp: React.FunctionComponent<Props> = ({
           </svg>
         )}
       </button>
-      {effects.map(fx => (
-        <EffectValue key={fx.id} effect={fx} />
-      ))}
     </div>
   </div>
 );

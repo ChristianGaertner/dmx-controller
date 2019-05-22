@@ -86,3 +86,34 @@ export const getEffectForEditing = (state: AppState): Effect | null => {
 
 export const getHighlightedEffectId = (state: AppState): string | null =>
   getUiState(state).highlightedEffectId;
+
+export const getHighlightedEffectDevices = (
+  state: AppState
+): string[] | null => {
+  const fxId = getUiState(state).highlightedEffectId;
+
+  const scene = getSceneForEditing(state);
+
+  if (!fxId || !scene) {
+    return null;
+  }
+
+  const effects = flatMap(
+    scene.steps.filter(s => !!s.effects),
+    s => s.effects as Effect[]
+  );
+
+  const effect = effects.find(fx => fx.id === fxId);
+  if (!effect) {
+    return null;
+  }
+
+  return effect.devices;
+};
+
+function flatMap<T, U>(array: T[], mapFunc: (x: T) => U[]): U[] {
+  return array.reduce(
+    (cumulus: U[], next: T) => [...mapFunc(next), ...cumulus],
+    []
+  );
+}

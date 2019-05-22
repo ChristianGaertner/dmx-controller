@@ -9,6 +9,13 @@ import { getNameForType } from "./EffectValue";
 import { Input } from "../components/Input";
 import { Select } from "../components/Select";
 
+enum PhasePreset {
+  P0_360 = "P0_360",
+  P0_n360 = "P0_n360",
+  P0 = "P0",
+  CUSTOM = "CUSTOM"
+}
+
 type StateProps = {
   effect: Effect | null;
 };
@@ -110,13 +117,6 @@ const DimmerSine: React.FunctionComponent<DimmerSineProps> = ({
     </span>
   </div>
 );
-
-enum PhasePreset {
-  P0_360 = "P0_360",
-  P0_n360 = "P0_n360",
-  P0 = "P0",
-  CUSTOM = "CUSTOM"
-}
 
 const phaseToPreset = (phase: number): PhasePreset => {
   if (phase === 1) {

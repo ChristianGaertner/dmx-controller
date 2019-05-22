@@ -1,4 +1,5 @@
 import * as React from "react";
+import cx from "classnames";
 import { Device } from "./Device";
 import { StepValue } from "./StepValue";
 import { StepHeader } from "./StepHeader";
@@ -7,14 +8,17 @@ import { connect } from "react-redux";
 import { AppState } from "../store";
 import { loadScene } from "../store/actions/loadScene";
 import {
+  getHighlightedEffectDevices,
   getSceneForEditing,
   getSelectedSceneId
 } from "../store/editor/selectors";
 import { addStep } from "../store/editor/actions";
+import { EffectValue } from "./EffectValue";
 
 type StateProps = {
   sceneID: string | null;
   scene: Scene | null;
+  highlightedEffectDevices: string[] | null;
 };
 
 type DispatchProps = {
@@ -30,7 +34,8 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
   sceneID,
   scene,
   loadScene,
-  addStep
+  addStep,
+  highlightedEffectDevices
 }) => {
   React.useEffect(() => {
     if (sceneID) {
@@ -55,13 +60,17 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
           <tr>
             <th>Devices</th>
             {steps.map((step, i) => (
-              <th key={step.id}>
+              <th key={step.id} className="align-top">
                 <StepHeader
                   id={step.id}
                   index={i}
                   timings={step.timings}
                   defaultTimings={scene.defaultTimings}
                 />
+                {step.effects &&
+                  step.effects.map(fx => (
+                    <EffectValue key={fx.id} effect={fx} />
+                  ))}
               </th>
             ))}
             <th>
@@ -83,7 +92,14 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
         </thead>
         <tbody>
           {devices.map(device => (
-            <tr key={device.id} className="bg-gray-1000">
+            <tr
+              key={device.id}
+              className={cx("bg-gray-1000", {
+                "bg-red-1000":
+                  highlightedEffectDevices &&
+                  highlightedEffectDevices.includes(device.id)
+              })}
+            >
               <td>
                 <Device device={device} />
               </td>
@@ -94,16 +110,11 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
                   style={{ width: `${100 / steps.length}%` }}
                   className="align-top"
                 >
-                  {
-                    <StepValue
-                      stepId={step.id}
-                      deviceId={device.id}
-                      value={step.values[device.id]}
-                      effects={(step.effects || []).filter(fx =>
-                        fx.devices.includes(device.id)
-                      )}
-                    />
-                  }
+                  <StepValue
+                    stepId={step.id}
+                    deviceId={device.id}
+                    value={step.values[device.id]}
+                  />
                 </td>
               ))}
             </tr>
@@ -116,7 +127,8 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
 
 const mapStateToProps = (state: AppState): StateProps => ({
   sceneID: getSelectedSceneId(state),
-  scene: getSceneForEditing(state)
+  scene: getSceneForEditing(state),
+  highlightedEffectDevices: getHighlightedEffectDevices(state)
 });
 
 const mapDispatchToProps: DispatchProps = {

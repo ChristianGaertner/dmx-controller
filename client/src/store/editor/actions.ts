@@ -45,7 +45,7 @@ export const resetScene = (): ThunkAction<void, AppState, null, ResetScene> => (
   getState
 ) => {
   const scene = getScene(getState(), {
-    id: getState().editor.selectedScene || ""
+    id: getState().editor.ui.selectedScene || ""
   });
   if (!scene) {
     return;

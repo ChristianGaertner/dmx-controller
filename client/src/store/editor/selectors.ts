@@ -1,8 +1,11 @@
 import { AppState } from "../index";
 import { FixtureValue, Scene, Timings } from "../../types";
+import { EditorUiStore } from "./reducers";
+
+const getUiState = (state: AppState): EditorUiStore => state.editor.ui;
 
 export const getSelectedSceneId = (state: AppState) =>
-  state.editor.selectedScene;
+  getUiState(state).selectedScene;
 
 export const getSceneForEditing = (state: AppState): Scene | null =>
   state.editor.scene;
@@ -16,11 +19,14 @@ export const getFixtureValueForEditing = (
   if (!scene) {
     return null;
   }
-  if (!state.editor.selectedFixtureValue) {
+
+  const uiState = getUiState(state);
+
+  if (!uiState.selectedFixtureValue) {
     return null;
   }
 
-  const { stepId, deviceId } = state.editor.selectedFixtureValue;
+  const { stepId, deviceId } = uiState.selectedFixtureValue;
 
   const step = scene.steps.find(step => step.id === stepId);
   if (!step) {
@@ -35,11 +41,14 @@ export const getTimingsForEditing = (state: AppState): Timings | null => {
   if (!scene) {
     return null;
   }
-  if (!state.editor.selectedStepId) {
+
+  const uiState = getUiState(state);
+
+  if (!uiState.selectedStepId) {
     return null;
   }
 
-  const { selectedStepId } = state.editor;
+  const { selectedStepId } = uiState;
 
   const step = scene.steps.find(step => step.id === selectedStepId);
 

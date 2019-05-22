@@ -15,19 +15,21 @@ import { NewStep, Scene } from "../../types";
 import { LOAD_SCENE_RESPONSE } from "../actions/loadScene";
 
 type EditorStore = {
-  selectedScene: string | null;
+  ui: EditorUiStore;
   scene: Scene | null;
   saving: boolean;
-  selectedFixtureValue: { stepId: string; deviceId: string } | null;
-  selectedStepId: string | null;
+};
+
+const uiInitialValue = {
+  selectedScene: null,
+  selectedFixtureValue: null,
+  selectedStepId: null
 };
 
 const initialValue: EditorStore = {
-  selectedScene: null,
+  ui: uiInitialValue,
   scene: null,
-  saving: false,
-  selectedFixtureValue: null,
-  selectedStepId: null
+  saving: false
 };
 
 export const editor = (
@@ -35,25 +37,19 @@ export const editor = (
   action: Action
 ): EditorStore => {
   switch (action.type) {
-    case SELECT_SCENE:
-      return {
-        ...state,
-        selectedScene: action.payload.id
-      };
     case RESET_SCENE:
       return {
         ...state,
         scene: action.payload.scene
       };
     case LOAD_SCENE_RESPONSE:
-      if (state.selectedScene !== action.payload.id) {
+      if (state.ui.selectedScene !== action.payload.id) {
         return state;
       }
       return {
         ...state,
         scene: action.payload.scene
       };
-
     case EDIT_TIMINGS:
       return {
         ...state,
@@ -72,17 +68,12 @@ export const editor = (
         ...state,
         saving: false
       };
-    case SELECT_FIXTURE_VALUE:
-      return {
-        ...state,
-        selectedFixtureValue: action.payload
-      };
     case SET_FIXTURE_VALUE: {
-      if (!state.scene || !state.selectedFixtureValue) {
+      if (!state.scene || !state.ui.selectedFixtureValue) {
         return state;
       }
 
-      const { stepId, deviceId } = state.selectedFixtureValue;
+      const { stepId, deviceId } = state.ui.selectedFixtureValue;
 
       const steps = state.scene.steps.map(step => {
         if (step.id !== stepId) {
@@ -117,17 +108,12 @@ export const editor = (
           steps: [...state.scene.steps, NewStep()]
         }
       };
-    case SELECT_STEP:
-      return {
-        ...state,
-        selectedStepId: action.payload.stepId
-      };
     case SET_STEP_TIMINGS: {
-      if (!state.scene || !state.selectedStepId) {
+      if (!state.scene || !state.ui.selectedStepId) {
         return state;
       }
 
-      const { selectedStepId } = state;
+      const { selectedStepId } = state.ui;
 
       const steps = state.scene.steps.map(step => {
         if (step.id !== selectedStepId) {
@@ -148,6 +134,37 @@ export const editor = (
         }
       };
     }
+    default:
+      return {
+        ...state,
+        ui: uiReducer(state.ui, action)
+      };
+  }
+};
+
+export type EditorUiStore = {
+  selectedScene: string | null;
+  selectedFixtureValue: { stepId: string; deviceId: string } | null;
+  selectedStepId: string | null;
+};
+
+const uiReducer = (state: EditorUiStore, action: Action): EditorUiStore => {
+  switch (action.type) {
+    case SELECT_SCENE:
+      return {
+        ...state,
+        selectedScene: action.payload.id
+      };
+    case SELECT_FIXTURE_VALUE:
+      return {
+        ...state,
+        selectedFixtureValue: action.payload
+      };
+    case SELECT_STEP:
+      return {
+        ...state,
+        selectedStepId: action.payload.stepId
+      };
     default:
       return state;
   }

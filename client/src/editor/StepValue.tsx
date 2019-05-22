@@ -41,6 +41,7 @@ const StepValueComp: React.FunctionComponent<Props> = ({
             )}
             {value.dimmer !== undefined &&
               parseFloat(((value.dimmer || 0) * 100).toFixed(2)) + "%"}
+            {value.dimmer === undefined && "--%"}
           </>
         )}
         {!value && (

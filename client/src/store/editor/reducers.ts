@@ -11,10 +11,11 @@ import {
   RESET_SCENE,
   SELECT_EFFECT,
   ON_HIGHLIGHT_EFFECT,
-  SET_EFFECT
+  SET_EFFECT,
+  ADD_EFFECT
 } from "./actions";
 import { Action } from "../actionTypes";
-import { NewStep, Scene } from "../../types";
+import { NewEffect, NewStep, Scene } from "../../types";
 import { LOAD_SCENE_RESPONSE } from "../actions/loadScene";
 
 type EditorStore = {
@@ -176,6 +177,30 @@ export const editor = (
         return {
           ...step,
           effects
+        };
+      });
+
+      return {
+        ...state,
+        scene: {
+          ...state.scene,
+          steps
+        }
+      };
+    }
+    case ADD_EFFECT: {
+      if (!state.scene) {
+        return state;
+      }
+
+      const steps = state.scene.steps.map(step => {
+        if (step.id !== action.payload.stepId) {
+          return step;
+        }
+
+        return {
+          ...step,
+          effects: [NewEffect(action.payload.type), ...(step.effects || [])]
         };
       });
 

@@ -75,6 +75,21 @@ export type DimmerSineEffect = BaseEffect & {
   speed: number;
 };
 
+export const NewEffect = (type: EffectType): Effect => {
+  switch (type) {
+    case EffectType.DimmerSineType:
+      return {
+        id: uuid(),
+        type: "DimmerSineType",
+        devices: [],
+        min: 0,
+        max: 1,
+        phase: 1,
+        speed: 120
+      };
+  }
+};
+
 export type Color = {
   R: number;
   G: number;

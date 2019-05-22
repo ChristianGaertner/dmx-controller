@@ -11,7 +11,7 @@ export const Dialog: React.FunctionComponent<Props> = ({
   onRequestClose,
   children
 }) => (
-  <DialogSurface className="w-2/3 h-64">
+  <DialogSurface className="w-2/3 h-64" onRequestClose={onRequestClose}>
     <div className="px-4 py-2 text-xl font-medium tracking-wide flex items-center justify-between">
       {title}
       {!!onRequestClose && <CloseButton onRequestClose={onRequestClose} />}
@@ -20,12 +20,15 @@ export const Dialog: React.FunctionComponent<Props> = ({
   </DialogSurface>
 );
 
-export const DialogSurface: React.FunctionComponent<{ className?: string }> = ({
-  children,
-  className
-}) => (
+export const DialogSurface: React.FunctionComponent<{
+  className?: string;
+  onRequestClose?: () => void;
+}> = ({ children, onRequestClose, className }) => (
   <>
-    <div className="fixed inset-0 bg-black opacity-75" />
+    <button
+      className="fixed inset-0 bg-black opacity-75"
+      onClick={onRequestClose}
+    />
     <div
       className={cx(
         "fixed inset-0 m-auto z-50 bg-gray-900 border border-blue-1000 rounded-xl flex flex-col",

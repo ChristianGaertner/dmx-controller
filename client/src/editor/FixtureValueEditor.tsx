@@ -41,7 +41,11 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
           active={value.color !== undefined}
           label="Color"
           value={value.color ? Color2Hex(value.color) : "#000000"}
-          onChange={(v: string) => set({ ...value, color: Hex2Color(v) })}
+          onChange={(v: string) => {
+            // open the dimmer if it is not open... just a convience functionality
+            const dimmer = value.dimmer === undefined ? 1 : value.dimmer;
+            set({ ...value, color: Hex2Color(v), dimmer });
+          }}
           inputProps={{ type: "color" }}
         />
         <ValueRow

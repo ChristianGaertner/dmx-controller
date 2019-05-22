@@ -18,7 +18,8 @@ export type EditorAction =
   | SetFixtureValue
   | AddStep
   | SelectStep
-  | SetStepTimings;
+  | SetStepTimings
+  | SelectEffect;
 
 interface SelectScene extends BaseAction {
   type: typeof SELECT_SCENE;
@@ -171,3 +172,23 @@ interface AddStep extends BaseAction {
 }
 
 export const addStep = () => ({ type: ADD_STEP });
+
+export const SELECT_EFFECT = "@editor/SELECT_EFFECT";
+interface SelectEffect extends BaseAction {
+  type: typeof SELECT_EFFECT;
+  payload: {
+    effectId: string | null;
+  };
+}
+
+export const selectEffect = (effectId: string): SelectEffect => ({
+  type: SELECT_EFFECT,
+  payload: {
+    effectId
+  }
+});
+
+export const deselectEffect = (): SelectEffect => ({
+  type: SELECT_EFFECT,
+  payload: { effectId: null }
+});

@@ -8,7 +8,8 @@ import {
   ADD_STEP,
   SELECT_STEP,
   SET_STEP_TIMINGS,
-  RESET_SCENE
+  RESET_SCENE,
+  SELECT_EFFECT
 } from "./actions";
 import { Action } from "../actionTypes";
 import { NewStep, Scene } from "../../types";
@@ -20,10 +21,18 @@ type EditorStore = {
   saving: boolean;
 };
 
-const uiInitialValue = {
+export type EditorUiStore = {
+  selectedScene: string | null;
+  selectedFixtureValue: { stepId: string; deviceId: string } | null;
+  selectedStepId: string | null;
+  selectedEffectId: string | null;
+};
+
+const uiInitialValue: EditorUiStore = {
   selectedScene: null,
   selectedFixtureValue: null,
-  selectedStepId: null
+  selectedStepId: null,
+  selectedEffectId: null
 };
 
 const initialValue: EditorStore = {
@@ -142,12 +151,6 @@ export const editor = (
   }
 };
 
-export type EditorUiStore = {
-  selectedScene: string | null;
-  selectedFixtureValue: { stepId: string; deviceId: string } | null;
-  selectedStepId: string | null;
-};
-
 const uiReducer = (state: EditorUiStore, action: Action): EditorUiStore => {
   switch (action.type) {
     case SELECT_SCENE:
@@ -164,6 +167,11 @@ const uiReducer = (state: EditorUiStore, action: Action): EditorUiStore => {
       return {
         ...state,
         selectedStepId: action.payload.stepId
+      };
+    case SELECT_EFFECT:
+      return {
+        ...state,
+        selectedEffectId: action.payload.effectId
       };
     default:
       return state;

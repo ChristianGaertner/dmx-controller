@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Effect, FixtureValue } from "../types";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { compose, Dispatch } from "redux";
 import { Action } from "../store/actionTypes";
-import { selectFixtureValue } from "../store/editor/actions";
+import { selectEffect, selectFixtureValue } from "../store/editor/actions";
 
 type OwnProps = {
   value?: FixtureValue;
@@ -15,6 +15,7 @@ type OwnProps = {
 
 type DispatchProps = {
   editFixtureValue: () => void;
+  editEffect: (effectId: string) => void;
 };
 
 type Props = OwnProps & DispatchProps;
@@ -22,7 +23,8 @@ type Props = OwnProps & DispatchProps;
 const StepValueComp: React.FunctionComponent<Props> = ({
   value,
   effects,
-  editFixtureValue
+  editFixtureValue,
+  editEffect
 }) => (
   <div className="mx-2 p-2 text-sm">
     <div>
@@ -55,10 +57,11 @@ const StepValueComp: React.FunctionComponent<Props> = ({
           </svg>
         )}
       </button>
-      {effects.map((fx, i) => (
-        <div
-          key={i}
-          className="bg-red-1000 border-2 border-transparent hover:border-red-900 rounded flex items-center p-1 my-2 cursor-pointer"
+      {effects.map(fx => (
+        <button
+          key={fx.id}
+          className="w-full bg-red-1000 border-2 border-transparent hover:border-red-900 rounded flex items-center p-1 my-2 cursor-pointer"
+          onClick={() => editEffect(fx.id)}
         >
           <svg viewBox="0 0 20 20" className="h-3 w-3 fill-current mr-2">
             <g id="Page-1" stroke="none" strokeWidth="1" fillRule="evenodd">
@@ -68,7 +71,7 @@ const StepValueComp: React.FunctionComponent<Props> = ({
             </g>
           </svg>
           {fx.type.substring(0, fx.type.length - 4)}
-        </div>
+        </button>
       ))}
     </div>
   </div>
@@ -79,7 +82,11 @@ const mapDispatchToProps = (
   props: OwnProps
 ): DispatchProps => ({
   editFixtureValue: () =>
-    dispatch(selectFixtureValue(props.stepId, props.deviceId))
+    dispatch(selectFixtureValue(props.stepId, props.deviceId)),
+  editEffect: compose(
+    dispatch,
+    selectEffect
+  )
 });
 
 export const StepValue = connect(

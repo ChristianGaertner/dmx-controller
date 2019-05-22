@@ -1,5 +1,5 @@
 import { AppState } from "../index";
-import { FixtureValue, Scene, Timings } from "../../types";
+import { Effect, FixtureValue, Scene, Timings } from "../../types";
 import { EditorUiStore } from "./reducers";
 
 const getUiState = (state: AppState): EditorUiStore => state.editor.ui;
@@ -57,4 +57,29 @@ export const getTimingsForEditing = (state: AppState): Timings | null => {
   }
 
   return step.timings;
+};
+
+export const getEffectForEditing = (state: AppState): Effect | null => {
+  const scene = getSceneForEditing(state);
+  if (!scene) {
+    return null;
+  }
+
+  const uiState = getUiState(state);
+  const { selectedEffectId } = uiState;
+
+  if (!selectedEffectId) {
+    return null;
+  }
+
+  const step = scene.steps.find(
+    step =>
+      !!step.effects && step.effects.map(fx => fx.id).includes(selectedEffectId)
+  );
+
+  if (!step || !step.effects) {
+    return null;
+  }
+
+  return step.effects.find(fx => fx.id === selectedEffectId) || null;
 };

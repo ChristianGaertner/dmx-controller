@@ -5,6 +5,7 @@ import { selectSceneForEditing } from "../store/editor/actions";
 import { getSelectedSceneId } from "../store/editor/selectors";
 import { loadSceneList } from "../store/actions/loadScene";
 import { getSceneList } from "../store/selectors";
+import { Select } from "../components/Select";
 
 type StateProps = {
   selectedScene: string | null;
@@ -27,10 +28,9 @@ const SceneSelectorComp: React.FunctionComponent<Props> = props => {
   return (
     <div className="flex flex-row">
       <div className="relative flex">
-        <select
+        <Select
           value={props.selectedScene || "-1"}
-          onChange={e => props.selectScene(e.target.value)}
-          className="block appearance-none w-full bg-gray-900 border border-gray-800 text-gray-200 py-3 px-4 pr-8 rounded leading-tight focus:outline-none"
+          onChange={props.selectScene}
         >
           {!props.selectedScene && <option value="-1">Select...</option>}
           {props.scenes.map(id => (
@@ -38,7 +38,7 @@ const SceneSelectorComp: React.FunctionComponent<Props> = props => {
               Scene #{id}
             </option>
           ))}
-        </select>
+        </Select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
           <svg
             className="fill-current h-4 w-4"

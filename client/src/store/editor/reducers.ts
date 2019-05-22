@@ -10,7 +10,8 @@ import {
   SET_STEP_TIMINGS,
   RESET_SCENE,
   SELECT_EFFECT,
-  ON_HIGHLIGHT_EFFECT
+  ON_HIGHLIGHT_EFFECT,
+  SET_EFFECT
 } from "./actions";
 import { Action } from "../actionTypes";
 import { NewStep, Scene } from "../../types";
@@ -135,6 +136,46 @@ export const editor = (
         return {
           ...step,
           timings: action.payload.timings
+        };
+      });
+
+      return {
+        ...state,
+        scene: {
+          ...state.scene,
+          steps
+        }
+      };
+    }
+    case SET_EFFECT: {
+      if (!state.scene || !state.ui.selectedEffectId) {
+        return state;
+      }
+
+      const steps = state.scene.steps.map(step => {
+        if (!step.effects) {
+          return step;
+        }
+
+        const effect = step.effects.find(
+          fx => fx.id === state.ui.selectedEffectId
+        );
+
+        if (!effect) {
+          return step;
+        }
+
+        const effects = step.effects.map(fx => {
+          if (fx.id !== state.ui.selectedEffectId) {
+            return fx;
+          }
+
+          return action.payload.effect;
+        });
+
+        return {
+          ...step,
+          effects
         };
       });
 

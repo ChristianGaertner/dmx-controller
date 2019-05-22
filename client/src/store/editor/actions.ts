@@ -1,4 +1,4 @@
-import { FixtureValue, Scene, Timings } from "../../types";
+import { Effect, FixtureValue, Scene, Timings } from "../../types";
 import { BaseAction } from "../actionTypes";
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
@@ -20,7 +20,8 @@ export type EditorAction =
   | SelectStep
   | SetStepTimings
   | SelectEffect
-  | OnHighlightEffect;
+  | OnHighlightEffect
+  | SetEffect;
 
 interface SelectScene extends BaseAction {
   type: typeof SELECT_SCENE;
@@ -205,4 +206,17 @@ interface OnHighlightEffect extends BaseAction {
 export const onHighlightEffect = (effectId: string | null) => ({
   type: ON_HIGHLIGHT_EFFECT,
   payload: { effectId }
+});
+
+export const SET_EFFECT = "@editor/SET_EFFECT";
+interface SetEffect extends BaseAction {
+  type: typeof SET_EFFECT;
+  payload: {
+    effect: Effect;
+  };
+}
+
+export const setEffect = (effect: Effect): SetEffect => ({
+  type: SET_EFFECT,
+  payload: { effect }
 });

@@ -40,9 +40,12 @@ const EffectValueComp: React.FunctionComponent<Props> = props => (
         </g>
       </g>
     </svg>
-    {props.effect.type.substring(0, props.effect.type.length - 4)}
+    {getNameForType(props.effect.type)}
   </button>
 );
+
+export const getNameForType = (type: string): string =>
+  type.substring(0, type.length - 4);
 
 const mapStateToProps = (state: AppState, ownProps: OwnProps): StateProps => ({
   isHighlighted: getHighlightedEffectId(state) === ownProps.effect.id

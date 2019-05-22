@@ -55,11 +55,19 @@ export type FixtureValue = {
   strobe?: number;
 };
 
-export type Effect = {
+type BaseEffect = {
   id: string;
   type: string;
   devices: string[];
-} & {
+};
+
+export type Effect = DimmerSineEffect;
+
+export enum EffectType {
+  DimmerSineType = "DimmerSineType"
+}
+
+export type DimmerSineEffect = BaseEffect & {
   type: "DimmerSineType";
   min: number;
   max: number;

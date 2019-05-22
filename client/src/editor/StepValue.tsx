@@ -20,7 +20,7 @@ type Props = OwnProps & DispatchProps;
 
 const StepValueComp: React.FunctionComponent<Props> = ({
   value,
-  editFixtureValue
+  editFixtureValue,
 }) => (
   <div className="mx-2 p-2 text-sm">
     <div>
@@ -34,7 +34,7 @@ const StepValueComp: React.FunctionComponent<Props> = ({
               <span
                 style={{
                   backgroundColor: `rgb(${value.color.R * 255},${value.color.G *
-                    255},${value.color.B * 255})`
+                    255},${value.color.B * 255})`,
                 }}
                 className="block h-2 w-2 mr-2 rounded-full"
               />
@@ -60,13 +60,13 @@ const StepValueComp: React.FunctionComponent<Props> = ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch<Action>,
-  props: OwnProps
+  props: OwnProps,
 ): DispatchProps => ({
   editFixtureValue: () =>
-    dispatch(selectFixtureValue(props.stepId, props.deviceId))
+    dispatch(selectFixtureValue(props.stepId, props.deviceId)),
 });
 
 export const StepValue = connect(
   undefined,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(StepValueComp);

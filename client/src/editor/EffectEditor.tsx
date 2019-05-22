@@ -13,7 +13,7 @@ enum PhasePreset {
   P0_360 = "P0_360",
   P0_n360 = "P0_n360",
   P0 = "P0",
-  CUSTOM = "CUSTOM"
+  CUSTOM = "CUSTOM",
 }
 
 type StateProps = {
@@ -30,7 +30,7 @@ type Props = StateProps & DispatchProps;
 const EffectEditorComp: React.FunctionComponent<Props> = ({
   effect,
   close,
-  set
+  set,
 }) =>
   effect && (
     <Dialog title={getNameForType(effect.type)} onRequestClose={close}>
@@ -47,7 +47,7 @@ type DimmerSineProps = {
 
 const DimmerSine: React.FunctionComponent<DimmerSineProps> = ({
   effect,
-  set
+  set,
 }) => (
   <div className="flex flex-col">
     <span>
@@ -60,7 +60,7 @@ const DimmerSine: React.FunctionComponent<DimmerSineProps> = ({
         onChange={e =>
           set({
             ...effect,
-            min: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2))
+            min: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2)),
           })
         }
       />
@@ -75,7 +75,7 @@ const DimmerSine: React.FunctionComponent<DimmerSineProps> = ({
         onChange={e =>
           set({
             ...effect,
-            max: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2))
+            max: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2)),
           })
         }
       />
@@ -103,7 +103,7 @@ const DimmerSine: React.FunctionComponent<DimmerSineProps> = ({
         onChange={e =>
           set({
             ...effect,
-            phase: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2))
+            phase: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2)),
           })
         }
       />
@@ -146,15 +146,15 @@ const presetToPhase = (phase: PhasePreset): number => {
 };
 
 const mapStateToProps = (state: AppState): StateProps => ({
-  effect: getEffectForEditing(state)
+  effect: getEffectForEditing(state),
 });
 
 const mapDispatchToProps: DispatchProps = {
   close: deselectEffect,
-  set: setEffect
+  set: setEffect,
 };
 
 export const EffectEditor = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(EffectEditorComp);

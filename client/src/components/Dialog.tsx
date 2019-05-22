@@ -9,7 +9,7 @@ type Props = {
 export const Dialog: React.FunctionComponent<Props> = ({
   title,
   onRequestClose,
-  children
+  children,
 }) => (
   <DialogSurface className="w-2/3 h-64" onRequestClose={onRequestClose}>
     <div className="px-4 py-2 text-xl font-medium tracking-wide flex items-center justify-between">
@@ -32,7 +32,7 @@ export const DialogSurface: React.FunctionComponent<{
     <div
       className={cx(
         "fixed inset-0 m-auto z-50 bg-gray-900 border border-blue-1000 rounded-xl flex flex-col",
-        className
+        className,
       )}
     >
       {children}
@@ -41,7 +41,7 @@ export const DialogSurface: React.FunctionComponent<{
 );
 
 const CloseButton: React.FunctionComponent<{ onRequestClose: () => void }> = ({
-  onRequestClose
+  onRequestClose,
 }) => (
   <button
     onClick={onRequestClose}

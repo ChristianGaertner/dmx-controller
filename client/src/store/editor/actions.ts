@@ -33,7 +33,7 @@ interface SelectScene extends BaseAction {
 
 export const selectSceneForEditing = (id: string) => ({
   type: SELECT_SCENE,
-  payload: { id }
+  payload: { id },
 });
 
 export const RESET_SCENE = "@editor/RESET_SCENE";
@@ -46,10 +46,10 @@ interface ResetScene extends BaseAction {
 
 export const resetScene = (): ThunkAction<void, AppState, null, ResetScene> => (
   dispatch,
-  getState
+  getState,
 ) => {
   const scene = getScene(getState(), {
-    id: getState().editor.ui.selectedScene || ""
+    id: getState().editor.ui.selectedScene || "",
   });
   if (!scene) {
     return;
@@ -68,7 +68,7 @@ interface EditTimings extends BaseAction {
 
 export const editTimings = (timings: Timings): EditTimings => ({
   type: EDIT_TIMINGS,
-  payload: { timings }
+  payload: { timings },
 });
 
 export const SAVE_SCENE_REQUEST = "@editor/SAVE_SCENE_REQUEST";
@@ -92,7 +92,7 @@ export const saveScene = (): ThunkAction<
 
   await fetch(`${apiBasePath}/resources/scene`, {
     method: "POST",
-    body: JSON.stringify(getSceneForEditing(getState()))
+    body: JSON.stringify(getSceneForEditing(getState())),
   });
 
   dispatch({ type: SAVE_SCENE_RESPONSE });
@@ -109,18 +109,18 @@ interface SelectFixtureValue extends BaseAction {
 
 export const selectFixtureValue = (
   stepId: string,
-  deviceId: string
+  deviceId: string,
 ): SelectFixtureValue => ({
   type: SELECT_FIXTURE_VALUE,
   payload: {
     stepId,
-    deviceId
-  }
+    deviceId,
+  },
 });
 
 export const deselectFixtureValue = (): SelectFixtureValue => ({
   type: SELECT_FIXTURE_VALUE,
-  payload: null
+  payload: null,
 });
 
 export const SET_FIXTURE_VALUE = "@editor/SET_FIXTURE_VALUE";
@@ -134,8 +134,8 @@ interface SetFixtureValue extends BaseAction {
 export const setFixtureValue = (value: FixtureValue) => ({
   type: SET_FIXTURE_VALUE,
   payload: {
-    value
-  }
+    value,
+  },
 });
 
 export const SELECT_STEP = "@editor/SELECT_STEP";
@@ -148,12 +148,12 @@ interface SelectStep extends BaseAction {
 
 export const selectStep = (stepId: string): SelectStep => ({
   type: SELECT_STEP,
-  payload: { stepId }
+  payload: { stepId },
 });
 
 export const deselectStep = (): SelectStep => ({
   type: SELECT_STEP,
-  payload: { stepId: null }
+  payload: { stepId: null },
 });
 
 export const SET_STEP_TIMINGS = "@editor/SET_STEP_TIMINGS";
@@ -166,7 +166,7 @@ interface SetStepTimings extends BaseAction {
 
 export const setStepTimings = (timings: Timings): SetStepTimings => ({
   type: SET_STEP_TIMINGS,
-  payload: { timings }
+  payload: { timings },
 });
 
 export const ADD_STEP = "@editor/ADD_STEP";
@@ -187,13 +187,13 @@ interface SelectEffect extends BaseAction {
 export const selectEffect = (effectId: string): SelectEffect => ({
   type: SELECT_EFFECT,
   payload: {
-    effectId
-  }
+    effectId,
+  },
 });
 
 export const deselectEffect = (): SelectEffect => ({
   type: SELECT_EFFECT,
-  payload: { effectId: null }
+  payload: { effectId: null },
 });
 
 export const ON_HIGHLIGHT_EFFECT = "@editor/ON_HIGHLIGHT_EFFECT";
@@ -206,7 +206,7 @@ interface OnHighlightEffect extends BaseAction {
 
 export const onHighlightEffect = (effectId: string | null) => ({
   type: ON_HIGHLIGHT_EFFECT,
-  payload: { effectId }
+  payload: { effectId },
 });
 
 export const SET_EFFECT = "@editor/SET_EFFECT";
@@ -219,7 +219,7 @@ interface SetEffect extends BaseAction {
 
 export const setEffect = (effect: Effect): SetEffect => ({
   type: SET_EFFECT,
-  payload: { effect }
+  payload: { effect },
 });
 
 export const ADD_EFFECT = "@editor/ADD_EFFECT";
@@ -235,6 +235,6 @@ export const addEffect = (stepId: string, type: EffectType) => ({
   type: ADD_EFFECT,
   payload: {
     stepId,
-    type
-  }
+    type,
+  },
 });

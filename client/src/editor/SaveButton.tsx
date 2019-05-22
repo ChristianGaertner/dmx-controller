@@ -19,7 +19,7 @@ type Props = StateProps & DispatchProps;
 const SaveButtonComp: React.FunctionComponent<Props> = ({
   save,
   isSaving,
-  canSave
+  canSave,
 }) =>
   canSave ? (
     <Button
@@ -31,14 +31,14 @@ const SaveButtonComp: React.FunctionComponent<Props> = ({
 
 const mapStateToProps = (state: AppState): StateProps => ({
   canSave: getSelectedSceneId(state) != null,
-  isSaving: isSaving(state)
+  isSaving: isSaving(state),
 });
 
 const mapDispatchToProps: DispatchProps = {
-  save: saveScene
+  save: saveScene,
 };
 
 export const SaveButton = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SaveButtonComp);

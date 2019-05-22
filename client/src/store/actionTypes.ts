@@ -2,14 +2,14 @@ import {
   LoadSceneListRequestAction,
   LoadSceneListResponseAction,
   LoadSceneRequestAction,
-  LoadSceneResponseAction
+  LoadSceneResponseAction,
 } from "./actions/loadScene";
 import { RunSceneAction } from "./actions/runScene";
 import { EditorAction } from "./editor/actions";
 import { Action as ReduxAction } from "redux";
 import {
   LoadDevicesRequestAction,
-  LoadDevicesResponseAction
+  LoadDevicesResponseAction,
 } from "./actions/loadDevices";
 
 export interface BaseAction extends ReduxAction<string> {}

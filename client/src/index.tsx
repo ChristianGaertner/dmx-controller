@@ -20,7 +20,7 @@ if (module.hot) {
     const nextApp = require("./App").default;
     ReactDOM.render(
       <Index NextApp={nextApp} />,
-      document.getElementById("root")
+      document.getElementById("root"),
     );
   });
 }

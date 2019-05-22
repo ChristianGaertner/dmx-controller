@@ -8,7 +8,7 @@ type Props = {
 export const Select: React.FunctionComponent<Props> = ({
   value,
   onChange,
-  children
+  children,
 }) => (
   <select
     value={value}

@@ -32,7 +32,7 @@ type SidebarItemProps = {
 const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
   label,
   active,
-  onClick
+  onClick,
 }) => (
   <li>
     <button
@@ -41,8 +41,8 @@ const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
         "py-2 px-4 my-2 rounded-r-full flex items-center text-white hover:bg-blue-800",
         {
           "bg-blue-900": active,
-          "text-blue-200": active
-        }
+          "text-blue-200": active,
+        },
       )}
     >
       {label === "Live" && (

@@ -12,7 +12,7 @@ import {
   SELECT_EFFECT,
   ON_HIGHLIGHT_EFFECT,
   SET_EFFECT,
-  ADD_EFFECT
+  ADD_EFFECT,
 } from "./actions";
 import { Action } from "../actionTypes";
 import { NewEffect, NewStep, Scene } from "../../types";
@@ -37,24 +37,24 @@ const uiInitialValue: EditorUiStore = {
   selectedFixtureValue: null,
   selectedStepId: null,
   selectedEffectId: null,
-  highlightedEffectId: null
+  highlightedEffectId: null,
 };
 
 const initialValue: EditorStore = {
   ui: uiInitialValue,
   scene: null,
-  saving: false
+  saving: false,
 };
 
 export const editor = (
   state: EditorStore = initialValue,
-  action: Action
+  action: Action,
 ): EditorStore => {
   switch (action.type) {
     case RESET_SCENE:
       return {
         ...state,
-        scene: action.payload.scene
+        scene: action.payload.scene,
       };
     case LOAD_SCENE_RESPONSE:
       if (state.ui.selectedScene !== action.payload.id) {
@@ -62,25 +62,25 @@ export const editor = (
       }
       return {
         ...state,
-        scene: action.payload.scene
+        scene: action.payload.scene,
       };
     case EDIT_TIMINGS:
       return {
         ...state,
         scene: {
           ...state.scene,
-          defaultTimings: action.payload.timings
-        } as Scene
+          defaultTimings: action.payload.timings,
+        } as Scene,
       };
     case SAVE_SCENE_REQUEST:
       return {
         ...state,
-        saving: true
+        saving: true,
       };
     case SAVE_SCENE_RESPONSE:
       return {
         ...state,
-        saving: false
+        saving: false,
       };
     case SET_FIXTURE_VALUE: {
       if (!state.scene || !state.ui.selectedFixtureValue) {
@@ -98,8 +98,8 @@ export const editor = (
           ...step,
           values: {
             ...step.values,
-            [deviceId]: action.payload.value
-          }
+            [deviceId]: action.payload.value,
+          },
         };
       });
 
@@ -107,8 +107,8 @@ export const editor = (
         ...state,
         scene: {
           ...state.scene,
-          steps
-        } as Scene
+          steps,
+        } as Scene,
       };
     }
     case ADD_STEP:
@@ -119,8 +119,8 @@ export const editor = (
         ...state,
         scene: {
           ...state.scene,
-          steps: [...state.scene.steps, NewStep()]
-        }
+          steps: [...state.scene.steps, NewStep()],
+        },
       };
     case SET_STEP_TIMINGS: {
       if (!state.scene || !state.ui.selectedStepId) {
@@ -136,7 +136,7 @@ export const editor = (
 
         return {
           ...step,
-          timings: action.payload.timings
+          timings: action.payload.timings,
         };
       });
 
@@ -144,8 +144,8 @@ export const editor = (
         ...state,
         scene: {
           ...state.scene,
-          steps
-        }
+          steps,
+        },
       };
     }
     case SET_EFFECT: {
@@ -159,7 +159,7 @@ export const editor = (
         }
 
         const effect = step.effects.find(
-          fx => fx.id === state.ui.selectedEffectId
+          fx => fx.id === state.ui.selectedEffectId,
         );
 
         if (!effect) {
@@ -176,7 +176,7 @@ export const editor = (
 
         return {
           ...step,
-          effects
+          effects,
         };
       });
 
@@ -184,8 +184,8 @@ export const editor = (
         ...state,
         scene: {
           ...state.scene,
-          steps
-        }
+          steps,
+        },
       };
     }
     case ADD_EFFECT: {
@@ -200,7 +200,7 @@ export const editor = (
 
         return {
           ...step,
-          effects: [NewEffect(action.payload.type), ...(step.effects || [])]
+          effects: [NewEffect(action.payload.type), ...(step.effects || [])],
         };
       });
 
@@ -208,14 +208,14 @@ export const editor = (
         ...state,
         scene: {
           ...state.scene,
-          steps
-        }
+          steps,
+        },
       };
     }
     default:
       return {
         ...state,
-        ui: uiReducer(state.ui, action)
+        ui: uiReducer(state.ui, action),
       };
   }
 };
@@ -225,27 +225,27 @@ const uiReducer = (state: EditorUiStore, action: Action): EditorUiStore => {
     case SELECT_SCENE:
       return {
         ...state,
-        selectedScene: action.payload.id
+        selectedScene: action.payload.id,
       };
     case SELECT_FIXTURE_VALUE:
       return {
         ...state,
-        selectedFixtureValue: action.payload
+        selectedFixtureValue: action.payload,
       };
     case SELECT_STEP:
       return {
         ...state,
-        selectedStepId: action.payload.stepId
+        selectedStepId: action.payload.stepId,
       };
     case SELECT_EFFECT:
       return {
         ...state,
-        selectedEffectId: action.payload.effectId
+        selectedEffectId: action.payload.effectId,
       };
     case ON_HIGHLIGHT_EFFECT:
       return {
         ...state,
-        highlightedEffectId: action.payload.effectId
+        highlightedEffectId: action.payload.effectId,
       };
     default:
       return state;

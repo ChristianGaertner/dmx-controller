@@ -13,17 +13,17 @@ export interface RunSceneAction extends BaseAction {
 }
 
 export const runScene = (
-  id: string | null
+  id: string | null,
 ): ThunkAction<void, AppState, null, RunSceneAction> => async dispatch => {
   dispatch({ type: RUN_SCENE, payload: { id } });
 
   if (!!id) {
     return fetch(`${apiBasePath}/run/scene/${id}`, {
-      method: "POST"
+      method: "POST",
     });
   } else {
     return fetch(`${apiBasePath}/stop/scene`, {
-      method: "POST"
+      method: "POST",
     });
   }
 };

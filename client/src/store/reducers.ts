@@ -4,13 +4,13 @@ import {
   LOAD_SCENE_LIST_REQUEST,
   LOAD_SCENE_LIST_RESPONSE,
   LOAD_SCENE_REQUEST,
-  LOAD_SCENE_RESPONSE
+  LOAD_SCENE_RESPONSE,
 } from "./actions/loadScene";
 import { RUN_SCENE } from "./actions/runScene";
 import { editor } from "./editor/reducers";
 import {
   LOAD_DEVICES_REQUEST,
-  LOAD_DEVICES_RESPONSE
+  LOAD_DEVICES_RESPONSE,
 } from "./actions/loadDevices";
 
 export { editor };
@@ -29,16 +29,16 @@ export const scenes = (scenes: SceneStore = {}, action: Action) => {
         ...scenes,
         [action.payload.id]: {
           ...scenes[action.payload.id],
-          isFetching: true
-        }
+          isFetching: true,
+        },
       };
     case LOAD_SCENE_RESPONSE:
       return {
         ...scenes,
         [action.payload.id]: {
           isFetching: false,
-          scene: action.payload.scene
-        }
+          scene: action.payload.scene,
+        },
       };
     default:
       return scenes;
@@ -52,19 +52,19 @@ type SceneListStore = {
 
 export const sceneList = (
   state: SceneListStore = { isFetching: false, scenes: undefined },
-  action: Action
+  action: Action,
 ) => {
   switch (action.type) {
     case LOAD_SCENE_LIST_REQUEST:
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     case LOAD_SCENE_LIST_RESPONSE:
       return {
         ...state,
         isFetching: false,
-        scenes: action.payload.scenes
+        scenes: action.payload.scenes,
       };
     default:
       return state;
@@ -87,24 +87,24 @@ type DeviceStore = {
 
 const initialDeviceStore: DeviceStore = {
   ids: [],
-  isFetching: false
+  isFetching: false,
 };
 
 export const devices = (
   state: DeviceStore = initialDeviceStore,
-  action: Action
+  action: Action,
 ) => {
   switch (action.type) {
     case LOAD_DEVICES_REQUEST:
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     case LOAD_DEVICES_RESPONSE:
       return {
         ...state,
         isFetching: false,
-        ids: action.payload.devices
+        ids: action.payload.devices,
       };
     default:
       return state;

@@ -5,7 +5,7 @@ export enum ButtonType {
   GREEN,
   RED,
   BLUE,
-  ORANGE
+  ORANGE,
 }
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
 export const Button: React.FunctionComponent<Props> = ({
   label,
   onClick,
-  type
+  type,
 }) => (
   <button
     className={cx("rounded border-2 mx-2 my-1 px-4 py-2 tracking-wide", {
@@ -28,7 +28,7 @@ export const Button: React.FunctionComponent<Props> = ({
         type === ButtonType.ORANGE,
       "bg-blue-1000 border-blue-800 hover:bg-blue-900":
         type === ButtonType.BLUE,
-      "opacity-75 cursor-not-allowed": !onClick
+      "opacity-75 cursor-not-allowed": !onClick,
     })}
     onClick={onClick}
     disabled={!onClick}

@@ -11,6 +11,6 @@ export type AppState = ReturnType<typeof rootReducer>;
 export const configureStore = () => {
   return createStore<AppState, Action, {}, {}>(
     rootReducer,
-    applyMiddleware(thunk, createLogger({ collapsed: true }))
+    applyMiddleware(thunk, createLogger({ collapsed: true })),
   );
 };

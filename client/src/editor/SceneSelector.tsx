@@ -55,15 +55,15 @@ const SceneSelectorComp: React.FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: AppState): StateProps => ({
   selectedScene: getSelectedSceneId(state),
-  scenes: getSceneList(state)
+  scenes: getSceneList(state),
 });
 
 const mapDispatchToProps: DispatchProps = {
   selectScene: selectSceneForEditing,
-  loadScenes: loadSceneList
+  loadScenes: loadSceneList,
 };
 
 export const SceneSelector = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SceneSelectorComp);

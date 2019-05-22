@@ -19,7 +19,7 @@ type Props = StateProps & DispatchProps;
 const SceneRunnerComp: React.FunctionComponent<Props> = ({
   runningScene,
   runScene,
-  stopScene
+  stopScene,
 }) => {
   const [scenes, setScenes] = React.useState([]);
 
@@ -56,15 +56,15 @@ const SceneRunnerComp: React.FunctionComponent<Props> = ({
 };
 
 const mapStateToProps = (state: AppState): StateProps => ({
-  runningScene: getRunningScene(state)
+  runningScene: getRunningScene(state),
 });
 
 const mapDispatchToProps: DispatchProps = {
   runScene: runScene,
-  stopScene: () => runScene(null)
+  stopScene: () => runScene(null),
 };
 
 export const SceneRunner = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SceneRunnerComp);

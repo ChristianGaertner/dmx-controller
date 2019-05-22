@@ -14,7 +14,7 @@ export type Timings = {
 
 export const computeTimings = (
   stepTimings: Timings,
-  defaultTimings: Timings
+  defaultTimings: Timings,
 ): Timings => ({
   duration:
     stepTimings.duration !== null
@@ -27,7 +27,7 @@ export const computeTimings = (
       ? stepTimings.fadeDown
       : stepTimings.fadeUp !== null
       ? stepTimings.fadeUp
-      : defaultTimings.fadeDown
+      : defaultTimings.fadeDown,
 });
 
 export type Step = {
@@ -45,8 +45,8 @@ export const NewStep = (): Step => ({
   timings: {
     duration: null,
     fadeUp: null,
-    fadeDown: null
-  }
+    fadeDown: null,
+  },
 });
 
 export type FixtureValue = {
@@ -64,7 +64,7 @@ type BaseEffect = {
 export type Effect = DimmerSineEffect;
 
 export enum EffectType {
-  DimmerSineType = "DimmerSineType"
+  DimmerSineType = "DimmerSineType",
 }
 
 export type DimmerSineEffect = BaseEffect & {
@@ -85,7 +85,7 @@ export const NewEffect = (type: EffectType): Effect => {
         min: 0,
         max: 1,
         phase: 1,
-        speed: 120
+        speed: 120,
       };
   }
 };

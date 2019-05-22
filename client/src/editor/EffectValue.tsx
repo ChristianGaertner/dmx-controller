@@ -27,8 +27,8 @@ const EffectValueComp: React.FunctionComponent<Props> = props => (
       className={cx(
         "w-full bg-red-1000 border-2 border-transparent rounded flex items-center p-1 my-2 cursor-pointer",
         {
-          "border-red-900": props.isHighlighted
-        }
+          "border-red-900": props.isHighlighted,
+        },
       )}
       onClick={() => props.selectEffect(props.effect.id)}
       onMouseEnter={() => props.onHighlightEffect(props.effect.id)}
@@ -50,15 +50,15 @@ export const getNameForType = (type: string): string =>
   type.substring(0, type.length - 4);
 
 const mapStateToProps = (state: AppState, ownProps: OwnProps): StateProps => ({
-  isHighlighted: getHighlightedEffectId(state) === ownProps.effect.id
+  isHighlighted: getHighlightedEffectId(state) === ownProps.effect.id,
 });
 
 const mapDispatchToProps: DispatchProps = {
   selectEffect: selectEffect,
-  onHighlightEffect: onHighlightEffect
+  onHighlightEffect: onHighlightEffect,
 };
 
 export const EffectValue = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(EffectValueComp);

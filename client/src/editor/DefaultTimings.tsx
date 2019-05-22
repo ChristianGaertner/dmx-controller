@@ -19,7 +19,7 @@ type Props = StateProps & DispatchProps;
 
 const DefaultTimingsComp: React.FunctionComponent<Props> = ({
   timings,
-  save
+  save,
 }) =>
   timings && (
     <div className="mx-8 px-4 py-2 flex-grow flex justify-between items-center text-sm bg-blue-1000 rounded">
@@ -39,7 +39,12 @@ const DefaultTimingsComp: React.FunctionComponent<Props> = ({
               </span>
             }
             value={formatNanoSeconds(timings.fadeUp).toString()}
-            onSave={v => save({ ...timings, fadeUp: parseIntoNanoSeconds(v) })}
+            onSave={v =>
+              save({
+                ...timings,
+                fadeUp: parseIntoNanoSeconds(v),
+              })
+            }
           />
         </div>
         <span className="uppercase tracking-wide text-blue-600">FadeUp</span>
@@ -55,7 +60,10 @@ const DefaultTimingsComp: React.FunctionComponent<Props> = ({
             }
             value={formatNanoSeconds(timings.duration).toString()}
             onSave={v =>
-              save({ ...timings, duration: parseIntoNanoSeconds(v) })
+              save({
+                ...timings,
+                duration: parseIntoNanoSeconds(v),
+              })
             }
           />
           &nbsp;/&nbsp;
@@ -82,7 +90,10 @@ const DefaultTimingsComp: React.FunctionComponent<Props> = ({
             }
             value={formatNanoSeconds(timings.fadeDown).toString()}
             onSave={v =>
-              save({ ...timings, fadeDown: parseIntoNanoSeconds(v) })
+              save({
+                ...timings,
+                fadeDown: parseIntoNanoSeconds(v),
+              })
             }
           />
           <svg viewBox="0 0 20 20" className="h-2 w-2 fill-current ml-1">
@@ -107,14 +118,14 @@ const mapStateToProps = (state: AppState): StateProps => ({
   timings: (() => {
     const scene = getSceneForEditing(state);
     return scene && scene.defaultTimings;
-  })()
+  })(),
 });
 
 const mapDispatchToProps: DispatchProps = {
-  save: editTimings
+  save: editTimings,
 };
 
 export const DefaultTimings = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(DefaultTimingsComp);

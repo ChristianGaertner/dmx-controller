@@ -21,14 +21,14 @@ const ResetButtonComp: React.FunctionComponent<Props> = ({ reset, canReset }) =>
   ) : null;
 
 const mapStateToProps = (state: AppState): StateProps => ({
-  canReset: getSelectedSceneId(state) != null
+  canReset: getSelectedSceneId(state) != null,
 });
 
 const mapDispatchToProps: DispatchProps = {
-  reset: resetScene
+  reset: resetScene,
 };
 
 export const ResetButton = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(ResetButtonComp);

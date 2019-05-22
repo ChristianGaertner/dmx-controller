@@ -4,7 +4,7 @@ import { computeTimings, Timings } from "../types";
 import { AppState } from "../store";
 import {
   getSceneForEditing,
-  getTimingsForEditing
+  getTimingsForEditing,
 } from "../store/editor/selectors";
 import { Dialog } from "../components/Dialog";
 import { deselectStep, setStepTimings } from "../store/editor/actions";
@@ -28,7 +28,7 @@ const StepEditorComp: React.FunctionComponent<Props> = ({
   timings: stepTimings,
   defaultTimings,
   setTimings,
-  close
+  close,
 }) => {
   if (!stepTimings) {
     return null;
@@ -54,7 +54,7 @@ const StepEditorComp: React.FunctionComponent<Props> = ({
           </span>
           <span
             className={cx({
-              "text-blue-800": stepTimings.fadeUp === null
+              "text-blue-800": stepTimings.fadeUp === null,
             })}
           >
             <Input
@@ -62,7 +62,7 @@ const StepEditorComp: React.FunctionComponent<Props> = ({
               setValue={value =>
                 setTimings({
                   ...stepTimings,
-                  fadeUp: parseIntoNanoSeconds(value)
+                  fadeUp: parseIntoNanoSeconds(value),
                 })
               }
               disabled={stepTimings.fadeUp === null}
@@ -85,7 +85,7 @@ const StepEditorComp: React.FunctionComponent<Props> = ({
           </span>
           <span
             className={cx({
-              "text-blue-800": stepTimings.duration === null
+              "text-blue-800": stepTimings.duration === null,
             })}
           >
             <Input
@@ -93,7 +93,7 @@ const StepEditorComp: React.FunctionComponent<Props> = ({
               setValue={value =>
                 setTimings({
                   ...stepTimings,
-                  duration: parseIntoNanoSeconds(value)
+                  duration: parseIntoNanoSeconds(value),
                 })
               }
               disabled={stepTimings.duration === null}
@@ -117,7 +117,7 @@ const StepEditorComp: React.FunctionComponent<Props> = ({
           </span>
           <span
             className={cx({
-              "text-blue-800": stepTimings.fadeDown === null
+              "text-blue-800": stepTimings.fadeDown === null,
             })}
           >
             <Input
@@ -125,7 +125,7 @@ const StepEditorComp: React.FunctionComponent<Props> = ({
               setValue={value =>
                 setTimings({
                   ...stepTimings,
-                  fadeDown: parseIntoNanoSeconds(value)
+                  fadeDown: parseIntoNanoSeconds(value),
                 })
               }
               disabled={stepTimings.fadeDown === null}
@@ -147,15 +147,15 @@ const mapStateToProps = (state: AppState): StateProps => ({
     }
 
     return scene.defaultTimings;
-  })()
+  })(),
 });
 
 const mapDispatchToProps: DispatchProps = {
   close: deselectStep,
-  setTimings: setStepTimings
+  setTimings: setStepTimings,
 };
 
 export const StepEditor = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(StepEditorComp);

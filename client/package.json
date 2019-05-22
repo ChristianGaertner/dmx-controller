@@ -58,7 +58,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,css,json,md}": [
-      "prettier --write",
+      "prettier --write --trailing-comma all",
       "git add"
     ]
   }

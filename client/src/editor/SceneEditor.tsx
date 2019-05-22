@@ -10,7 +10,7 @@ import { loadScene } from "../store/actions/loadScene";
 import {
   getHighlightedEffectDevices,
   getSceneForEditing,
-  getSelectedSceneId
+  getSelectedSceneId,
 } from "../store/editor/selectors";
 import { addEffect, addStep } from "../store/editor/actions";
 import { EffectValue } from "./EffectValue";
@@ -39,7 +39,7 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
   addStep,
   addEffect,
   deviceIds,
-  highlightedEffectDevices
+  highlightedEffectDevices,
 }) => {
   React.useEffect(() => {
     if (sceneID) {
@@ -93,7 +93,7 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
               className={cx("bg-gray-1000", {
                 "bg-red-1000":
                   highlightedEffectDevices &&
-                  highlightedEffectDevices.includes(deviceId)
+                  highlightedEffectDevices.includes(deviceId),
               })}
             >
               <td>
@@ -125,16 +125,16 @@ const mapStateToProps = (state: AppState): StateProps => ({
   sceneID: getSelectedSceneId(state),
   scene: getSceneForEditing(state),
   highlightedEffectDevices: getHighlightedEffectDevices(state),
-  deviceIds: getDeviceIds(state)
+  deviceIds: getDeviceIds(state),
 });
 
 const mapDispatchToProps: DispatchProps = {
   loadScene: loadScene,
   addStep: addStep,
-  addEffect: addEffect
+  addEffect: addEffect,
 };
 
 export const SceneEditor = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(SceneEditorComp);

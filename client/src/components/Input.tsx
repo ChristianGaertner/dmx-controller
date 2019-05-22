@@ -14,7 +14,7 @@ export const Input: React.FunctionComponent<Props> = ({
   value,
   setValue,
   disabled = false,
-  className
+  className,
 }) => {
   const [buffer, setBuffer] = React.useState(value);
 
@@ -37,8 +37,8 @@ export const Input: React.FunctionComponent<Props> = ({
         "appearance-none bg-gray-900 border border-blue-900 focus:bg-gray-1000 focus:outline-none px-2 w-24 text-center",
         className,
         {
-          rounded: !className || className.indexOf("rounded") === -1
-        }
+          rounded: !className || className.indexOf("rounded") === -1,
+        },
       )}
     />
   );

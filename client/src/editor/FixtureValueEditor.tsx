@@ -20,7 +20,7 @@ type Props = StateProps & DispatchProps;
 const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
   value,
   set,
-  close
+  close,
 }) =>
   value && (
     <Dialog title="Edit Fixture Value" onRequestClose={close}>
@@ -30,7 +30,10 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
           label="Dimmer"
           value={(value.dimmer || 0) * 1000}
           onChange={(v: number) =>
-            set({ ...value, dimmer: v && parseFloat((v / 1000).toFixed(2)) })
+            set({
+              ...value,
+              dimmer: v && parseFloat((v / 1000).toFixed(2)),
+            })
           }
           inputProps={{ type: "range", min: 0, max: 1000 }}
         />
@@ -46,7 +49,10 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
           label="Strobe"
           value={(value.strobe || 0) * 1000}
           onChange={(v: number) =>
-            set({ ...value, strobe: v && parseFloat((v / 1000).toFixed(2)) })
+            set({
+              ...value,
+              strobe: v && parseFloat((v / 1000).toFixed(2)),
+            })
           }
           inputProps={{ type: "range", min: 0, max: 1000 }}
         />
@@ -67,7 +73,7 @@ const ValueRow: React.FunctionComponent<ValueRowProps> = ({
   value,
   onChange,
   label,
-  inputProps
+  inputProps,
 }) => (
   <div className="flex items-center w-1/2 my-2">
     <span className="bg-gray-800 flex justify-start items-center p-2 flex-grow rounded-l">
@@ -91,17 +97,17 @@ const ValueRow: React.FunctionComponent<ValueRowProps> = ({
 );
 
 const mapStateToProps = (state: AppState): StateProps => ({
-  value: getFixtureValueForEditing(state)
+  value: getFixtureValueForEditing(state),
 });
 
 const mapDispatchToProps: DispatchProps = {
   close: deselectFixtureValue,
-  set: setFixtureValue
+  set: setFixtureValue,
 };
 
 export const FixtureValueEditor = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(FixtureValueEditorComp);
 
 const Color2Hex = (color: Color): string => {
@@ -131,6 +137,6 @@ const Hex2Color = (hex: string): Color | undefined => {
   return {
     R: parseInt(res[1], 16) / 255,
     G: parseInt(res[2], 16) / 255,
-    B: parseInt(res[3], 16) / 255
+    B: parseInt(res[3], 16) / 255,
   };
 };

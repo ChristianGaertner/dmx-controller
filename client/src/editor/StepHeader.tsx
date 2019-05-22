@@ -23,7 +23,7 @@ const StepHeaderComp: React.FunctionComponent<Props> = ({
   index,
   timings,
   defaultTimings,
-  select
+  select,
 }) => (
   <button
     className="w-full rounded border-2 border-transparent hover:border-blue-900"
@@ -40,12 +40,12 @@ const StepHeaderComp: React.FunctionComponent<Props> = ({
 
 const mapDispatchToProps = (
   dispatch: Dispatch<Action>,
-  ownProps: OwnProps
+  ownProps: OwnProps,
 ): DispatchProps => ({
-  select: () => dispatch(selectStep(ownProps.id))
+  select: () => dispatch(selectStep(ownProps.id)),
 });
 
 export const StepHeader = connect(
   undefined,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(StepHeaderComp);

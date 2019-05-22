@@ -26,10 +26,10 @@ const App: React.FunctionComponent<Props> = ({ loadDevices }) => {
 };
 
 const mapDispatchToProps = {
-  loadDevices: loadDevices
+  loadDevices: loadDevices,
 };
 
 export default connect(
   undefined,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(App);

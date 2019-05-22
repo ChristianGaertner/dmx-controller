@@ -37,7 +37,7 @@ export interface LoadSceneListResponseAction extends BaseAction {
 }
 
 export const loadScene = (
-  id: string
+  id: string,
 ): ThunkAction<
   void,
   AppState,

@@ -13,7 +13,7 @@ export const getSceneForEditing = (state: AppState): Scene | null =>
 export const isSaving = (state: AppState): boolean => state.editor.saving;
 
 export const getFixtureValueForEditing = (
-  state: AppState
+  state: AppState,
 ): FixtureValue | null => {
   const scene = getSceneForEditing(state);
   if (!scene) {
@@ -74,7 +74,8 @@ export const getEffectForEditing = (state: AppState): Effect | null => {
 
   const step = scene.steps.find(
     step =>
-      !!step.effects && step.effects.map(fx => fx.id).includes(selectedEffectId)
+      !!step.effects &&
+      step.effects.map(fx => fx.id).includes(selectedEffectId),
   );
 
   if (!step || !step.effects) {
@@ -88,7 +89,7 @@ export const getHighlightedEffectId = (state: AppState): string | null =>
   getUiState(state).highlightedEffectId;
 
 export const getHighlightedEffectDevices = (
-  state: AppState
+  state: AppState,
 ): string[] | null => {
   const fxId = getUiState(state).highlightedEffectId;
 
@@ -100,7 +101,7 @@ export const getHighlightedEffectDevices = (
 
   const effects = flatMap(
     scene.steps.filter(s => !!s.effects),
-    s => s.effects as Effect[]
+    s => s.effects as Effect[],
   );
 
   const effect = effects.find(fx => fx.id === fxId);
@@ -114,6 +115,6 @@ export const getHighlightedEffectDevices = (
 function flatMap<T, U>(array: T[], mapFunc: (x: T) => U[]): U[] {
   return array.reduce(
     (cumulus: U[], next: T) => [...mapFunc(next), ...cumulus],
-    []
+    [],
   );
 }

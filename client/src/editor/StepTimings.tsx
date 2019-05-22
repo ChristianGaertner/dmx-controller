@@ -9,7 +9,7 @@ type Props = {
 
 export const StepTimings: React.FunctionComponent<Props> = ({
   timings: stepTimings,
-  defaultTimings
+  defaultTimings,
 }) => {
   const timings = computeTimings(stepTimings, defaultTimings);
   return (
@@ -18,8 +18,8 @@ export const StepTimings: React.FunctionComponent<Props> = ({
         className={cx(
           "text-blue-100 text-sm font-hairline flex flex-row items-center",
           {
-            "text-blue-400": stepTimings.fadeUp === null
-          }
+            "text-blue-400": stepTimings.fadeUp === null,
+          },
         )}
       >
         <svg viewBox="0 0 20 20" className="h-2 w-2 fill-current mr-1">
@@ -34,7 +34,7 @@ export const StepTimings: React.FunctionComponent<Props> = ({
 
       <div
         className={cx({
-          "text-blue-400": stepTimings.duration === null
+          "text-blue-400": stepTimings.duration === null,
         })}
       >
         {formatNanoSeconds(timings.duration)}s
@@ -44,8 +44,8 @@ export const StepTimings: React.FunctionComponent<Props> = ({
         className={cx(
           "text-blue-100 text-sm font-hairline flex flex-row items-center",
           {
-            "text-blue-400": stepTimings.fadeDown === null
-          }
+            "text-blue-400": stepTimings.fadeDown === null,
+          },
         )}
       >
         {formatNanoSeconds(timings.fadeDown)}s

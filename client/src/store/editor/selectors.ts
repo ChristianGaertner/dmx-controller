@@ -1,5 +1,5 @@
 import { AppState } from "../index";
-import { FixtureValue, Scene } from "../../types";
+import { FixtureValue, Scene, Timings } from "../../types";
 
 export const getSelectedSceneId = (state: AppState) =>
   state.editor.selectedScene;
@@ -28,4 +28,24 @@ export const getFixtureValueForEditing = (
   }
 
   return step.values[deviceId] || ({} as FixtureValue);
+};
+
+export const getTimingsForEditing = (state: AppState): Timings | null => {
+  const scene = getSceneForEditing(state);
+  if (!scene) {
+    return null;
+  }
+  if (!state.editor.selectedStepId) {
+    return null;
+  }
+
+  const { selectedStepId } = state.editor;
+
+  const step = scene.steps.find(step => step.id === selectedStepId);
+
+  if (!step) {
+    return null;
+  }
+
+  return step.timings;
 };

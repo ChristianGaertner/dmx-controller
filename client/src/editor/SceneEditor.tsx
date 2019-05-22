@@ -55,8 +55,9 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
           <tr>
             <th>Devices</th>
             {steps.map((step, i) => (
-              <th key={i}>
+              <th key={step.id}>
                 <StepHeader
+                  id={step.id}
                   index={i}
                   timings={step.timings}
                   defaultTimings={scene.defaultTimings}

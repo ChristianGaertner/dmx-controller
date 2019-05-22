@@ -1,7 +1,8 @@
 import * as React from "react";
+import { Input } from "./Input";
 
 type Props = {
-  display: React.ReactElement;
+  display?: React.ReactElement | string;
   value: string;
   onSave: (value: string) => void;
 };
@@ -16,17 +17,16 @@ export const InlineInputField: React.FunctionComponent<Props> = props => {
   }, [propValue]);
 
   if (!editMode) {
-    return <button onClick={() => setEditMode(true)}>{props.display}</button>;
+    return (
+      <button onClick={() => setEditMode(true)}>
+        {props.display || props.value}
+      </button>
+    );
   }
 
   return (
     <div className="flex flex-row text-white">
-      <input
-        type="text"
-        value={value}
-        onChange={e => setValue(e.target.value)}
-        className="appearance-none bg-gray-900 border border-blue-900 focus:bg-gray-1000 focus:outline-none px-2 rounded-l w-24 text-center"
-      />
+      <Input value={value} setValue={setValue} className="rounded-l" />
       <button
         className="bg-red-600 p-2 hover:bg-red-500"
         onClick={() => {

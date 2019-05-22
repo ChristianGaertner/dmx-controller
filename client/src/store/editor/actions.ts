@@ -12,9 +12,11 @@ export type EditorAction =
   | EditTimings
   | SaveSceneRequest
   | SaveSceneResponse
-  | SelectStepValue
+  | SelectFixtureValue
   | SetFixtureValue
-  | AddStep;
+  | AddStep
+  | SelectStep
+  | SetStepTimings;
 
 interface SelectScene extends BaseAction {
   type: typeof SELECT_SCENE;
@@ -70,7 +72,7 @@ export const saveScene = (): ThunkAction<
 };
 
 export const SELECT_FIXTURE_VALUE = "@editor/SELECT_FIXTURE_VALUE";
-interface SelectStepValue extends BaseAction {
+interface SelectFixtureValue extends BaseAction {
   type: typeof SELECT_FIXTURE_VALUE;
   payload: {
     stepId: string;
@@ -81,7 +83,7 @@ interface SelectStepValue extends BaseAction {
 export const selectFixtureValue = (
   stepId: string,
   deviceId: string
-): SelectStepValue => ({
+): SelectFixtureValue => ({
   type: SELECT_FIXTURE_VALUE,
   payload: {
     stepId,
@@ -89,7 +91,7 @@ export const selectFixtureValue = (
   }
 });
 
-export const deselectFixtureValue = (): SelectStepValue => ({
+export const deselectFixtureValue = (): SelectFixtureValue => ({
   type: SELECT_FIXTURE_VALUE,
   payload: null
 });
@@ -107,6 +109,37 @@ export const setFixtureValue = (value: FixtureValue) => ({
   payload: {
     value
   }
+});
+
+export const SELECT_STEP = "@editor/SELECT_STEP";
+interface SelectStep extends BaseAction {
+  type: typeof SELECT_STEP;
+  payload: {
+    stepId: string | null;
+  };
+}
+
+export const selectStep = (stepId: string): SelectStep => ({
+  type: SELECT_STEP,
+  payload: { stepId }
+});
+
+export const deselectStep = (): SelectStep => ({
+  type: SELECT_STEP,
+  payload: { stepId: null }
+});
+
+export const SET_STEP_TIMINGS = "@editor/SET_STEP_TIMINGS";
+interface SetStepTimings extends BaseAction {
+  type: typeof SET_STEP_TIMINGS;
+  payload: {
+    timings: Timings;
+  };
+}
+
+export const setStepTimings = (timings: Timings): SetStepTimings => ({
+  type: SET_STEP_TIMINGS,
+  payload: { timings }
 });
 
 export const ADD_STEP = "@editor/ADD_STEP";

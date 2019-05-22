@@ -12,6 +12,24 @@ export type Timings = {
   fadeDown: number | null;
 };
 
+export const computeTimings = (
+  stepTimings: Timings,
+  defaultTimings: Timings
+): Timings => ({
+  duration:
+    stepTimings.duration !== null
+      ? stepTimings.duration
+      : defaultTimings.duration,
+  fadeUp:
+    stepTimings.fadeUp !== null ? stepTimings.fadeUp : defaultTimings.fadeUp,
+  fadeDown:
+    stepTimings.fadeDown !== null
+      ? stepTimings.fadeDown
+      : stepTimings.fadeUp !== null
+      ? stepTimings.fadeUp
+      : defaultTimings.fadeDown
+});
+
 export type Step = {
   id: string;
   values: {

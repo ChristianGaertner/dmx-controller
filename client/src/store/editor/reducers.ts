@@ -9,7 +9,8 @@ import {
   SELECT_STEP,
   SET_STEP_TIMINGS,
   RESET_SCENE,
-  SELECT_EFFECT
+  SELECT_EFFECT,
+  ON_HIGHLIGHT_EFFECT
 } from "./actions";
 import { Action } from "../actionTypes";
 import { NewStep, Scene } from "../../types";
@@ -26,13 +27,15 @@ export type EditorUiStore = {
   selectedFixtureValue: { stepId: string; deviceId: string } | null;
   selectedStepId: string | null;
   selectedEffectId: string | null;
+  highlightedEffectId: string | null;
 };
 
 const uiInitialValue: EditorUiStore = {
   selectedScene: null,
   selectedFixtureValue: null,
   selectedStepId: null,
-  selectedEffectId: null
+  selectedEffectId: null,
+  highlightedEffectId: null
 };
 
 const initialValue: EditorStore = {
@@ -172,6 +175,11 @@ const uiReducer = (state: EditorUiStore, action: Action): EditorUiStore => {
       return {
         ...state,
         selectedEffectId: action.payload.effectId
+      };
+    case ON_HIGHLIGHT_EFFECT:
+      return {
+        ...state,
+        highlightedEffectId: action.payload.effectId
       };
     default:
       return state;

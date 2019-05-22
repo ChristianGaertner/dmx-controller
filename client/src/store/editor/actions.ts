@@ -19,7 +19,8 @@ export type EditorAction =
   | AddStep
   | SelectStep
   | SetStepTimings
-  | SelectEffect;
+  | SelectEffect
+  | OnHighlightEffect;
 
 interface SelectScene extends BaseAction {
   type: typeof SELECT_SCENE;
@@ -191,4 +192,17 @@ export const selectEffect = (effectId: string): SelectEffect => ({
 export const deselectEffect = (): SelectEffect => ({
   type: SELECT_EFFECT,
   payload: { effectId: null }
+});
+
+export const ON_HIGHLIGHT_EFFECT = "@editor/ON_HIGHLIGHT_EFFECT";
+interface OnHighlightEffect extends BaseAction {
+  type: typeof ON_HIGHLIGHT_EFFECT;
+  payload: {
+    effectId: string | null;
+  };
+}
+
+export const onHighlightEffect = (effectId: string | null) => ({
+  type: ON_HIGHLIGHT_EFFECT,
+  payload: { effectId }
 });

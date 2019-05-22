@@ -83,3 +83,6 @@ export const getEffectForEditing = (state: AppState): Effect | null => {
 
   return step.effects.find(fx => fx.id === selectedEffectId) || null;
 };
+
+export const getHighlightedEffectId = (state: AppState): string | null =>
+  getUiState(state).highlightedEffectId;

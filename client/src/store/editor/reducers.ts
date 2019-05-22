@@ -7,7 +7,8 @@ import {
   SET_FIXTURE_VALUE,
   ADD_STEP,
   SELECT_STEP,
-  SET_STEP_TIMINGS
+  SET_STEP_TIMINGS,
+  RESET_SCENE
 } from "./actions";
 import { Action } from "../actionTypes";
 import { NewStep, Scene } from "../../types";
@@ -38,6 +39,11 @@ export const editor = (
       return {
         ...state,
         selectedScene: action.payload.id
+      };
+    case RESET_SCENE:
+      return {
+        ...state,
+        scene: action.payload.scene
       };
     case LOAD_SCENE_RESPONSE:
       if (state.selectedScene !== action.payload.id) {

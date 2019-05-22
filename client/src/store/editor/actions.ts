@@ -1,14 +1,16 @@
-import { FixtureValue, Timings } from "../../types";
+import { FixtureValue, Scene, Timings } from "../../types";
 import { BaseAction } from "../actionTypes";
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
 import { apiBasePath } from "../actions/config";
 import { getSceneForEditing } from "./selectors";
+import { getScene } from "../selectors";
 
 export const SELECT_SCENE = "@editor/SELECT_SCENE";
 
 export type EditorAction =
   | SelectScene
+  | ResetScene
   | EditTimings
   | SaveSceneRequest
   | SaveSceneResponse
@@ -29,6 +31,27 @@ export const selectSceneForEditing = (id: string) => ({
   type: SELECT_SCENE,
   payload: { id }
 });
+
+export const RESET_SCENE = "@editor/RESET_SCENE";
+interface ResetScene extends BaseAction {
+  type: typeof RESET_SCENE;
+  payload: {
+    scene: Scene;
+  };
+}
+
+export const resetScene = (): ThunkAction<void, AppState, null, ResetScene> => (
+  dispatch,
+  getState
+) => {
+  const scene = getScene(getState(), {
+    id: getState().editor.selectedScene || ""
+  });
+  if (!scene) {
+    return;
+  }
+  dispatch({ type: RESET_SCENE, payload: { scene } });
+};
 
 export const EDIT_TIMINGS = "@editor/EDIT_TIMINGS";
 

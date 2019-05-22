@@ -5,6 +5,7 @@ import { DefaultTimings } from "./DefaultTimings";
 import { SaveButton } from "./SaveButton";
 import { FixtureValueEditor } from "./FixtureValueEditor";
 import { StepEditor } from "./StepEditor";
+import { ResetButton } from "./ResetButton";
 
 type Props = {};
 
@@ -14,6 +15,7 @@ const EditorComp: React.FunctionComponent<Props> = () => {
       <div className="flex">
         <SceneSelector />
         <DefaultTimings />
+        <ResetButton />
         <SaveButton />
       </div>
       <SceneEditor />

@@ -12,6 +12,7 @@ type RunMode int
 
 const (
 	OneShot RunMode = iota
+	OneShotHold
 	Cycle
 )
 
@@ -44,7 +45,7 @@ func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTi
 		select {
 		case tc := <-timeCode:
 
-			out, done := scene.Eval(tc, Cycle)
+			out, done := scene.Eval(tc, OneShotHold)
 
 			for id, val := range out {
 				devices.Get(id).Fixture.ApplyValueTo(val, devices.Get(id))

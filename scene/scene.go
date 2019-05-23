@@ -47,6 +47,11 @@ func (s *Scene) getStepTimeCode(tc types.TimeCode, runMode RunMode) (types.TimeC
 	switch runMode {
 	case OneShot:
 		return tc, tc > duration
+	case OneShotHold:
+		if tc > duration {
+			return duration, false
+		}
+		return tc, false
 	case Cycle:
 		return tc % duration, false
 	}

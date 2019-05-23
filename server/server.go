@@ -19,7 +19,7 @@ type runningSceneInfo struct {
 	stop context.CancelFunc
 }
 
-func ListenAndServe(ctx context.Context, pool *fixture.DevicePool, timeCode <-chan types.TimeCode, onEval chan<- bool) error {
+func ListenAndServe(ctx context.Context, devices *fixture.DeviceMap, timeCode <-chan types.TimeCode, onEval chan<- bool) error {
 
 	r := mux.NewRouter()
 
@@ -27,9 +27,9 @@ func ListenAndServe(ctx context.Context, pool *fixture.DevicePool, timeCode <-ch
 	r.HandleFunc("/api/v1/resources/scene/{id}", getSceneHandler).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene", addSceneHandler).Methods("POST")
 
-	r.HandleFunc("/api/v1/resources/device", getDeviceIds(pool)).Methods("GET")
+	r.HandleFunc("/api/v1/resources/device", getDeviceIds(devices)).Methods("GET")
 
-	r.HandleFunc("/api/v1/run/scene/{id}", runSceneHandler(ctx, pool, timeCode, onEval)).Methods("POST")
+	r.HandleFunc("/api/v1/run/scene/{id}", runSceneHandler(ctx, devices, timeCode, onEval)).Methods("POST")
 	r.HandleFunc("/api/v1/stop/scene", stopSceneHandler()).Methods("POST")
 
 	r.Use(panicMiddleware)
@@ -77,7 +77,7 @@ func getSceneIds(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func runSceneHandler(ctx context.Context, pool *fixture.DevicePool, timeCode <-chan types.TimeCode, onEval chan<- bool) http.HandlerFunc {
+func runSceneHandler(ctx context.Context, devices *fixture.DeviceMap, timeCode <-chan types.TimeCode, onEval chan<- bool) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
 
@@ -101,7 +101,7 @@ func runSceneHandler(ctx context.Context, pool *fixture.DevicePool, timeCode <-c
 			return
 		}
 
-		go scene.Run(ctx, target, pool, timeCode, onEval)
+		go scene.Run(ctx, target, devices, timeCode, onEval)
 		w.WriteHeader(http.StatusAccepted)
 	})
 }
@@ -116,9 +116,9 @@ func stopSceneHandler() http.HandlerFunc {
 	})
 }
 
-func getDeviceIds(pool *fixture.DevicePool) http.HandlerFunc {
+func getDeviceIds(devices *fixture.DeviceMap) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewEncoder(w).Encode(pool.GetIdentifiers())
+		err := json.NewEncoder(w).Encode(devices.GetIdentifiers())
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}

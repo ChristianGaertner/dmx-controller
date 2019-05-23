@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func Run(ctx context.Context, scene *Scene, pool *fixture.DevicePool, globalTimeCode <-chan types.TimeCode, onEval chan<- bool) {
+func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTimeCode <-chan types.TimeCode, onEval chan<- bool) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		err := recover()
@@ -33,7 +33,7 @@ func Run(ctx context.Context, scene *Scene, pool *fixture.DevicePool, globalTime
 	for {
 		select {
 		case tc := <-timeCode:
-			scene.Eval(tc, pool)
+			scene.Eval(tc, devices)
 			onEval <- true
 		case <-ctx.Done():
 			onEval <- true

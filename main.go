@@ -47,10 +47,8 @@ func main() {
 	devB := fixture.NewDevice("devB", genericB)
 
 	deviceMap := fixture.NewDeviceMap()
-	deviceMap.Place(dmx.NewChannel(1), devA)
-	deviceMap.Place(dmx.NewChannel(6), devB)
-
-	devicePool := fixture.PoolFromDeviceMap(deviceMap)
+	deviceMap.Patch(dmx.NewChannel(1), devA)
+	deviceMap.Patch(dmx.NewChannel(6), devB)
 
 	ticker := scene.NewTicker()
 
@@ -59,7 +57,7 @@ func main() {
 	go buffer.Render(ctx, renderer, onExit)
 	go ticker.Run(ctx)
 
-	err = server.ListenAndServe(ctx, devicePool, ticker.TimeCode, onEval)
+	err = server.ListenAndServe(ctx, deviceMap, ticker.TimeCode, onEval)
 	fmt.Println(err)
 
 	fmt.Println("Shutting down...")

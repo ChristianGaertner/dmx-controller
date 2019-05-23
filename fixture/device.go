@@ -39,47 +39,34 @@ func (d *Device) Get(channel dmx.Channel) dmx.Value {
 	return d.values[channel.ToSliceIndex()]
 }
 
-type DevicePool struct {
+type DeviceMap struct {
 	devices map[DeviceIdentifier]*Device
+	patch map[int]*Device
 }
 
-func PoolFromDeviceMap(dm *DeviceMap) *DevicePool {
-	devices := make(map[DeviceIdentifier]*Device)
-
-	for _, dev := range dm.devices {
-		devices[dev.Uuid] = dev
-	}
-
-	return &DevicePool{
-		devices: devices,
+func NewDeviceMap() *DeviceMap {
+	return &DeviceMap{
+		devices: make(map[DeviceIdentifier]*Device),
+		patch: make(map[int]*Device),
 	}
 }
 
-func (p *DevicePool) Get(dev DeviceIdentifier) *Device {
-	return p.devices[dev]
-}
-
-func (p *DevicePool) GetIdentifiers() []DeviceIdentifier {
+func (dM *DeviceMap) GetIdentifiers() []DeviceIdentifier {
 	var ids []DeviceIdentifier
-	for id := range p.devices {
+	for id := range dM.devices {
 		ids = append(ids, id)
 	}
 
 	return ids
 }
 
-type DeviceMap struct {
-	devices map[int]*Device
+func (dM *DeviceMap) Get(id DeviceIdentifier) *Device {
+	return dM.devices[id];
 }
 
-func NewDeviceMap() *DeviceMap {
-	return &DeviceMap{
-		devices: make(map[int]*Device),
-	}
-}
-
-func (dM *DeviceMap) Place(channel dmx.Channel, d *Device) {
-	dM.devices[channel.ToSliceIndex()] = d
+func (dM *DeviceMap) Patch(channel dmx.Channel, d *Device) {
+	dM.patch[channel.ToSliceIndex()] = d
+	dM.devices[d.Uuid] = d
 }
 
 func (dM *DeviceMap) Reset() {
@@ -89,7 +76,7 @@ func (dM *DeviceMap) Reset() {
 }
 
 func (dM *DeviceMap) Render(buffer *dmx.Buffer) {
-	for i, device := range dM.devices {
+	for i, device := range dM.patch {
 		values := device.GetValues()
 		buffer.Apply(dmx.NewChannelFromIndex(i), values)
 		device.Reset()

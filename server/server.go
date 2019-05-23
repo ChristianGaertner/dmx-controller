@@ -101,7 +101,15 @@ func runSceneHandler(ctx context.Context, devices *fixture.DeviceMap, timeCode <
 			return
 		}
 
-		go scene.Run(ctx, target, devices, timeCode, onEval)
+		onExit := make(chan bool)
+
+		go scene.Run(ctx, target, devices, timeCode, onEval, onExit)
+
+		go func() {
+			<-onExit
+			runningScene = nil
+		}()
+
 		w.WriteHeader(http.StatusAccepted)
 	})
 }

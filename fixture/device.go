@@ -41,13 +41,13 @@ func (d *Device) Get(channel dmx.Channel) dmx.Value {
 
 type DeviceMap struct {
 	devices map[DeviceIdentifier]*Device
-	patch map[int]*Device
+	patch   map[int]*Device
 }
 
 func NewDeviceMap() *DeviceMap {
 	return &DeviceMap{
 		devices: make(map[DeviceIdentifier]*Device),
-		patch: make(map[int]*Device),
+		patch:   make(map[int]*Device),
 	}
 }
 
@@ -61,7 +61,7 @@ func (dM *DeviceMap) GetIdentifiers() []DeviceIdentifier {
 }
 
 func (dM *DeviceMap) Get(id DeviceIdentifier) *Device {
-	return dM.devices[id];
+	return dM.devices[id]
 }
 
 func (dM *DeviceMap) Patch(channel dmx.Channel, d *Device) {

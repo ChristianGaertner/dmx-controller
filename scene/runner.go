@@ -8,13 +8,21 @@ import (
 	"time"
 )
 
-func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTimeCode <-chan types.TimeCode, onEval chan<- bool) {
+type RunMode int
+
+const (
+	OneShot RunMode = iota
+	Cycle
+)
+
+func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTimeCode <-chan types.TimeCode, onEval chan<- bool, onExit chan<- bool) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
+		cancel()
+		onExit <- true
 		err := recover()
 		if err != nil {
 			fmt.Printf("Error Running Scene '%s': %s\n", scene.ID, err)
-			cancel()
 		}
 	}()
 	initTc := <-globalTimeCode
@@ -35,13 +43,17 @@ func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTi
 	for {
 		select {
 		case tc := <-timeCode:
-			out := scene.Eval(tc)
+
+			out, done := scene.Eval(tc, Cycle)
 
 			for id, val := range out {
 				devices.Get(id).Fixture.ApplyValueTo(val, devices.Get(id))
 			}
 
 			onEval <- true
+			if done {
+				return
+			}
 		case <-ctx.Done():
 			onEval <- true
 			return

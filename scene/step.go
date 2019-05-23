@@ -20,9 +20,9 @@ type sequencedStep struct {
 	Timings Timings
 }
 
-func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) StepOutput {
-	percentUp := calcPercent(tc, *s.Timings.FadeUp)
-	percentDown := calcPercent(tc, *s.Timings.FadeDown)
+func (s *sequencedStep) Eval(tc types.TimeCode, activeFor time.Duration, prev *sequencedStep) StepOutput {
+	percentUp := calcPercent(activeFor, *s.Timings.FadeUp)
+	percentDown := calcPercent(activeFor, *s.Timings.FadeDown)
 
 	output := s.Step.getStepOutput(tc)
 
@@ -59,7 +59,7 @@ func (s *Step) getStepOutput(tc types.TimeCode) StepOutput {
 	return MergeStepOutput(out...)
 }
 
-func calcPercent(tc types.TimeCode, d time.Duration) float64 {
+func calcPercent(tc time.Duration, d time.Duration) float64 {
 	p := float64(1)
 
 	if d > 0 {

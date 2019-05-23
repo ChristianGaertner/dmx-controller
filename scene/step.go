@@ -20,7 +20,7 @@ type sequencedStep struct {
 	Timings Timings
 }
 
-func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep, devices *fixture.DeviceMap) {
+func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep) StepOutput {
 	percentUp := calcPercent(tc, *s.Timings.FadeUp)
 	percentDown := calcPercent(tc, *s.Timings.FadeDown)
 
@@ -31,20 +31,22 @@ func (s *sequencedStep) Eval(tc types.TimeCode, prev *sequencedStep, devices *fi
 		prevOutput = prev.Step.getStepOutput(tc)
 	}
 
+	outputWithEffects := make(StepOutput)
+
 	for devId, fix := range output {
-		var fixPrev fixture.Value
+		var fixPrev *fixture.Value
 		if prevOutput != nil {
 			if p, ok := prevOutput[devId]; ok {
 				fixPrev = p
 			}
 		}
 
-		finalValue := fixture.Lerp(&fixPrev, &fix, percentUp, percentDown)
+		finalValue := fixture.Lerp(fixPrev, fix, percentUp, percentDown)
 
-		dev := devices.Get(devId)
-
-		dev.Fixture.ApplyValueTo(finalValue, dev)
+		outputWithEffects[devId] = finalValue
 	}
+
+	return outputWithEffects
 }
 
 func (s *Step) getStepOutput(tc types.TimeCode) StepOutput {

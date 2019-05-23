@@ -1,7 +1,6 @@
 package scene
 
 import (
-	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"time"
 )
@@ -25,15 +24,15 @@ func New(id string, sequence []*Step, duration, fadeUp, fadeDown time.Duration) 
 	}
 }
 
-func (s *Scene) Eval(tc types.TimeCode, devices *fixture.DeviceMap) {
+func (s *Scene) Eval(tc types.TimeCode) StepOutput {
 	var prev *sequencedStep
 	for _, step := range s.sequence {
 		if step.Start <= tc && step.End >= tc {
-			step.Eval(tc-step.Start, prev, devices)
-			return
+			return step.Eval(tc-step.Start, prev)
 		}
 		prev = step
 	}
+	return NoStepOutput
 }
 
 func (s *Scene) Duration() time.Duration {

@@ -11,6 +11,12 @@ type Value struct {
 }
 
 func Lerp(a, b *Value, percentUp, percentDown float64) *Value {
+	if a == nil {
+		a = new(Value)
+	}
+	if b == nil {
+		b = new(Value)
+	}
 	return &Value{
 		Dimmer: types.LerpDimmerValue(a.Dimmer, b.Dimmer, percentUp, percentDown),
 		Color:  types.LerpColor(a.Color, b.Color, percentUp, percentDown),

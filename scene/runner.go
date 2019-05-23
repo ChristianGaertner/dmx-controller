@@ -2,6 +2,7 @@ package scene
 
 import (
 	"context"
+	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"time"
@@ -12,6 +13,7 @@ func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTi
 	defer func() {
 		err := recover()
 		if err != nil {
+			fmt.Printf("Error Running Scene '%s': %s\n", scene.ID, err)
 			cancel()
 		}
 	}()
@@ -33,7 +35,12 @@ func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTi
 	for {
 		select {
 		case tc := <-timeCode:
-			scene.Eval(tc, devices)
+			out := scene.Eval(tc)
+
+			for id, val := range out {
+				devices.Get(id).Fixture.ApplyValueTo(val, devices.Get(id))
+			}
+
 			onEval <- true
 		case <-ctx.Done():
 			onEval <- true

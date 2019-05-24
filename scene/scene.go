@@ -24,12 +24,12 @@ func New(id string, sequence []*Step, duration, fadeUp, fadeDown time.Duration) 
 	}
 }
 
-func (s *Scene) Eval(tc types.TimeCode, runMode RunMode) (StepOutput, bool) {
+func (s *Scene) Eval(tc types.TimeCode, runMode types.RunMode) (StepOutput, bool) {
 	stepTimeCode, done := s.getStepTimeCode(tc, runMode)
 
 	var prev *sequencedStep
 
-	if runMode == Cycle {
+	if runMode == types.RunModeCycle {
 		prev = s.sequence[len(s.sequence)-1]
 	}
 
@@ -42,17 +42,17 @@ func (s *Scene) Eval(tc types.TimeCode, runMode RunMode) (StepOutput, bool) {
 	return NoStepOutput, done
 }
 
-func (s *Scene) getStepTimeCode(tc types.TimeCode, runMode RunMode) (types.TimeCode, bool) {
+func (s *Scene) getStepTimeCode(tc types.TimeCode, runMode types.RunMode) (types.TimeCode, bool) {
 	duration := types.TimeCode(s.Duration())
 	switch runMode {
-	case OneShot:
+	case types.RunModeOneShot:
 		return tc, tc > duration
-	case OneShotHold:
+	case types.RunModeOneShotHold:
 		if tc > duration {
 			return duration, false
 		}
 		return tc, false
-	case Cycle:
+	case types.RunModeCycle:
 		return tc % duration, false
 	}
 

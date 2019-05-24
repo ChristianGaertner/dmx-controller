@@ -1,22 +1,15 @@
-package scene
+package run
 
 import (
 	"context"
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
+	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"time"
 )
 
-type RunMode int
-
-const (
-	OneShot RunMode = iota
-	OneShotHold
-	Cycle
-)
-
-func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTimeCode <-chan types.TimeCode, onEval chan<- bool, onExit chan<- bool) {
+func Run(ctx context.Context, scene *scene.Scene, devices *fixture.DeviceMap, globalTimeCode <-chan types.TimeCode, onEval chan<- bool, onExit chan<- bool) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		cancel()
@@ -45,7 +38,7 @@ func Run(ctx context.Context, scene *Scene, devices *fixture.DeviceMap, globalTi
 		select {
 		case tc := <-timeCode:
 
-			out, done := scene.Eval(tc, OneShotHold)
+			out, done := scene.Eval(tc, types.RunModeCycle)
 
 			for id, val := range out {
 				devices.Get(id).Fixture.ApplyValueTo(val, devices.Get(id))

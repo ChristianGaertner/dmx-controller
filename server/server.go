@@ -1,9 +1,8 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
-	"github.com/ChristianGaertner/dmx-controller/fixture"
+	"github.com/ChristianGaertner/dmx-controller/run"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"github.com/gorilla/mux"
@@ -12,14 +11,7 @@ import (
 
 var scenes = make(map[string]*scene.Scene)
 
-var runningScene *runningSceneInfo
-
-type runningSceneInfo struct {
-	ID   string
-	stop context.CancelFunc
-}
-
-func ListenAndServe(ctx context.Context, devices *fixture.DeviceMap, timeCode <-chan types.TimeCode, onEval chan<- bool) error {
+func ListenAndServe(engine *run.Engine) error {
 
 	r := mux.NewRouter()
 
@@ -27,12 +19,13 @@ func ListenAndServe(ctx context.Context, devices *fixture.DeviceMap, timeCode <-
 	r.HandleFunc("/api/v1/resources/scene/{id}", getSceneHandler).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene", addSceneHandler).Methods("POST")
 
-	r.HandleFunc("/api/v1/resources/device", getDeviceIds(devices)).Methods("GET")
+	r.HandleFunc("/api/v1/resources/device", getDeviceIds(engine)).Methods("GET")
 
-	r.HandleFunc("/api/v1/run/scene/{id}", runSceneHandler(ctx, devices, timeCode, onEval)).Methods("POST")
-	r.HandleFunc("/api/v1/stop/scene", stopSceneHandler()).Methods("POST")
+	r.HandleFunc("/api/v1/run/scene/{id}", runSceneHandler(engine)).Methods("POST")
+	r.HandleFunc("/api/v1/stop/scene", stopSceneHandler(engine)).Methods("POST")
 
 	r.Use(panicMiddleware)
+	r.Use(timeoutMiddleware)
 	r.Use(corsMiddleware)
 
 	return http.ListenAndServe(":8080", r)
@@ -77,56 +70,30 @@ func getSceneIds(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func runSceneHandler(ctx context.Context, devices *fixture.DeviceMap, timeCode <-chan types.TimeCode, onEval chan<- bool) http.HandlerFunc {
+func runSceneHandler(engine *run.Engine) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
-
-		if runningScene != nil {
-			if runningScene.ID == id {
-				return
-			}
-			runningScene.stop()
-		}
-
-		ctx, cancel := context.WithCancel(ctx)
-
-		runningScene = &runningSceneInfo{
-			ID:   id,
-			stop: cancel,
-		}
-
 		target, ok := scenes[id]
 		if !ok {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
 
-		onExit := make(chan bool)
-
-		go scene.Run(ctx, target, devices, timeCode, onEval, onExit)
-
-		go func() {
-			<-onExit
-			runningScene = nil
-		}()
-
+		engine.Run(target, run.UseStepTimings, types.RunModeCycle)
 		w.WriteHeader(http.StatusAccepted)
 	})
 }
 
-func stopSceneHandler() http.HandlerFunc {
+func stopSceneHandler(engine *run.Engine) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if runningScene != nil {
-			runningScene.stop()
-			runningScene = nil
-		}
+		engine.Stop()
 		w.WriteHeader(http.StatusAccepted)
 	})
 }
 
-func getDeviceIds(devices *fixture.DeviceMap) http.HandlerFunc {
+func getDeviceIds(engine *run.Engine) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewEncoder(w).Encode(devices.GetIdentifiers())
+		err := json.NewEncoder(w).Encode(engine.DeviceMap.GetIdentifiers())
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}

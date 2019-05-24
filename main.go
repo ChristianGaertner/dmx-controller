@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
@@ -11,12 +12,16 @@ import (
 	"io/ioutil"
 )
 
+var addr = flag.String("address", ":8080", "Address of the server to listen on")
+
 func main() {
+	flag.Parse()
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	buffer := dmx.NewBuffer()
-	renderer := &dmx.StdOutRenderer{NumChannels: 10}
-	//renderer := &dmx.NilRenderer{}
+	//renderer := &dmx.StdOutRenderer{NumChannels: 10}
+	renderer := &dmx.NilRenderer{}
 	//renderer, err := dmx.NewEnttecRenderer()
 	//if err != nil {
 	//	panic(err)
@@ -53,7 +58,7 @@ func main() {
 	engine := run.NewEngine(renderer, deviceMap, buffer)
 	go engine.Boot(ctx, onExit)
 
-	err = server.ListenAndServe(engine)
+	err = server.ListenAndServe(*addr, engine)
 	fmt.Println(err)
 
 	fmt.Println("Shutting down...")

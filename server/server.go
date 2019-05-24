@@ -11,7 +11,7 @@ import (
 
 var scenes = make(map[string]*scene.Scene)
 
-func ListenAndServe(engine *run.Engine) error {
+func ListenAndServe(addr string, engine *run.Engine) error {
 
 	r := mux.NewRouter()
 
@@ -28,7 +28,7 @@ func ListenAndServe(engine *run.Engine) error {
 	r.Use(timeoutMiddleware)
 	r.Use(corsMiddleware)
 
-	return http.ListenAndServe(":8080", r)
+	return http.ListenAndServe(addr, r)
 }
 
 func addSceneHandler(w http.ResponseWriter, r *http.Request) {

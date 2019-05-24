@@ -58,11 +58,9 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 			r.stop = make(chan bool)
 			ctx, cancel := context.WithCancel(ctx)
 			onFinish := make(chan bool)
-			ticker := NewTicker()
 			e.active = &r
 
-			go ticker.Run(ctx)
-			go Run(ctx, r.scene, e.DeviceMap, ticker.TimeCode, onEval, onFinish)
+			go runTimebased(ctx, r.scene, e.DeviceMap, onEval, onFinish)
 			go func() {
 				// wait for finish or stop signal
 				select {

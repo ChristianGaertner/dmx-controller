@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Run(ctx context.Context, scene *scene.Scene, devices *fixture.DeviceMap, globalTimeCode <-chan types.TimeCode, onEval chan<- bool, onExit chan<- bool) {
+func runTimebased(ctx context.Context, scene *scene.Scene, devices *fixture.DeviceMap, onEval chan<- bool, onExit chan<- bool) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		cancel()
@@ -19,24 +19,13 @@ func Run(ctx context.Context, scene *scene.Scene, devices *fixture.DeviceMap, gl
 			fmt.Printf("Error Running Scene '%s': %s\n", scene.ID, err)
 		}
 	}()
-	initTc := <-globalTimeCode
 
-	timeCode := make(chan types.TimeCode)
-
-	go func() {
-		for {
-			select {
-			case tc := <-globalTimeCode:
-				timeCode <- tc - initTc
-			case <-ctx.Done():
-				return
-			}
-		}
-	}()
+	ticker := newTicker()
+	go ticker.Run(ctx)
 
 	for {
 		select {
-		case tc := <-timeCode:
+		case tc := <-ticker.TimeCode:
 
 			out, done := scene.Eval(tc, types.RunModeCycle)
 
@@ -55,7 +44,7 @@ func Run(ctx context.Context, scene *scene.Scene, devices *fixture.DeviceMap, gl
 	}
 }
 
-type Ticker struct {
+type rateticker struct {
 	timeTicker       *time.Ticker
 	TimeCode         <-chan types.TimeCode
 	t                chan types.TimeCode
@@ -63,13 +52,13 @@ type Ticker struct {
 	Rate             float64
 }
 
-func NewTicker() *Ticker {
+func newTicker() *rateticker {
 	tickerResolution := 50 * time.Millisecond
 	ticker := time.NewTicker(tickerResolution)
 
 	ch := make(chan types.TimeCode)
 
-	return &Ticker{
+	return &rateticker{
 		timeTicker:       ticker,
 		TimeCode:         ch,
 		t:                ch,
@@ -78,11 +67,12 @@ func NewTicker() *Ticker {
 	}
 }
 
-func (t *Ticker) Run(ctx context.Context) {
+func (t *rateticker) Run(ctx context.Context) {
 	var tc types.TimeCode
 	for {
 		select {
 		case <-ctx.Done():
+			t.timeTicker.Stop()
 			return
 		case <-t.timeTicker.C:
 			t.t <- tc
@@ -91,7 +81,7 @@ func (t *Ticker) Run(ctx context.Context) {
 	}
 }
 
-func (t *Ticker) Stop() {
+func (t *rateticker) Stop() {
 	t.timeTicker.Stop()
 	close(t.t)
 }

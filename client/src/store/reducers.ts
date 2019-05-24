@@ -12,6 +12,7 @@ import {
   LOAD_DEVICES_REQUEST,
   LOAD_DEVICES_RESPONSE,
 } from "./actions/loadDevices";
+import { SET_TAB, UiTab } from "./actions/setTab";
 
 export { editor };
 
@@ -105,6 +106,25 @@ export const devices = (
         ...state,
         isFetching: false,
         ids: action.payload.devices,
+      };
+    default:
+      return state;
+  }
+};
+
+type UiState = {
+  activeTab: UiTab;
+};
+
+export const ui = (
+  state: UiState = { activeTab: UiTab.PROGRAM },
+  action: Action,
+): UiState => {
+  switch (action.type) {
+    case SET_TAB:
+      return {
+        ...state,
+        activeTab: action.payload.tab,
       };
     default:
       return state;

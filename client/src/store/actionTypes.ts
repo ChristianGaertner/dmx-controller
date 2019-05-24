@@ -11,10 +11,12 @@ import {
   LoadDevicesRequestAction,
   LoadDevicesResponseAction,
 } from "./actions/loadDevices";
+import { SetTabAction } from "./actions/setTab";
 
 export interface BaseAction extends ReduxAction<string> {}
 
 export type Action =
+  | SetTabAction
   | LoadSceneRequestAction
   | LoadSceneResponseAction
   | LoadSceneListRequestAction

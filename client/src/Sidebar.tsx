@@ -1,9 +1,10 @@
 import * as React from "react";
 import cx from "classnames";
+import { UiTab } from "./store/actions/setTab";
 
 type Props = {
-  page: "live" | "editor";
-  setPage: (page: "live" | "editor") => void;
+  tab: UiTab;
+  setTab: (tab: UiTab) => void;
 };
 
 export const Sidebar: React.FunctionComponent<Props> = props => (
@@ -11,13 +12,13 @@ export const Sidebar: React.FunctionComponent<Props> = props => (
     <ul>
       <SidebarItem
         label="Live"
-        active={props.page === "live"}
-        onClick={() => props.setPage("live")}
+        active={props.tab === UiTab.LIVE}
+        onClick={() => props.setTab(UiTab.LIVE)}
       />
       <SidebarItem
         label="Editor"
-        active={props.page === "editor"}
-        onClick={() => props.setPage("editor")}
+        active={props.tab === UiTab.PROGRAM}
+        onClick={() => props.setTab(UiTab.PROGRAM)}
       />
     </ul>
   </div>

@@ -23,14 +23,41 @@ func runTimebased(ctx context.Context, scene *scene.Scene, devices *fixture.Devi
 	ticker := newTicker()
 	go ticker.Run(ctx)
 
+	getStepTimeCode := func(tc types.TimeCode, runMode types.RunMode) (types.TimeCode, bool) {
+		duration := types.TimeCode(scene.Duration())
+
+		switch runMode {
+		case types.RunModeOneShot:
+			return tc, tc > duration
+		case types.RunModeOneShotHold:
+			if tc > duration {
+				return duration, false
+			}
+			return tc, false
+		case types.RunModeCycle:
+			return tc % duration, false
+		}
+		panic("RunMode not recognized")
+	}
+
+	stepInfo := stepInfo{}
+
 	for {
 		select {
 		case tc := <-ticker.TimeCode:
+			stepTimeCode, done := getStepTimeCode(tc, types.RunModeCycle)
+			stepIndex, ok := scene.GetStepIndexAt(stepTimeCode)
+			stepInfo.Supply(stepIndex, tc)
 
-			out, done := scene.Eval(tc, types.RunModeCycle)
+			if !ok {
+				done = true
+			} else {
+				out := scene.Eval(tc, time.Duration(tc-stepInfo.activeSince), stepInfo.active, stepInfo.prev)
 
-			for id, val := range out {
-				devices.Get(id).Fixture.ApplyValueTo(val, devices.Get(id))
+				// render
+				for id, val := range out {
+					devices.Get(id).Fixture.ApplyValueTo(val, devices.Get(id))
+				}
 			}
 
 			onEval <- true
@@ -41,6 +68,20 @@ func runTimebased(ctx context.Context, scene *scene.Scene, devices *fixture.Devi
 			onEval <- true
 			return
 		}
+	}
+}
+
+type stepInfo struct {
+	prev        int
+	active      int
+	activeSince types.TimeCode
+}
+
+func (si *stepInfo) Supply(stepIndex int, tc types.TimeCode) {
+	if stepIndex != si.active {
+		si.prev = si.active
+		si.active = stepIndex
+		si.activeSince = tc
 	}
 }
 

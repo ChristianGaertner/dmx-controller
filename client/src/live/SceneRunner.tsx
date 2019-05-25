@@ -1,17 +1,20 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { AppState } from "../store";
-import { getRunningScene } from "../store/selectors";
+import { getRunningScene, getSceneList } from "../store/selectors";
 import { runScene } from "../store/actions/runScene";
 import { Button, ButtonType } from "../components/Button";
+import { loadSceneList } from "../store/actions/loadScene";
 
 type StateProps = {
+  scenes: string[];
   runningScene: string | null;
 };
 
 type DispatchProps = {
   runScene: (id: string) => void;
   stopScene: () => void;
+  loadScenes: () => void;
 };
 
 type Props = StateProps & DispatchProps;
@@ -20,14 +23,12 @@ const SceneRunnerComp: React.FunctionComponent<Props> = ({
   runningScene,
   runScene,
   stopScene,
+  scenes,
+  loadScenes,
 }) => {
-  const [scenes, setScenes] = React.useState([]);
-
   React.useEffect(() => {
-    fetch("http://localhost:8080/api/v1/resources/scene")
-      .then(r => r.json())
-      .then(setScenes);
-  }, []);
+    loadScenes();
+  }, [loadScenes]);
 
   return (
     <div className="flex flex-col">
@@ -57,11 +58,13 @@ const SceneRunnerComp: React.FunctionComponent<Props> = ({
 
 const mapStateToProps = (state: AppState): StateProps => ({
   runningScene: getRunningScene(state),
+  scenes: getSceneList(state),
 });
 
 const mapDispatchToProps: DispatchProps = {
   runScene: runScene,
   stopScene: () => runScene(null),
+  loadScenes: loadSceneList,
 };
 
 export const SceneRunner = connect(

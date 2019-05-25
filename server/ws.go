@@ -20,6 +20,7 @@ var upgrader = websocket.Upgrader{
 
 type message struct {
 	MessageType string      `json:"type"`
+	Timestamp   time.Time   `json:"serverTimestamp"`
 	Payload     interface{} `json:"payload"`
 }
 
@@ -37,6 +38,7 @@ func (wsc *WSClient) OnActiveChange(sceneID *string) bool {
 
 	msg := message{
 		MessageType: "ON_ACTIVE_CHANGE",
+		Timestamp:   time.Now(),
 		Payload: activeSceneChangedPayload{
 			SceneID: sceneID,
 		},

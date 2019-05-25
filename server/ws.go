@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+const (
+	writeWait = 10 * time.Second
+)
+
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -31,7 +35,8 @@ type activeSceneChangedPayload struct {
 type WSClient struct {
 	conn *websocket.Conn
 
-	send chan []byte
+	send       chan []byte
+	unregister func(client *WSClient)
 }
 
 func (wsc *WSClient) OnActiveChange(sceneID *string) bool {
@@ -62,9 +67,10 @@ func (wsc *WSClient) OnActiveChange(sceneID *string) bool {
 // writePump pumps messages from the hub to the websocket connection.
 func (wsc *WSClient) writePump() {
 
-	ticker := time.NewTicker(60 * time.Second)
+	ticker := time.NewTicker(2 * time.Second)
 
 	defer func() {
+		wsc.unregister(wsc)
 		ticker.Stop()
 		_ = wsc.conn.Close()
 	}()
@@ -72,8 +78,8 @@ func (wsc *WSClient) writePump() {
 	for {
 		select {
 		case message, ok := <-wsc.send:
+			_ = wsc.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
-				fmt.Println("CLOSING")
 				_ = wsc.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
@@ -91,6 +97,7 @@ func (wsc *WSClient) writePump() {
 				return
 			}
 		case <-ticker.C:
+			_ = wsc.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := wsc.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
 			}
@@ -108,7 +115,13 @@ func handleWebsocket(engine *run.Engine) http.HandlerFunc {
 			return
 		}
 
-		client := &WSClient{conn: conn, send: make(chan []byte, 2)}
+		client := &WSClient{
+			conn: conn,
+			send: make(chan []byte, 2),
+			unregister: func(client *WSClient) {
+				engine.Unregister(client)
+			},
+		}
 
 		engine.Register(client)
 

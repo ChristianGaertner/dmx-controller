@@ -12,6 +12,7 @@ import {
   LoadDevicesResponseAction,
 } from "./actions/loadDevices";
 import { SetTabAction } from "./actions/setTab";
+import { WebsocketActions } from "./websocket/actions";
 
 export interface BaseAction extends ReduxAction<string> {}
 
@@ -24,4 +25,5 @@ export type Action =
   | LoadDevicesRequestAction
   | LoadDevicesResponseAction
   | RunSceneAction
-  | EditorAction;
+  | EditorAction
+  | WebsocketActions;

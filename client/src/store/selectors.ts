@@ -10,7 +10,8 @@ export const getScene = (
 export const getSceneList = (state: AppState): string[] =>
   state.sceneList.scenes || [];
 
-export const getRunningScene = (state: AppState) => state.running;
+export const getRunningScene = (state: AppState): string | null =>
+  state.running.sceneId;
 
 export const getDeviceIds = (state: AppState): string[] => state.devices.ids;
 

@@ -7,6 +7,7 @@ import { loadDevices } from "./store/actions/loadDevices";
 import { setTab, UiTab } from "./store/actions/setTab";
 import { AppState } from "./store";
 import { getActiveTab } from "./store/selectors";
+import { wsConnect } from "./store/websocket/actions";
 
 type StateProps = {
   tab: UiTab;
@@ -15,14 +16,21 @@ type StateProps = {
 type DispatchProps = {
   loadDevices: () => void;
   setTab: (tab: UiTab) => void;
+  wsConnect: () => void;
 };
 
 type Props = StateProps & DispatchProps;
 
-const App: React.FunctionComponent<Props> = ({ tab, setTab, loadDevices }) => {
+const App: React.FunctionComponent<Props> = ({
+  tab,
+  setTab,
+  loadDevices,
+  wsConnect,
+}) => {
   React.useEffect(() => {
     loadDevices();
-  }, [loadDevices]);
+    wsConnect();
+  }, [loadDevices, wsConnect]);
 
   return (
     <div className="flex flex-row">
@@ -40,6 +48,7 @@ const mapStateToProps = (state: AppState): StateProps => ({
 const mapDispatchToProps: DispatchProps = {
   loadDevices: loadDevices,
   setTab: setTab,
+  wsConnect: wsConnect,
 };
 
 export default connect(

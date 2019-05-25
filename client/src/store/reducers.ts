@@ -13,6 +13,7 @@ import {
   LOAD_DEVICES_RESPONSE,
 } from "./actions/loadDevices";
 import { SET_TAB, UiTab } from "./actions/setTab";
+import { ON_ACTIVE_CHANGE } from "./websocket/messages";
 
 export { editor };
 
@@ -72,12 +73,28 @@ export const sceneList = (
   }
 };
 
-export const running = (runningScene: string | null = null, action: Action) => {
+type RunningSceneStore = {
+  sceneId: string | null;
+  requestedId: string | null;
+};
+
+export const running = (
+  state: RunningSceneStore = { sceneId: null, requestedId: null },
+  action: Action,
+) => {
   switch (action.type) {
     case RUN_SCENE:
-      return action.payload.id;
+      return {
+        ...state,
+        requestedId: action.payload.id,
+      };
+    case ON_ACTIVE_CHANGE:
+      return {
+        ...state,
+        sceneId: action.payload.sceneId,
+      };
     default:
-      return runningScene;
+      return state;
   }
 };
 

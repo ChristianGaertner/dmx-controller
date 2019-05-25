@@ -33,16 +33,35 @@ type Engine struct {
 
 	runScene  chan SceneRun
 	stopScene chan bool
+
+	registerClient   chan EngineClient
+	unregisterClient chan EngineClient
+	clients          map[EngineClient]bool
+}
+
+type EngineClient interface {
+	OnActiveChange(sceneID *string) bool
 }
 
 func NewEngine(renderer dmx.BufferRenderer, deviceMap *fixture.DeviceMap, buffer *dmx.Buffer) *Engine {
 	return &Engine{
-		Renderer:  renderer,
-		DeviceMap: deviceMap,
-		Buffer:    buffer,
-		runScene:  make(chan SceneRun),
-		stopScene: make(chan bool),
+		Renderer:         renderer,
+		DeviceMap:        deviceMap,
+		Buffer:           buffer,
+		runScene:         make(chan SceneRun),
+		stopScene:        make(chan bool),
+		registerClient:   make(chan EngineClient),
+		unregisterClient: make(chan EngineClient),
+		clients:          make(map[EngineClient]bool),
 	}
+}
+
+func (e *Engine) Register(c EngineClient) {
+	e.registerClient <- c
+}
+
+func (e *Engine) Unregister(c EngineClient) {
+	e.unregisterClient <- c
 }
 
 func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
@@ -59,6 +78,12 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 			ctx, cancel := context.WithCancel(ctx)
 			onFinish := make(chan bool)
 			e.active = &r
+
+			for c := range e.clients {
+				if ok := c.OnActiveChange(&e.active.scene.ID); !ok {
+					delete(e.clients, c)
+				}
+			}
 
 			go runTimebased(ctx, r.scene, e.DeviceMap, onEval, onFinish)
 			go func() {
@@ -78,6 +103,16 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 			if e.active != nil {
 				e.active.stop <- true
 			}
+
+			for c := range e.clients {
+				if ok := c.OnActiveChange(nil); !ok {
+					delete(e.clients, c)
+				}
+			}
+		case c := <-e.registerClient:
+			e.clients[c] = true
+		case c := <-e.unregisterClient:
+			delete(e.clients, c)
 		case <-ctx.Done():
 			close(e.stopScene)
 			close(e.runScene)

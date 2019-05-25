@@ -15,6 +15,7 @@ func ListenAndServe(addr string, engine *run.Engine) error {
 
 	r := mux.NewRouter()
 
+	r.HandleFunc("/api/v1/ws", handleWebsocket(engine))
 	r.HandleFunc("/api/v1/resources/scene", getSceneIds).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene/{id}", getSceneHandler).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene", addSceneHandler).Methods("POST")

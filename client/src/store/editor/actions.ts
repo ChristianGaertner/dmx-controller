@@ -2,7 +2,7 @@ import { Effect, EffectType, FixtureValue, Scene, Timings } from "../../types";
 import { BaseAction } from "../actionTypes";
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
-import { apiBasePath } from "../actions/config";
+import { apiBasePath } from "../config";
 import { getSceneForEditing } from "./selectors";
 import { getScene } from "../selectors";
 

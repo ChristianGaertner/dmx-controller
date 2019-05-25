@@ -1,6 +1,6 @@
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
-import { apiBasePath } from "./config";
+import { apiBasePath } from "../config";
 import { BaseAction } from "../actionTypes";
 
 export const RUN_SCENE = "RUN_SCENE";

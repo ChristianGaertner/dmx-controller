@@ -1,7 +1,7 @@
 import { Scene } from "../../types";
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
-import { apiBasePath } from "./config";
+import { apiBasePath } from "../config";
 import { BaseAction } from "../actionTypes";
 
 export const LOAD_SCENE_REQUEST = "LOAD_SCENE_REQUEST";

@@ -1,6 +1,6 @@
 import { Dispatch, Middleware, MiddlewareAPI } from "redux";
 import { Action } from "../actionTypes";
-import { WS_CONNECT } from "./actions";
+import { WS_CONNECT, wsConnected, wsDisconnected } from "./actions";
 import { websocketEndpoint } from "../config";
 import { ON_ACTIVE_CHANGE } from "./messages";
 
@@ -11,7 +11,7 @@ class ReduxWebsocket {
     this.websocket = new WebSocket(websocketEndpoint);
 
     this.websocket.addEventListener("open", () => {
-      console.log("OPEN");
+      dispatch(wsConnected());
     });
     this.websocket.addEventListener("message", event => {
       const message = JSON.parse(event.data) as { type: string; payload: any };
@@ -26,7 +26,7 @@ class ReduxWebsocket {
       }
     });
     this.websocket.addEventListener("close", () => {
-      console.log("CLOSE");
+      dispatch(wsDisconnected());
     });
   }
 }

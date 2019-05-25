@@ -1,6 +1,7 @@
 import * as React from "react";
 import cx from "classnames";
 import { UiTab } from "./store/actions/setTab";
+import { ConnectionIndicator } from "./ConnectionIndicator";
 
 type Props = {
   tab: UiTab;
@@ -8,7 +9,7 @@ type Props = {
 };
 
 export const Sidebar: React.FunctionComponent<Props> = props => (
-  <div className="bg-gray-1000 py-8 pr-4 border-l-4 border-blue-500 rounded-r-lg">
+  <div className="flex flex-col bg-gray-1000 py-8 pr-4 border-l-4 border-blue-500 rounded-r-lg">
     <ul>
       <SidebarItem
         label="Live"
@@ -21,6 +22,9 @@ export const Sidebar: React.FunctionComponent<Props> = props => (
         onClick={() => props.setTab(UiTab.PROGRAM)}
       />
     </ul>
+    <div className="mt-auto">
+      <ConnectionIndicator />
+    </div>
   </div>
 );
 

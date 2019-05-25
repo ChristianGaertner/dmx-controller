@@ -8,6 +8,7 @@ import {
 } from "./actions/loadScene";
 import { RUN_SCENE } from "./actions/runScene";
 import { editor } from "./editor/reducers";
+import { websocket } from "./websocket/reducers";
 import {
   LOAD_DEVICES_REQUEST,
   LOAD_DEVICES_RESPONSE,
@@ -15,7 +16,7 @@ import {
 import { SET_TAB, UiTab } from "./actions/setTab";
 import { ON_ACTIVE_CHANGE } from "./websocket/messages";
 
-export { editor };
+export { editor, websocket };
 
 type SceneStore = {
   [K: string]: {

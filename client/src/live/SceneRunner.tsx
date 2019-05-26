@@ -5,6 +5,7 @@ import { getRunningScene, getSceneList } from "../store/selectors";
 import { runScene } from "../store/actions/runScene";
 import { Button, ButtonType } from "../components/Button";
 import { loadSceneList } from "../store/actions/loadScene";
+import { RunModeSelector } from "./RunModeSelector";
 
 type StateProps = {
   scenes: string[];
@@ -39,6 +40,7 @@ const SceneRunnerComp: React.FunctionComponent<Props> = ({
           label="STOP"
           onClick={runningScene !== null ? stopScene : undefined}
         />
+        <RunModeSelector />
       </div>
       <div className="flex">
         <div />

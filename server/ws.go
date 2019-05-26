@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/run"
 	"github.com/gorilla/websocket"
@@ -10,7 +9,9 @@ import (
 )
 
 const (
-	writeWait = 10 * time.Second
+	writeWait      = 10 * time.Second
+	pongWait       = 20 * time.Second
+	maxMessageSize = 512
 )
 
 var upgrader = websocket.Upgrader{
@@ -24,86 +25,20 @@ var upgrader = websocket.Upgrader{
 
 type message struct {
 	MessageType string      `json:"type"`
-	Timestamp   time.Time   `json:"serverTimestamp"`
+	Timestamp   time.Time   `json:"timestamp"`
 	Payload     interface{} `json:"payload"`
 }
 
-type activeSceneChangedPayload struct {
-	SceneID *string `json:"sceneId"`
-}
+const (
+	MsgTypeOnActiveChange = "ON_ACTIVE_CHANGE"
+	MsgTypeSendRunParams  = "SEND_RUN_PARAMS"
+)
 
 type WSClient struct {
 	conn *websocket.Conn
 
-	send       chan []byte
-	unregister func(client *WSClient)
-}
-
-func (wsc *WSClient) OnActiveChange(sceneID *string) bool {
-
-	msg := message{
-		MessageType: "ON_ACTIVE_CHANGE",
-		Timestamp:   time.Now(),
-		Payload: activeSceneChangedPayload{
-			SceneID: sceneID,
-		},
-	}
-
-	data, err := json.Marshal(msg)
-	if err != nil {
-		// TODO logging
-		panic(err)
-	}
-
-	select {
-	case wsc.send <- data:
-		return true
-	default:
-		close(wsc.send)
-		return false
-	}
-}
-
-// writePump pumps messages from the hub to the websocket connection.
-func (wsc *WSClient) writePump() {
-
-	ticker := time.NewTicker(2 * time.Second)
-
-	defer func() {
-		wsc.unregister(wsc)
-		ticker.Stop()
-		_ = wsc.conn.Close()
-	}()
-
-	for {
-		select {
-		case message, ok := <-wsc.send:
-			_ = wsc.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if !ok {
-				_ = wsc.conn.WriteMessage(websocket.CloseMessage, []byte{})
-				return
-			}
-
-			w, err := wsc.conn.NextWriter(websocket.TextMessage)
-			if err != nil {
-				return
-			}
-			_, err = w.Write(message)
-			if err != nil {
-				return
-			}
-
-			if err := w.Close(); err != nil {
-				return
-			}
-		case <-ticker.C:
-			_ = wsc.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := wsc.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-				return
-			}
-		}
-	}
-
+	send   chan []byte
+	engine *run.Engine
 }
 
 func handleWebsocket(engine *run.Engine) http.HandlerFunc {
@@ -116,15 +51,14 @@ func handleWebsocket(engine *run.Engine) http.HandlerFunc {
 		}
 
 		client := &WSClient{
-			conn: conn,
-			send: make(chan []byte, 2),
-			unregister: func(client *WSClient) {
-				engine.Unregister(client)
-			},
+			conn:   conn,
+			send:   make(chan []byte, 2),
+			engine: engine,
 		}
 
 		engine.Register(client)
 
 		go client.writePump()
+		go client.readPump()
 	})
 }

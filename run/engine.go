@@ -2,6 +2,7 @@ package run
 
 import (
 	"context"
+	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/scene"
@@ -37,6 +38,8 @@ type Engine struct {
 	registerClient   chan EngineClient
 	unregisterClient chan EngineClient
 	clients          map[EngineClient]bool
+
+	setRunMode chan types.RunMode
 }
 
 type EngineClient interface {
@@ -53,6 +56,7 @@ func NewEngine(renderer dmx.BufferRenderer, deviceMap *fixture.DeviceMap, buffer
 		registerClient:   make(chan EngineClient),
 		unregisterClient: make(chan EngineClient),
 		clients:          make(map[EngineClient]bool),
+		setRunMode:       make(chan types.RunMode),
 	}
 }
 
@@ -85,7 +89,7 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 				}
 			}
 
-			go runTimebased(ctx, r.scene, e.DeviceMap, onEval, onFinish)
+			go e.runTimebased(ctx, r.scene, onEval, onFinish)
 			go func() {
 				// wait for finish or stop signal
 				select {
@@ -129,4 +133,12 @@ func (e *Engine) Run(scene *scene.Scene, typ Type, mode types.RunMode) {
 
 func (e *Engine) Stop() {
 	e.stopScene <- true
+}
+
+func (e *Engine) SetRunMode(runMode types.RunMode) {
+	select {
+	case e.setRunMode <- runMode:
+	default:
+		fmt.Println("NP")
+	}
 }

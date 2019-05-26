@@ -3,13 +3,12 @@ package run
 import (
 	"context"
 	"fmt"
-	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"time"
 )
 
-func runTimebased(ctx context.Context, scene *scene.Scene, devices *fixture.DeviceMap, onEval chan<- bool, onExit chan<- bool) {
+func (e *Engine) runTimebased(ctx context.Context, scene *scene.Scene, onEval chan<- bool, onExit chan<- bool) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		cancel()
@@ -42,10 +41,23 @@ func runTimebased(ctx context.Context, scene *scene.Scene, devices *fixture.Devi
 
 	stepInfo := stepInfo{}
 
+	runMode := types.RunModeCycle
+
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case r := <-e.setRunMode:
+				runMode = r
+			}
+		}
+	}()
+
 	for {
 		select {
 		case tc := <-ticker.TimeCode:
-			stepTimeCode, done := getStepTimeCode(tc, types.RunModeCycle)
+			stepTimeCode, done := getStepTimeCode(tc, runMode)
 			stepIndex, ok := scene.GetStepIndexAt(stepTimeCode)
 			stepInfo.Supply(stepIndex, tc)
 
@@ -56,7 +68,7 @@ func runTimebased(ctx context.Context, scene *scene.Scene, devices *fixture.Devi
 
 				// render
 				for id, val := range out {
-					devices.Get(id).Fixture.ApplyValueTo(val, devices.Get(id))
+					e.DeviceMap.Get(id).Fixture.ApplyValueTo(val, e.DeviceMap.Get(id))
 				}
 			}
 

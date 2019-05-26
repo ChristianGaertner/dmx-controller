@@ -95,3 +95,13 @@ export type Color = {
   G: number;
   B: number;
 };
+
+export enum RunMode {
+  OneShot = 0,
+  OneShotHold = 1,
+  Cycle = 2,
+}
+
+export type RunParams = {
+  runMode: RunMode;
+};

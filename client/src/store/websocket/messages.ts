@@ -1,17 +1,13 @@
 import { BaseAction } from "../actionTypes";
+import { RawMessage } from "./middleware";
+import { RunMode, RunParams } from "../../types";
 
-export type RawServerMessage = {
-  type: string;
-  serverTimestamp: string;
-  payload: any;
-};
+export type WsMessages = OnActiveChangeMessage | SendRunModeMessage;
 
-export type WsMessages = OnActiveChangeMessage;
-
-interface WsMessage<T extends string, P> extends BaseAction {
+export interface WsMessage<T extends string, P> extends BaseAction {
   type: T;
   payload: P;
-  serverTimestamp: Date;
+  timestamp: Date;
 }
 
 export const ON_ACTIVE_CHANGE = "@websocket/ON_ACTIVE_CHANGE";
@@ -23,9 +19,24 @@ type OnActiveChangeMessage = WsMessage<
 >;
 
 export const onActiveChangeMessage = (
-  msg: RawServerMessage,
+  msg: RawMessage,
 ): OnActiveChangeMessage => ({
   type: ON_ACTIVE_CHANGE,
   payload: msg.payload,
-  serverTimestamp: new Date(msg.serverTimestamp),
+  timestamp: new Date(msg.timestamp),
+});
+
+export const WS_SEND_PREFIX = "@websocket/send/";
+
+export const SEND_RUN_PARAMS = "@websocket/send/SEND_RUN_PARAMS";
+type SendRunModeMessage = WsMessage<
+  typeof SEND_RUN_PARAMS,
+  {
+    runMode: RunMode;
+  }
+>;
+export const sendRunParams = (params: RunParams): SendRunModeMessage => ({
+  type: SEND_RUN_PARAMS,
+  payload: params,
+  timestamp: new Date(),
 });

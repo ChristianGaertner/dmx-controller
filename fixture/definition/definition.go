@@ -10,6 +10,7 @@ type ModeID uint32
 type Modes map[ModeID]Mode
 
 type Definition struct {
+	ID    string          `json:"id"`
 	Modes map[ModeID]Mode `json:"modes"`
 }
 

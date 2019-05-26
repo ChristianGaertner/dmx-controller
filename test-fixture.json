@@ -1,4 +1,5 @@
 {
+  "id": "test-fixture",
   "modes": {
     "0": {
       "numChannels": 5,

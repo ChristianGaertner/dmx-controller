@@ -2,7 +2,9 @@ package definition
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
+	"io/ioutil"
 )
 
 type ModeID uint32
@@ -12,6 +14,20 @@ type Modes map[ModeID]Mode
 type Definition struct {
 	ID    string          `json:"id"`
 	Modes map[ModeID]Mode `json:"modes"`
+}
+
+func Load(id string) (*Definition, error) {
+	data, err := ioutil.ReadFile("./resources/fixtures/" + id + ".json")
+	if err != nil {
+		return nil, fmt.Errorf("cannot read fixture definition file: %e", err)
+	}
+
+	def, err := FromJson(data)
+	if err != nil {
+		return nil, fmt.Errorf("cannot parse fixture definition file: %e", err)
+	}
+
+	return def, nil
 }
 
 func FromJson(data []byte) (*Definition, error) {

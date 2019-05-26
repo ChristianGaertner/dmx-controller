@@ -1,0 +1,57 @@
+{
+  "universes": {
+    "001": {
+      "name": "main",
+      "devices": {
+        "ledBarLeft": {
+          "name": "LED BAR Left",
+          "startAddress": 1,
+          "fixtureId": "test-fixture",
+          "mode": 0
+        },
+        "ledBarMiddle": {
+          "name": "LED BAR Middle",
+          "startAddress": 17,
+          "fixtureId": "test-fixture",
+          "mode": 0
+        },
+        "ledBarRight": {
+          "name": "LED BAR Right",
+          "startAddress": 33,
+          "fixtureId": "test-fixture",
+          "mode": 0
+        },
+        "spotLeftWindow": {
+          "name": "Spot Left To Window",
+          "startAddress": 49,
+          "fixtureId": "test-fixture",
+          "mode": 0
+        },
+        "spotLeftDoor": {
+          "name": "Spot Left To Door",
+          "startAddress": 65,
+          "fixtureId": "test-fixture",
+          "mode": 0
+        },
+        "spotLeftFritz": {
+          "name": "Spot Left Fritzbar",
+          "startAddress": 81,
+          "fixtureId": "test-fixture",
+          "mode": 0
+        },
+        "spotRight": {
+          "name": "Spot Right Insta",
+          "startAddress": 97,
+          "fixtureId": "test-fixture",
+          "mode": 0
+        },
+        "strobe": {
+          "name": "Strobo",
+          "startAddress": 113,
+          "fixtureId": "test-fixture",
+          "mode": 0
+        }
+      }
+    }
+  }
+}

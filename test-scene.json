@@ -9,7 +9,7 @@
     {
       "id": "sc001#01",
       "values": {
-        "devA": {
+        "spotLeftWindow": {
           "dimmer": 1,
           "color": {
             "R": 1,
@@ -17,8 +17,15 @@
             "B": 0
           }
         },
-        "devB": {
+        "spotLeftFritz": {
           "dimmer": 1,
+          "color": {
+            "R": 1,
+            "G": 0,
+            "B": 0
+          }
+        },
+        "ledBarLeft": {
           "color": {
             "R": 1,
             "G": 0,
@@ -30,7 +37,7 @@
     {
       "id": "sc001#02",
       "values": {
-        "devA": {
+        "spotLeftWindow": {
           "dimmer": 1,
           "color": {
             "R": 0,
@@ -38,7 +45,7 @@
             "B": 0
           }
         },
-        "devB": {
+        "spotLeftFritz": {
           "dimmer": 1,
           "color": {
             "R": 0,
@@ -52,14 +59,14 @@
     {
       "id": "sc001#03",
       "values": {
-        "devA": {
+        "spotLeftWindow": {
           "color": {
             "R": 1,
             "G": 1,
             "B": 1
           }
         },
-        "devB": {
+        "spotLeftFritz": {
           "color": {
             "R": 1,
             "G": 1,
@@ -72,8 +79,8 @@
           "id": "sc001#03#01",
           "type": "DimmerSineType",
           "devices": [
-            "devA",
-            "devB"
+            "spotLeftWindow",
+            "spotLeftFritz"
           ],
           "min": 0.5,
           "max": 1,
@@ -90,14 +97,14 @@
     {
       "id": "sc001#04",
       "values": {
-        "devA": {
+        "spotLeftWindow": {
           "color": {
             "R": 1,
             "G": 1,
             "B": 1
           }
         },
-        "devB": {
+        "spotLeftFritz": {
           "dimmer": null,
           "color": {
             "R": 1,
@@ -111,8 +118,8 @@
           "id": "sc001#04#01",
           "type": "DimmerSineType",
           "devices": [
-            "devA",
-            "devB"
+            "spotLeftWindow",
+            "spotLeftFritz"
           ],
           "min": 0.5,
           "max": 1,

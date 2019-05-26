@@ -6,18 +6,20 @@ import (
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
-	"github.com/ChristianGaertner/dmx-controller/fixture/definition"
 	"github.com/ChristianGaertner/dmx-controller/run"
 	"github.com/ChristianGaertner/dmx-controller/server"
-	"io/ioutil"
+	"github.com/ChristianGaertner/dmx-controller/setup"
 )
 
 var addr = flag.String("address", ":8080", "Address of the server to listen on")
+var setupFile = flag.String("setup", "", "path to setup json definition")
 
 func main() {
 	flag.Parse()
-
-	ctx, cancel := context.WithCancel(context.Background())
+	if *setupFile == "" {
+		fmt.Println("Please provide a setup file, e.g.: -setup file.json")
+		return
+	}
 
 	buffer := dmx.NewBuffer()
 	//renderer := &dmx.StdOutRenderer{NumChannels: 10}
@@ -27,35 +29,21 @@ func main() {
 	//	panic(err)
 	//}
 
-	onExit := make(chan bool)
-
-	data, err := ioutil.ReadFile("./test-fixture.json")
+	s, err := setup.Load(*setupFile)
 	if err != nil {
 		panic(err)
 	}
-
-	def, err := definition.FromJson(data)
-	if err != nil {
-		panic(err)
-	}
-
-	genericA := fixture.DefinedFixture{
-		ActiveMode: 0,
-		Definition: def,
-	}
-	genericB := fixture.DefinedFixture{
-		ActiveMode: 1,
-		Definition: def,
-	}
-
-	devA := fixture.NewDevice("devA", genericA)
-	devB := fixture.NewDevice("devB", genericB)
 
 	deviceMap := fixture.NewDeviceMap()
-	deviceMap.Patch(dmx.NewChannel(1), devA)
-	deviceMap.Patch(dmx.NewChannel(6), devB)
+	err = s.PatchDeviceMap(deviceMap)
+	if err != nil {
+		panic(err)
+	}
 
 	engine := run.NewEngine(renderer, deviceMap, buffer)
+
+	onExit := make(chan bool)
+	ctx, cancel := context.WithCancel(context.Background())
 	go engine.Boot(ctx, onExit)
 
 	err = server.ListenAndServe(*addr, engine)

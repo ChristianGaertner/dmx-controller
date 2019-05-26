@@ -13,9 +13,9 @@ type Device struct {
 	Fixture Fixture
 }
 
-func NewDevice(uuid string, fixture Fixture) *Device {
+func NewDevice(uuid DeviceIdentifier, fixture Fixture) *Device {
 	return &Device{
-		Uuid:    DeviceIdentifier(uuid),
+		Uuid:    uuid,
 		values:  make([]dmx.Value, fixture.NumChannels()),
 		Fixture: fixture,
 	}

@@ -1,0 +1,81 @@
+{
+  "id": "stairville/led-flood-panel-150",
+  "modes": {
+    "3": {
+      "numChannels": 3,
+      "hasVirtualDimmer": true,
+      "capabilities": {
+        "IntensityRed": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    },
+    "4": {
+      "numChannels": 4,
+      "capabilities": {
+        "IntensityMasterDimmer": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityRed": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 4,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    },
+    "8": {
+      "numChannels": 8,
+      "capabilities": {
+        "IntensityMasterDimmer": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityRed": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 4,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "StrobeSlowToFast": {
+          "channel": 5,
+          "rangeStart": 9,
+          "rangeEnd": 255
+        }
+      }
+    }
+  }
+}

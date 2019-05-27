@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
+	"github.com/ChristianGaertner/dmx-controller/types"
 	"io/ioutil"
 )
 
@@ -38,29 +39,28 @@ func FromJson(data []byte) (*Definition, error) {
 }
 
 type Mode struct {
-	NumChannels      uint16                        `json:"numChannels"`
-	Capabilities     map[CapabilityType]Capability `json:"capabilities"`
-	HasVirtualDimmer bool                          `json:"hasVirtualDimmer"`
+	NumChannels      uint16                                `json:"numChannels"`
+	Capabilities     map[CapabilityType]ChannelTargetRange `json:"capabilities"`
+	ColorMacros      []ColorMacroDefinition                `json:"colorMacros"`
+	HasVirtualDimmer bool                                  `json:"hasVirtualDimmer"`
 }
 
-type Capability struct {
+type ChannelTargetRange struct {
 	Channel    dmx.Channel `json:"channel"`
 	RangeStart dmx.Value   `json:"rangeStart"`
 	RangeEnd   dmx.Value   `json:"rangeEnd"`
+}
+
+type ColorMacroDefinition struct {
+	Color  types.Color        `json:"color"`
+	Name   string             `json:"name"`
+	Target ChannelTargetRange `json:"target"`
 }
 
 // MapValue converts any given input value [0..1] to a dmx value [0..255]
 // but mapped into the capability range of the given channel.
 // e.g. the channel 1 of a fixture as IntensityRed from 0..99, IntensityGreen 100..199, etc.
 // then calling MapValue with 0.5 (50% green), this functions return dmx.Value(150)
-func (c *Capability) MapValue(value float64) dmx.Value {
+func (c *ChannelTargetRange) MapValue(value float64) dmx.Value {
 	return dmx.Value(value*float64(c.RangeEnd-c.RangeStart) + float64(c.RangeStart))
-}
-
-func NewSingleValueChannel(c dmx.Channel) Capability {
-	return Capability{
-		Channel:    c,
-		RangeStart: 0,
-		RangeEnd:   255,
-	}
 }

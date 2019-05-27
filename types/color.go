@@ -1,5 +1,7 @@
 package types
 
+import "math"
+
 func Lerp(a, b, percentUp, percentDown float64) float64 {
 	if a < b {
 		return a + (b-a)*percentUp
@@ -28,6 +30,10 @@ func LerpColor(a, b *Color, percentUp, percentDown float64) *Color {
 		G: Lerp(va.G, vb.G, percentUp, percentDown),
 		B: Lerp(va.B, vb.B, percentUp, percentDown),
 	}
+}
+
+func ColorDistance(p, q *Color) float64 {
+	return math.Sqrt(math.Pow(p.R-q.R, 2) + math.Pow(p.G-q.G, 2) + math.Pow(p.B-q.B, 2))
 }
 
 type Frequency float64

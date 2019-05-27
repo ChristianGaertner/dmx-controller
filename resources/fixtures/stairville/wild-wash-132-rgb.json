@@ -1,0 +1,133 @@
+{
+  "id": "stairville/wild-wash-132-rgb",
+  "modes": {
+    "1": {
+      "numChannels": 1,
+      "capabilities": {
+        "StrobeSlowToFast": {
+          "channel": 1,
+          "rangeStart": 10,
+          "rangeEnd": 255
+        }
+      }
+    },
+    "2": {
+      "numChannels": 2,
+      "capabilities": {
+        "IntensityMasterDimmer": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    },
+    "3": {
+      "numChannels": 3,
+      "capabilities": {
+        "IntensityMasterDimmer": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "StrobeSlowToFast": {
+          "channel": 1,
+          "rangeStart": 10,
+          "rangeEnd": 250
+        }
+      },
+      "colorMacros": [
+        {
+          "name": "Black",
+          "color": {
+            "R": 0,
+            "G": 0,
+            "B": 0
+          },
+          "target": {
+            "channel": 3,
+            "rangeStart": 0,
+            "rangeEnd": 5
+          }
+        },
+        {
+          "name": "Red",
+          "color": {
+            "R": 1,
+            "G": 0,
+            "B": 0
+          },
+          "target": {
+            "channel": 3,
+            "rangeStart": 6,
+            "rangeEnd": 13
+          }
+        },
+        {
+          "name": "Amber",
+          "color": {
+            "R": 0.992,
+            "G": 0.961,
+            "B": 0.902
+          },
+          "target": {
+            "channel": 3,
+            "rangeStart": 14,
+            "rangeEnd": 21
+          }
+        },
+        {
+          "name": "Warm yellow",
+          "color": {
+            "R": 0.965,
+            "G": 0.804,
+            "B": 0.545
+          },
+          "target": {
+            "channel": 3,
+            "rangeStart": 22,
+            "rangeEnd": 29
+          }
+        },
+        {
+          "name": "Green",
+          "color": {
+            "R": 0,
+            "G": 1,
+            "B": 0
+          },
+          "target": {
+            "channel": 3,
+            "rangeStart": 38,
+            "rangeEnd": 45
+          }
+        },
+        {
+          "name": "Blue",
+          "color": {
+            "R": 0,
+            "G": 0,
+            "B": 1
+          },
+          "target": {
+            "channel": 3,
+            "rangeStart": 62,
+            "rangeEnd": 69
+          }
+        },
+        {
+          "name": "White",
+          "color": {
+            "R": 1,
+            "G": 1,
+            "B": 1
+          },
+          "target": {
+            "channel": 3,
+            "rangeStart": 110,
+            "rangeEnd": 117
+          }
+        }
+      ]
+    }
+  }
+}

@@ -24,32 +24,32 @@
         "spotLeftWindow": {
           "name": "Spot Left To Window",
           "startAddress": 49,
-          "fixtureId": "test-fixture",
+          "fixtureId": "generic-led-par",
           "mode": 0
         },
         "spotLeftDoor": {
           "name": "Spot Left To Door",
           "startAddress": 65,
-          "fixtureId": "test-fixture",
-          "mode": 0
+          "fixtureId": "stairville/led-flood-panel-150",
+          "mode": 8
         },
         "spotLeftFritz": {
           "name": "Spot Left Fritzbar",
           "startAddress": 81,
-          "fixtureId": "test-fixture",
+          "fixtureId": "generic-led-par",
           "mode": 0
         },
         "spotRight": {
           "name": "Spot Right Insta",
           "startAddress": 97,
-          "fixtureId": "test-fixture",
-          "mode": 0
+          "fixtureId": "stairville/led-flood-panel-150",
+          "mode": 8
         },
         "strobe": {
           "name": "Strobo",
           "startAddress": 113,
-          "fixtureId": "test-fixture",
-          "mode": 0
+          "fixtureId": "stairville/wild-wash-132-rgb",
+          "mode": 3
         }
       }
     }

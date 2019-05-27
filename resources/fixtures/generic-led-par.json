@@ -1,0 +1,46 @@
+{
+  "id": "generic-led-par",
+  "modes": {
+    "0": {
+      "numChannels": 3,
+      "capabilities": {
+        "IntensityRed": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    },
+    "1": {
+      "numChannels": 4,
+      "hasVirtualDimmer": true,
+      "capabilities": {
+        "IntensityRed": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 4,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    }
+  }
+}

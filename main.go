@@ -11,6 +11,7 @@ import (
 	"github.com/ChristianGaertner/dmx-controller/setup"
 )
 
+var olaRpcEndpoint = flag.String("ola_rpc_endpoint", "localhost:9010", "RPC endpoint of the OLA service")
 var addr = flag.String("address", ":8080", "Address of the server to listen on")
 var setupFile = flag.String("setup", "", "path to setup json definition")
 
@@ -23,11 +24,12 @@ func main() {
 
 	buffer := dmx.NewBuffer()
 	//renderer := &dmx.StdOutRenderer{NumChannels: 10}
-	renderer := &dmx.NilRenderer{}
+	//renderer := &dmx.NilRenderer{}
 	//renderer, err := dmx.NewEnttecRenderer()
-	//if err != nil {
-	//	panic(err)
-	//}
+	renderer, err := dmx.NewOlaRPCRenderer(*olaRpcEndpoint)
+	if err != nil {
+		panic(err)
+	}
 
 	s, err := setup.Load(*setupFile)
 	if err != nil {

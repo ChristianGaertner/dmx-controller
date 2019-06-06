@@ -24,6 +24,10 @@ func (s *StdOutRenderer) GetTicker(ctx context.Context) *time.Ticker {
 	return time.NewTicker(25 * time.Millisecond)
 }
 
+func (s *StdOutRenderer) Boot(ctx context.Context) error {
+	return nil
+}
+
 func getBar(value Value) string {
 	percent := float64(value) / float64(255)
 	bar := "["
@@ -42,6 +46,10 @@ func getBar(value Value) string {
 type NilRenderer struct{}
 
 func (s *NilRenderer) Render(ctx context.Context, buffer *Buffer) error {
+	return nil
+}
+
+func (s *NilRenderer) Boot(ctx context.Context) error {
 	return nil
 }
 

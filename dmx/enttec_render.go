@@ -63,6 +63,10 @@ func (e *enttecRenderer) Render(ctx context.Context, buffer *Buffer) (err error)
 	return
 }
 
+func (e *enttecRenderer) Boot(ctx context.Context) error {
+	return nil
+}
+
 func (e *enttecRenderer) GetTicker(ctx context.Context) *time.Ticker {
 	return time.NewTicker(25 * time.Millisecond)
 }

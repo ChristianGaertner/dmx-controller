@@ -16,6 +16,7 @@ type Buffer struct {
 }
 
 type BufferRenderer interface {
+	Boot(ctx context.Context) error
 	Render(ctx context.Context, buffer *Buffer) error
 	GetTicker(ctx context.Context) *time.Ticker
 }
@@ -33,6 +34,11 @@ func (b *Buffer) Apply(channel Channel, values []Value) {
 }
 
 func (b *Buffer) Render(ctx context.Context, renderer BufferRenderer, onExit chan<- bool) {
+	err := renderer.Boot(ctx)
+	if err != nil {
+		// TODO handle error in a better way?
+		panic(err)
+	}
 	ticker := renderer.GetTicker(ctx)
 
 	for {

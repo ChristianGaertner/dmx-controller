@@ -72,25 +72,6 @@ func (c *Client) Close() error {
 	return c.conn.Close()
 }
 
-func (c *Client) SendDmx(context context.Context, universe int, values []byte) (status bool, err error) {
-
-	req := &DmxData{
-		Data:     values,
-		Universe: proto.Int(universe),
-	}
-	resp := &Ack{}
-
-	req.Universe = proto.Int(universe)
-	req.Data = values
-	err = c.callRPCMethod(context, "UpdateDmxData", req, resp)
-
-	if err != nil {
-		return false, fmt.Errorf("failed to call SendDmx: %s", err)
-	}
-
-	return true, nil
-}
-
 func (c *Client) callRPCMethod(ctx context.Context, name string, pb proto.Message, responseMessage proto.Message) error {
 	payload, err := proto.Marshal(pb)
 	if err != nil {
@@ -142,19 +123,7 @@ func (c *Client) callRPCMethod(ctx context.Context, name string, pb proto.Messag
 		return res.Err
 	}
 
-	resWrapper := new(RpcMessage)
-
-	if len(res.Buffer) == 0 {
-		// TODO check what should happen here...
-		return nil
-	}
-
-	if err := proto.Unmarshal(res.Buffer, resWrapper); err != nil {
-		return fmt.Errorf("could not decode response wrapper message: %s", err)
-	}
-
-	resBuffer := resWrapper.GetBuffer()
-	if err := proto.Unmarshal(resBuffer, responseMessage); err != nil {
+	if err := proto.Unmarshal(res.Buffer, responseMessage); err != nil {
 		return fmt.Errorf("could not decode data in message: %s", err)
 	}
 	return nil

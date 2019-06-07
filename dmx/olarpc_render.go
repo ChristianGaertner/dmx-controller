@@ -22,7 +22,27 @@ func NewOlaRPCRenderer(address string) (BufferRenderer, error) {
 }
 
 func (o *olaRPCRenderer) Boot(ctx context.Context) error {
-	return o.client.StartReceiver(ctx)
+	err := o.client.StartReceiver(ctx)
+	if err != nil {
+		return err
+	}
+
+	universes, err := o.client.GetUniverseList(ctx)
+	if err != nil {
+		return err
+	}
+
+	if len(universes) == 0 {
+		return fmt.Errorf("no universe configured with OLA")
+	}
+
+	for _, u := range universes {
+		if *u.Universe == 0 {
+			return nil
+		}
+	}
+
+	return fmt.Errorf("could not find a universe with id 0")
 }
 
 func (o *olaRPCRenderer) Render(ctx context.Context, buffer *Buffer) error {

@@ -15,6 +15,7 @@ type OnActiveChangeMessage = WsMessage<
   typeof ON_ACTIVE_CHANGE,
   {
     sceneId: string | null;
+    progress: number;
   }
 >;
 

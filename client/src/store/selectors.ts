@@ -13,6 +13,9 @@ export const getSceneList = (state: AppState): string[] =>
 export const getRunningScene = (state: AppState): string | null =>
   state.running.sceneId;
 
+export const getSceneProgress = (state: AppState): number =>
+  state.running.progress;
+
 export const getDeviceIds = (state: AppState): string[] => state.devices.ids;
 
 export const getActiveTab = (state: AppState): UiTab => state.ui.activeTab;

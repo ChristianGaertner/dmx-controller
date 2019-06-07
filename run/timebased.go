@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/types"
+	"math"
 	"time"
 )
 
 func (e *Engine) runTimebased(ctx context.Context, scene *scene.Scene, onEval chan<- bool, onExit chan<- bool) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
+		e.onActiveChange(nil, 0)
 		cancel()
 		onExit <- true
 		err := recover()
@@ -54,12 +56,20 @@ func (e *Engine) runTimebased(ctx context.Context, scene *scene.Scene, onEval ch
 		}
 	}()
 
+	var prevProgress float64
+
 	for {
 		select {
 		case tc := <-ticker.TimeCode:
 			stepTimeCode, done := getStepTimeCode(tc, runMode)
 			stepIndex, ok := scene.GetStepIndexAt(stepTimeCode)
 			stepInfo.Supply(stepIndex, tc)
+
+			progress := float64(stepTimeCode) / float64(scene.Duration())
+			if diff := math.Abs(progress - prevProgress); diff > 1e-2 {
+				prevProgress = progress
+				e.onActiveChange(&scene.ID, progress)
+			}
 
 			if !ok {
 				done = true

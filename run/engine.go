@@ -45,7 +45,15 @@ type Engine struct {
 }
 
 type EngineClient interface {
-	OnActiveChange(sceneID *string) bool
+	OnActiveChange(sceneID *string, progress float64) bool
+}
+
+func (e *Engine) onActiveChange(sceneID *string, progress float64) {
+	for c := range e.clients {
+		if ok := c.OnActiveChange(sceneID, progress); !ok {
+			delete(e.clients, c)
+		}
+	}
 }
 
 func NewEngine(renderer dmx.BufferRenderer, deviceMap *fixture.DeviceMap, buffer *dmx.Buffer, db database.Database) *Engine {
@@ -86,12 +94,6 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 			onFinish := make(chan bool)
 			e.active = &r
 
-			for c := range e.clients {
-				if ok := c.OnActiveChange(&e.active.scene.ID); !ok {
-					delete(e.clients, c)
-				}
-			}
-
 			go e.runTimebased(ctx, r.scene, onEval, onFinish)
 			go func() {
 				// wait for finish or stop signal
@@ -109,12 +111,6 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 		case <-e.stopScene:
 			if e.active != nil {
 				e.active.stop <- true
-			}
-
-			for c := range e.clients {
-				if ok := c.OnActiveChange(nil); !ok {
-					delete(e.clients, c)
-				}
 			}
 		case c := <-e.registerClient:
 			e.clients[c] = true

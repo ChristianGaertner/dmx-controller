@@ -76,11 +76,12 @@ export const sceneList = (
 
 type RunningSceneStore = {
   sceneId: string | null;
+  progress: number;
   requestedId: string | null;
 };
 
 export const running = (
-  state: RunningSceneStore = { sceneId: null, requestedId: null },
+  state: RunningSceneStore = { sceneId: null, progress: 0, requestedId: null },
   action: Action,
 ) => {
   switch (action.type) {
@@ -93,6 +94,7 @@ export const running = (
       return {
         ...state,
         sceneId: action.payload.sceneId,
+        progress: action.payload.progress,
       };
     default:
       return state;

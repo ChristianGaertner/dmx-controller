@@ -13,7 +13,7 @@ type StdOutRenderer struct {
 func (s *StdOutRenderer) Render(ctx context.Context, buffer *Buffer) error {
 	fmt.Print("\033[H\033[2J")
 	for channel := uint16(0); channel < s.NumChannels; channel++ {
-		value := buffer.channels[channel]
+		value := buffer.universes[0][channel]
 		fmt.Printf("%03d: %03d %s\n", channel+1, int(value), getBar(value))
 	}
 

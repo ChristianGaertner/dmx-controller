@@ -10,9 +10,25 @@ const UniverseSize = uint16(512)
 
 type Value = byte
 
+type UniverseId uint32
+
+type PatchPosition uint64
+
+func NewPatchPosition(universe UniverseId, address Channel) PatchPosition {
+	return PatchPosition(uint64(universe) << 32 | uint64(address.ToSliceIndex()))
+}
+
+func (p PatchPosition) GetAddress() Channel {
+	return NewChannelFromIndex(int(p & 0xffffffff))
+}
+
+func (p PatchPosition) GetUniverseId() UniverseId {
+	return UniverseId(p >> 32)
+}
+
 type Buffer struct {
 	sync.RWMutex
-	channels []Value
+	universes map[UniverseId][]Value
 }
 
 type BufferRenderer interface {
@@ -23,14 +39,21 @@ type BufferRenderer interface {
 
 func NewBuffer() *Buffer {
 	return &Buffer{
-		channels: make([]Value, UniverseSize),
+		universes: make(map[UniverseId][]Value),
 	}
 }
 
-func (b *Buffer) Apply(channel Channel, values []Value) {
+func (b *Buffer) Init(universeIds []UniverseId) {
+	for _, id := range universeIds {
+		b.universes[id] = make([]Value, UniverseSize)
+	}
+}
+
+func (b *Buffer) Apply(p PatchPosition, values []Value) {
 	b.Lock()
 	defer b.Unlock()
-	copy(b.channels[channel.ToSliceIndex():], values)
+	addr := p.GetAddress()
+	copy(b.universes[p.GetUniverseId()][addr.ToSliceIndex():], values)
 }
 
 func (b *Buffer) Render(ctx context.Context, renderer BufferRenderer, onExit chan<- bool) {

@@ -15,6 +15,7 @@ type serialisedSetup struct {
 
 type serialisedUniverse struct {
 	Name    string                                             `json:"name"`
+	ID      dmx.UniverseId                                     `json:"id"`
 	Devices map[fixture.DeviceIdentifier]serialisedDeviceSetup `json:"devices"`
 }
 
@@ -26,9 +27,6 @@ type serialisedDeviceSetup struct {
 }
 
 func (s *serialisedSetup) PatchDeviceMap(deviceMap *fixture.DeviceMap) error {
-	if len(s.Universes) > 1 {
-		panic("too many universes")
-	}
 	for _, universe := range s.Universes {
 		for deviceId, setup := range universe.Devices {
 
@@ -43,11 +41,20 @@ func (s *serialisedSetup) PatchDeviceMap(deviceMap *fixture.DeviceMap) error {
 			}
 
 			dev := fixture.NewDevice(deviceId, fix)
-			deviceMap.Patch(setup.StartAddress, dev)
+			deviceMap.Patch(dmx.NewPatchPosition(universe.ID, setup.StartAddress), dev)
 		}
 	}
 
 	return nil
+}
+
+func (s *serialisedSetup) GetUniverseIds() []dmx.UniverseId {
+	var ids []dmx.UniverseId
+	for _, u := range s.Universes {
+		ids = append(ids, u.ID)
+	}
+
+	return ids
 }
 
 func Load(fileName string) (*serialisedSetup, error) {
@@ -61,10 +68,6 @@ func Load(fileName string) (*serialisedSetup, error) {
 	err = json.Unmarshal(data, &s)
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse setup: %e", err)
-	}
-
-	if len(s.Universes) > 1 {
-		return nil, fmt.Errorf("cannot load more than one (1x 512) dmx universe")
 	}
 
 	return &s, nil

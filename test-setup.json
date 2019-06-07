@@ -1,7 +1,8 @@
 {
   "universes": {
-    "001": {
+    "main": {
       "name": "main",
+      "id": 0,
       "devices": {
         "ledBarLeft": {
           "name": "LED BAR Left",

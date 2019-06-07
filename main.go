@@ -36,6 +36,8 @@ func main() {
 		panic(err)
 	}
 
+	buffer.Init(s.GetUniverseIds())
+
 	deviceMap := fixture.NewDeviceMap()
 	err = s.PatchDeviceMap(deviceMap)
 	if err != nil {

@@ -46,13 +46,15 @@ func (o *olaRPCRenderer) Boot(ctx context.Context) error {
 }
 
 func (o *olaRPCRenderer) Render(ctx context.Context, buffer *Buffer) error {
-	ok, err := o.client.SendDmx(ctx, 0, buffer.channels)
-	if err != nil {
-		return err
-	}
+	for universe, channels := range buffer.universes {
+		ok, err := o.client.SendDmx(ctx, int(universe), channels)
+		if err != nil {
+			return err
+		}
 
-	if !ok {
-		return fmt.Errorf("sendDmx status not ok")
+		if !ok {
+			return fmt.Errorf("sendDmx status not ok")
+		}
 	}
 	return nil
 }

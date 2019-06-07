@@ -55,7 +55,7 @@ func (e *enttecRenderer) Render(ctx context.Context, buffer *Buffer) (err error)
 	if err != nil {
 		return
 	}
-	_, err = e.serial.Write(buffer.channels)
+	_, err = e.serial.Write(buffer.universes[0])
 	if err != nil {
 		return
 	}

@@ -9,11 +9,15 @@ import (
 	"github.com/ChristianGaertner/dmx-controller/run"
 	"github.com/ChristianGaertner/dmx-controller/server"
 	"github.com/ChristianGaertner/dmx-controller/setup"
+	"log"
+	"time"
 )
 
 var olaRpcEndpoint = flag.String("ola_rpc_endpoint", "localhost:9010", "RPC endpoint of the OLA service")
 var addr = flag.String("address", ":8080", "Address of the server to listen on")
 var setupFile = flag.String("setup", "", "path to setup json definition")
+
+var gracefulTimeout = flag.Duration("graceful-timeout", time.Second * 15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 
 func main() {
 	flag.Parse()
@@ -36,6 +40,7 @@ func main() {
 		panic(err)
 	}
 
+	log.Printf("initializing %d dmx universes", len(s.GetUniverseIds()))
 	buffer.Init(s.GetUniverseIds())
 
 	deviceMap := fixture.NewDeviceMap()
@@ -50,11 +55,13 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go engine.Boot(ctx, onExit)
 
-	err = server.ListenAndServe(*addr, engine)
-	fmt.Println(err)
+	err = server.ListenAndServe(ctx, *addr, engine, *gracefulTimeout)
+	if err != nil {
+		log.Println(err)
+	}
 
-	fmt.Println("Shutting down...")
+	log.Println("Shutting down...")
 	cancel()
 	<-onExit
-	fmt.Println("[SHUTDOWN]")
+	log.Println("[SHUTDOWN]")
 }

@@ -1,17 +1,22 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/ChristianGaertner/dmx-controller/run"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 )
 
 var scenes = make(map[string]*scene.Scene)
 
-func ListenAndServe(addr string, engine *run.Engine) error {
+func ListenAndServe(ctx context.Context, addr string, engine *run.Engine, gracefulTimeout time.Duration) error {
 
 	r := mux.NewRouter()
 
@@ -29,7 +34,36 @@ func ListenAndServe(addr string, engine *run.Engine) error {
 	r.Use(timeoutMiddleware)
 	r.Use(corsMiddleware)
 
-	return http.ListenAndServe(addr, r)
+	srv := &http.Server{
+		Addr:         addr,
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler: r, // Pass our instance of gorilla/mux in.
+	}
+
+	// Run our server in a goroutine so that it doesn't block.
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
+		}
+	}()
+
+	c := make(chan os.Signal, 1)
+
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(c, os.Interrupt)
+
+	// Block until we receive our signal.
+	<-c
+
+	// Create a deadline to wait for.
+	ctx, cancel := context.WithTimeout(ctx, gracefulTimeout)
+	defer cancel()
+	// Doesn't block if no connections, but will otherwise wait
+	// until the timeout deadline.
+	return srv.Shutdown(ctx)
 }
 
 func addSceneHandler(w http.ResponseWriter, r *http.Request) {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/ola"
+	"log"
 	"time"
 )
 
@@ -16,6 +17,7 @@ func NewOlaRPCRenderer(address string) (BufferRenderer, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Println("connected to OLA server at", address)
 	return &olaRPCRenderer{
 		client: client,
 	}, nil
@@ -35,14 +37,7 @@ func (o *olaRPCRenderer) Boot(ctx context.Context) error {
 	if len(universes) == 0 {
 		return fmt.Errorf("no universe configured with OLA")
 	}
-
-	for _, u := range universes {
-		if *u.Universe == 0 {
-			return nil
-		}
-	}
-
-	return fmt.Errorf("could not find a universe with id 0")
+	return nil
 }
 
 func (o *olaRPCRenderer) Render(ctx context.Context, buffer *Buffer) error {

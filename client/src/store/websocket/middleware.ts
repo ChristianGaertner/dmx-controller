@@ -2,7 +2,12 @@ import { Dispatch, Middleware, MiddlewareAPI } from "redux";
 import { Action } from "../actionTypes";
 import { WS_CONNECT, wsConnected, wsDisconnected } from "./actions";
 import { websocketEndpoint } from "../config";
-import { onActiveChangeMessage, WS_SEND_PREFIX, WsMessage } from "./messages";
+import {
+  initFixtures,
+  onActiveChangeMessage,
+  WS_SEND_PREFIX,
+  WsMessage,
+} from "./messages";
 
 export type RawMessage = {
   type: string;
@@ -24,6 +29,8 @@ class ReduxWebsocket {
       switch (message.type) {
         case "ON_ACTIVE_CHANGE":
           return dispatch(onActiveChangeMessage(message));
+        case "INIT_FIXTURES":
+          return dispatch(initFixtures(message));
         default:
           console.error("Unknown websocket message of type: " + message.type);
       }

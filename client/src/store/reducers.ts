@@ -14,7 +14,11 @@ import {
   LOAD_DEVICES_RESPONSE,
 } from "./actions/loadDevices";
 import { SET_TAB, UiTab } from "./actions/setTab";
-import { ON_ACTIVE_CHANGE, SEND_RUN_PARAMS } from "./websocket/messages";
+import {
+  INIT_FIXTURES,
+  ON_ACTIVE_CHANGE,
+  SEND_RUN_PARAMS,
+} from "./websocket/messages";
 
 export { editor, websocket };
 
@@ -117,11 +121,15 @@ export const running = (
 
 type DeviceStore = {
   ids: string[];
+  fixtureMapping: {
+    [k: string]: string;
+  };
   isFetching: boolean;
 };
 
 const initialDeviceStore: DeviceStore = {
   ids: [],
+  fixtureMapping: {},
   isFetching: false,
 };
 
@@ -140,6 +148,11 @@ export const devices = (
         ...state,
         isFetching: false,
         ids: action.payload.devices,
+      };
+    case INIT_FIXTURES:
+      return {
+        ...state,
+        fixtureMapping: action.payload.fixtureIds,
       };
     default:
       return state;

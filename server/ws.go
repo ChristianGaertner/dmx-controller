@@ -31,6 +31,7 @@ type message struct {
 
 const (
 	MsgTypeOnActiveChange = "ON_ACTIVE_CHANGE"
+	MsgTypeInitFixtures   = "INIT_FIXTURES"
 	MsgTypeSendRunParams  = "SEND_RUN_PARAMS"
 )
 
@@ -59,4 +60,7 @@ func (h *handlers) handleWebsocket(w http.ResponseWriter, r *http.Request) {
 
 	go client.writePump()
 	go client.readPump()
+
+	// init
+	client.InitFixtures(h.engine.DeviceMap)
 }

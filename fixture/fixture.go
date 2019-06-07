@@ -7,6 +7,7 @@ import (
 )
 
 type Fixture interface {
+	GetId() string
 	NumChannels() uint16
 	ApplyValueTo(value *Value, d *Device)
 }
@@ -14,6 +15,10 @@ type Fixture interface {
 type DefinedFixture struct {
 	Definition *definition.Definition
 	ActiveMode definition.ModeID
+}
+
+func (f DefinedFixture) GetId() string {
+	return f.Definition.ID
 }
 
 func (f DefinedFixture) NumChannels() uint16 {

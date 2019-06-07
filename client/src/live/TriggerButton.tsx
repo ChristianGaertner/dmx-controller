@@ -26,7 +26,7 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
   return (
     <Button
       type={props.active ? ButtonType.GREEN : ButtonType.BLUE}
-      label={`${props.active ? "STOP" : "RUN"} #${props.sceneId}`}
+      label={`#${props.sceneId}`}
       onClick={
         props.active ? props.stopScene : () => props.runScene(props.sceneId)
       }

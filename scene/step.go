@@ -33,7 +33,17 @@ func (s *sequencedStep) Eval(tc types.TimeCode, activeFor time.Duration, prev *s
 
 	outputWithEffects := make(StepOutput)
 
-	for devId, fix := range output {
+	var deviceIds []fixture.DeviceIdentifier
+	if prevOutput != nil {
+		for devId := range prevOutput {
+			deviceIds = append(deviceIds, devId)
+		}
+	}
+	for devId := range output {
+		deviceIds = append(deviceIds, devId)
+	}
+
+	for _, devId := range deviceIds {
 		var fixPrev *fixture.Value
 		if prevOutput != nil {
 			if p, ok := prevOutput[devId]; ok {
@@ -41,8 +51,12 @@ func (s *sequencedStep) Eval(tc types.TimeCode, activeFor time.Duration, prev *s
 			}
 		}
 
-		finalValue := fixture.Lerp(fixPrev, fix, percentUp, percentDown)
+		var fix *fixture.Value
+		if p, ok := output[devId]; ok {
+			fix = p
+		}
 
+		finalValue := fixture.Lerp(fixPrev, fix, percentUp, percentDown)
 		outputWithEffects[devId] = finalValue
 	}
 

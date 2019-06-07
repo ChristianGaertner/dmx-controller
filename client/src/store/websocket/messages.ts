@@ -1,6 +1,6 @@
 import { BaseAction } from "../actionTypes";
 import { RawMessage } from "./middleware";
-import { RunMode, RunParams } from "../../types";
+import { RunParams } from "../../types";
 
 export type WsMessages = OnActiveChangeMessage | SendRunModeMessage;
 
@@ -25,6 +25,7 @@ export const onActiveChangeMessage = (
   type: ON_ACTIVE_CHANGE,
   payload: msg.payload,
   timestamp: new Date(msg.timestamp),
+  hidden: true,
 });
 
 export const WS_SEND_PREFIX = "@websocket/send/";

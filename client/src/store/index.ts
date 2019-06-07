@@ -15,7 +15,10 @@ export const configureStore = () => {
     applyMiddleware(
       thunk,
       websocketMiddleware(),
-      createLogger({ collapsed: true }),
+      createLogger({
+        collapsed: true,
+        predicate: (_, action) => !action.hidden,
+      }),
     ),
   );
 };

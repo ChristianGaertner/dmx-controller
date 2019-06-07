@@ -14,7 +14,9 @@ import {
 import { SetTabAction } from "./actions/setTab";
 import { WebsocketActions } from "./websocket/actions";
 
-export interface BaseAction extends ReduxAction<string> {}
+export interface BaseAction extends ReduxAction<string> {
+  hidden?: boolean;
+}
 
 export type Action =
   | SetTabAction

@@ -1,4 +1,4 @@
-import { Scene } from "../types";
+import { RunMode, RunParams, RunType, Scene } from "../types";
 import { Action } from "./actionTypes";
 import {
   LOAD_SCENE_LIST_REQUEST,
@@ -14,7 +14,7 @@ import {
   LOAD_DEVICES_RESPONSE,
 } from "./actions/loadDevices";
 import { SET_TAB, UiTab } from "./actions/setTab";
-import { ON_ACTIVE_CHANGE } from "./websocket/messages";
+import { ON_ACTIVE_CHANGE, SEND_RUN_PARAMS } from "./websocket/messages";
 
 export { editor, websocket };
 
@@ -78,10 +78,19 @@ type RunningSceneStore = {
   sceneId: string | null;
   progress: number;
   requestedId: string | null;
+  runParams: RunParams;
 };
 
 export const running = (
-  state: RunningSceneStore = { sceneId: null, progress: 0, requestedId: null },
+  state: RunningSceneStore = {
+    sceneId: null,
+    progress: 0,
+    requestedId: null,
+    runParams: {
+      mode: RunMode.Cycle,
+      type: RunType.UseStepTimings,
+    },
+  },
   action: Action,
 ) => {
   switch (action.type) {
@@ -95,6 +104,11 @@ export const running = (
         ...state,
         sceneId: action.payload.sceneId,
         progress: action.payload.progress,
+      };
+    case SEND_RUN_PARAMS:
+      return {
+        ...state,
+        runParams: action.payload,
       };
     default:
       return state;

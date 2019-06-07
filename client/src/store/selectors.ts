@@ -1,4 +1,4 @@
-import { Scene } from "../types";
+import { RunParams, Scene } from "../types";
 import { AppState } from "./index";
 import { UiTab } from "./actions/setTab";
 
@@ -19,3 +19,6 @@ export const getSceneProgress = (state: AppState): number =>
 export const getDeviceIds = (state: AppState): string[] => state.devices.ids;
 
 export const getActiveTab = (state: AppState): UiTab => state.ui.activeTab;
+
+export const getRunParams = (state: AppState): RunParams =>
+  state.running.runParams;

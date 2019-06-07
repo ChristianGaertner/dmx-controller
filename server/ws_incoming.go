@@ -12,7 +12,8 @@ import (
 )
 
 type runParamsPayload struct {
-	RunMode types.RunMode `json:"runMode"`
+	Type run.Type      `json:"type"`
+	Mode types.RunMode `json:"mode"`
 }
 
 func (wsc *WSClient) readPump() {
@@ -51,7 +52,8 @@ func (wsc *WSClient) readPump() {
 		case runParamsPayload:
 			payload := msg.Payload.(runParamsPayload)
 			params := run.SceneRunParams{
-				RunMode: payload.RunMode,
+				Type: payload.Type,
+				Mode: payload.Mode,
 			}
 			wsc.engine.SetRunParams(params)
 		}

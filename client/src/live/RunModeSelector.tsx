@@ -1,44 +1,58 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { AppState } from "../store";
-import { RunMode } from "../types";
+import { RunMode, RunParams } from "../types";
 import { sendRunParams } from "../store/websocket/messages";
 import { Button, ButtonType } from "../components/Button";
+import { getRunParams } from "../store/selectors";
 
-type StateProps = {};
+type StateProps = {
+  runParams: RunParams;
+};
 
 type DispatchProps = {
-  setRunMode: (mode: RunMode) => void;
+  setRunParams: (params: RunParams) => void;
 };
 
 type Props = StateProps & DispatchProps;
 
 const RunModeSelectorComp: React.FunctionComponent<Props> = ({
-  setRunMode,
+  runParams,
+  setRunParams,
 }) => (
   <div>
     <Button
-      type={ButtonType.BLUE}
+      type={
+        runParams.mode === RunMode.OneShot ? ButtonType.ORANGE : ButtonType.BLUE
+      }
       label="ONE SHOT"
-      onClick={() => setRunMode(RunMode.OneShot)}
+      onClick={() => setRunParams({ ...runParams, mode: RunMode.OneShot })}
     />
     <Button
-      type={ButtonType.BLUE}
+      type={
+        runParams.mode === RunMode.OneShotHold
+          ? ButtonType.ORANGE
+          : ButtonType.BLUE
+      }
       label="ONE SHOT HOLD"
-      onClick={() => setRunMode(RunMode.OneShotHold)}
+      onClick={() => setRunParams({ ...runParams, mode: RunMode.OneShotHold })}
     />
     <Button
-      type={ButtonType.BLUE}
+      type={
+        runParams.mode === RunMode.Cycle ? ButtonType.ORANGE : ButtonType.BLUE
+      }
       label="CYCLE"
-      onClick={() => setRunMode(RunMode.Cycle)}
+      onClick={() => setRunParams({ ...runParams, mode: RunMode.Cycle })}
     />
   </div>
 );
 
-const mapStateToProps = (state: AppState): StateProps => ({});
+const mapStateToProps = (state: AppState): StateProps => ({
+  runParams: getRunParams(state),
+});
 
 const mapDispatchToProps: DispatchProps = {
-  setRunMode: (runMode: RunMode) => sendRunParams({ runMode }),
+  setRunParams: sendRunParams,
 };
 
 export const RunModeSelector = connect(

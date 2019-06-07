@@ -30,12 +30,7 @@ export const onActiveChangeMessage = (
 export const WS_SEND_PREFIX = "@websocket/send/";
 
 export const SEND_RUN_PARAMS = "@websocket/send/SEND_RUN_PARAMS";
-type SendRunModeMessage = WsMessage<
-  typeof SEND_RUN_PARAMS,
-  {
-    runMode: RunMode;
-  }
->;
+type SendRunModeMessage = WsMessage<typeof SEND_RUN_PARAMS, RunParams>;
 export const sendRunParams = (params: RunParams): SendRunModeMessage => ({
   type: SEND_RUN_PARAMS,
   payload: params,

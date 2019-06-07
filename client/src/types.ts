@@ -102,6 +102,11 @@ export enum RunMode {
   Cycle = 2,
 }
 
+export enum RunType {
+  UseStepTimings = 0,
+}
+
 export type RunParams = {
-  runMode: RunMode;
+  type: RunType;
+  mode: RunMode;
 };

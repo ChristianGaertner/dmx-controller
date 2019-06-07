@@ -36,7 +36,7 @@ func (e *Engine) runTimebased(ctx context.Context, scene *scene.Scene, onEval ch
 		case types.RunModeCycle:
 			return tc % duration, false
 		}
-		panic("RunMode not recognized")
+		panic("Mode not recognized")
 	}
 
 	stepInfo := stepInfo{}
@@ -46,7 +46,7 @@ func (e *Engine) runTimebased(ctx context.Context, scene *scene.Scene, onEval ch
 	for {
 		select {
 		case tc := <-ticker.TimeCode:
-			stepTimeCode, done := getStepTimeCode(tc, e.active.params.RunMode)
+			stepTimeCode, done := getStepTimeCode(tc, e.active.params.Mode)
 			stepIndex, ok := scene.GetStepIndexAt(stepTimeCode)
 			stepInfo.Supply(stepIndex, tc)
 

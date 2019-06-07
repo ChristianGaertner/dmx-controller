@@ -25,8 +25,8 @@ type SceneRun struct {
 }
 
 type SceneRunParams struct {
-	typ     Type
-	RunMode types.RunMode
+	Type  Type
+	Mode types.RunMode
 }
 
 type Engine struct {
@@ -74,8 +74,8 @@ func NewEngine(renderer dmx.BufferRenderer, deviceMap *fixture.DeviceMap, buffer
 		clients:          make(map[EngineClient]bool),
 		setRunParams:     make(chan SceneRunParams),
 		defaultRunParams: SceneRunParams{
-			RunMode: types.RunModeCycle,
-			typ:     UseStepTimings,
+			Mode: types.RunModeCycle,
+			Type:  UseStepTimings,
 		},
 	}
 }

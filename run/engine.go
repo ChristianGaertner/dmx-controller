@@ -2,7 +2,6 @@ package run
 
 import (
 	"context"
-	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/database"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
@@ -19,16 +18,22 @@ const (
 )
 
 type SceneRun struct {
-	scene *scene.Scene
-	typ   Type
-	mode  types.RunMode
+	scene  *scene.Scene
+	params SceneRunParams
 
-	stop chan bool
+	stop chan chan bool
+}
+
+type SceneRunParams struct {
+	typ     Type
+	RunMode types.RunMode
 }
 
 type Engine struct {
-	Db     database.Database
-	active *SceneRun
+	Db database.Database
+
+	active           *SceneRun
+	defaultRunParams SceneRunParams
 
 	Renderer  dmx.BufferRenderer
 	DeviceMap *fixture.DeviceMap
@@ -41,7 +46,7 @@ type Engine struct {
 	unregisterClient chan EngineClient
 	clients          map[EngineClient]bool
 
-	setRunMode chan types.RunMode
+	setRunParams chan SceneRunParams
 }
 
 type EngineClient interface {
@@ -67,7 +72,11 @@ func NewEngine(renderer dmx.BufferRenderer, deviceMap *fixture.DeviceMap, buffer
 		registerClient:   make(chan EngineClient),
 		unregisterClient: make(chan EngineClient),
 		clients:          make(map[EngineClient]bool),
-		setRunMode:       make(chan types.RunMode),
+		setRunParams:     make(chan SceneRunParams),
+		defaultRunParams: SceneRunParams{
+			RunMode: types.RunModeCycle,
+			typ:     UseStepTimings,
+		},
 	}
 }
 
@@ -89,7 +98,7 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 	for {
 		select {
 		case r := <-e.runScene:
-			r.stop = make(chan bool)
+			r.stop = make(chan chan bool)
 			ctx, cancel := context.WithCancel(ctx)
 			onFinish := make(chan bool)
 			e.active = &r
@@ -99,18 +108,27 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 				// wait for finish or stop signal
 				select {
 				case <-onFinish:
-				case <-r.stop:
+					close(onFinish)
+					cancel()
+					e.active = nil
+				case done := <-r.stop:
+					cancel()
+					// wait for the runner to exit
+					<-onFinish
+					e.active = nil
+					done <- true
 				}
-
-				e.active = nil
-				close(r.stop)
-				cancel()
-				// wait for finish of scene
-				<-onFinish
 			}()
 		case <-e.stopScene:
 			if e.active != nil {
-				e.active.stop <- true
+				wait := make(chan bool)
+				e.active.stop <- wait
+				<-wait
+			}
+		case p := <-e.setRunParams:
+			e.defaultRunParams = p
+			if e.active != nil {
+				e.active.params = p
 			}
 		case c := <-e.registerClient:
 			e.clients[c] = true
@@ -125,19 +143,15 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 	}
 }
 
-func (e *Engine) Run(scene *scene.Scene, typ Type, mode types.RunMode) {
+func (e *Engine) Run(scene *scene.Scene) {
 	e.Stop()
-	e.runScene <- SceneRun{scene: scene, typ: typ, mode: mode}
+	e.runScene <- SceneRun{scene: scene, params: e.defaultRunParams}
 }
 
 func (e *Engine) Stop() {
 	e.stopScene <- true
 }
 
-func (e *Engine) SetRunMode(runMode types.RunMode) {
-	select {
-	case e.setRunMode <- runMode:
-	default:
-		fmt.Println("NP")
-	}
+func (e *Engine) SetRunParams(params SceneRunParams) {
+	e.setRunParams <- params
 }

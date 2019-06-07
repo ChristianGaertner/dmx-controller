@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/ChristianGaertner/dmx-controller/run"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"github.com/gorilla/websocket"
 	"log"
@@ -48,7 +49,11 @@ func (wsc *WSClient) readPump() {
 
 		switch msg.Payload.(type) {
 		case runParamsPayload:
-			wsc.engine.SetRunMode(msg.Payload.(runParamsPayload).RunMode)
+			payload := msg.Payload.(runParamsPayload)
+			params := run.SceneRunParams{
+				RunMode: payload.RunMode,
+			}
+			wsc.engine.SetRunParams(params)
 		}
 	}
 }

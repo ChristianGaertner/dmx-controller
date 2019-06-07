@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/ChristianGaertner/dmx-controller/run"
 	"github.com/ChristianGaertner/dmx-controller/scene"
-	"github.com/ChristianGaertner/dmx-controller/types"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -121,7 +120,7 @@ func (h *handlers) runSceneHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.engine.Run(target, run.UseStepTimings, types.RunModeCycle)
+	h.engine.Run(target)
 	w.WriteHeader(http.StatusAccepted)
 }
 

@@ -10,10 +10,8 @@ import (
 )
 
 func (e *Engine) runTimebased(ctx context.Context, scene *scene.Scene, onEval chan<- bool, onExit chan<- bool) {
-	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		e.onActiveChange(nil, 0)
-		cancel()
 		onExit <- true
 		err := recover()
 		if err != nil {
@@ -43,25 +41,12 @@ func (e *Engine) runTimebased(ctx context.Context, scene *scene.Scene, onEval ch
 
 	stepInfo := stepInfo{}
 
-	runMode := types.RunModeCycle
-
-	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case r := <-e.setRunMode:
-				runMode = r
-			}
-		}
-	}()
-
 	var prevProgress float64
 
 	for {
 		select {
 		case tc := <-ticker.TimeCode:
-			stepTimeCode, done := getStepTimeCode(tc, runMode)
+			stepTimeCode, done := getStepTimeCode(tc, e.active.params.RunMode)
 			stepIndex, ok := scene.GetStepIndexAt(stepTimeCode)
 			stepInfo.Supply(stepIndex, tc)
 

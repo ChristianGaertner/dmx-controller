@@ -14,21 +14,27 @@ import (
 	"time"
 )
 
-var scenes = make(map[string]*scene.Scene)
+type handlers struct {
+	engine *run.Engine
+}
 
 func ListenAndServe(ctx context.Context, addr string, engine *run.Engine, gracefulTimeout time.Duration) error {
 
+	h := &handlers{
+		engine: engine,
+	}
+
 	r := mux.NewRouter()
 
-	r.HandleFunc("/api/v1/ws", handleWebsocket(engine))
-	r.HandleFunc("/api/v1/resources/scene", getSceneIds).Methods("GET")
-	r.HandleFunc("/api/v1/resources/scene/{id}", getSceneHandler).Methods("GET")
-	r.HandleFunc("/api/v1/resources/scene", addSceneHandler).Methods("POST")
+	r.HandleFunc("/api/v1/ws", h.handleWebsocket)
+	r.HandleFunc("/api/v1/resources/scene", h.getSceneIds).Methods("GET")
+	r.HandleFunc("/api/v1/resources/scene/{id}", h.getSceneHandler).Methods("GET")
+	r.HandleFunc("/api/v1/resources/scene", h.addSceneHandler).Methods("POST")
 
-	r.HandleFunc("/api/v1/resources/device", getDeviceIds(engine)).Methods("GET")
+	r.HandleFunc("/api/v1/resources/device", h.getDeviceIds).Methods("GET")
 
-	r.HandleFunc("/api/v1/run/scene/{id}", runSceneHandler(engine)).Methods("POST")
-	r.HandleFunc("/api/v1/stop/scene", stopSceneHandler(engine)).Methods("POST")
+	r.HandleFunc("/api/v1/run/scene/{id}", h.runSceneHandler).Methods("POST")
+	r.HandleFunc("/api/v1/stop/scene", h.stopSceneHandler).Methods("POST")
 
 	r.Use(panicMiddleware)
 	r.Use(timeoutMiddleware)
@@ -39,7 +45,7 @@ func ListenAndServe(ctx context.Context, addr string, engine *run.Engine, gracef
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler: r, // Pass our instance of gorilla/mux in.
+		Handler:      r, // Pass our instance of gorilla/mux in.
 	}
 
 	// Run our server in a goroutine so that it doesn't block.
@@ -66,71 +72,67 @@ func ListenAndServe(ctx context.Context, addr string, engine *run.Engine, gracef
 	return srv.Shutdown(ctx)
 }
 
-func addSceneHandler(w http.ResponseWriter, r *http.Request) {
-
+func (h *handlers) addSceneHandler(w http.ResponseWriter, r *http.Request) {
 	var incomingScene scene.Scene
 	err := json.NewDecoder(r.Body).Decode(&incomingScene)
 	if err != nil {
-		w.WriteHeader(400)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	scenes[incomingScene.ID] = &incomingScene
+	err = h.engine.Db.SetScene(&incomingScene)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
 }
 
-func getSceneHandler(w http.ResponseWriter, r *http.Request) {
+func (h *handlers) getSceneHandler(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 
-	target, ok := scenes[id]
-	if !ok {
+	target, err := h.engine.Db.GetScene(id)
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(target)
+	err = json.NewEncoder(w).Encode(target)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
-func getSceneIds(w http.ResponseWriter, r *http.Request) {
-	var ids []string
-
-	for id := range scenes {
-		ids = append(ids, id)
+func (h *handlers) getSceneIds(w http.ResponseWriter, r *http.Request) {
+	ids, err := h.engine.Db.GetSceneIds()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	err := json.NewEncoder(w).Encode(ids)
+	err = json.NewEncoder(w).Encode(ids)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
-func runSceneHandler(engine *run.Engine) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := mux.Vars(r)["id"]
-		target, ok := scenes[id]
-		if !ok {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
+func (h *handlers) runSceneHandler(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	target, err := h.engine.Db.GetScene(id)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 
-		engine.Run(target, run.UseStepTimings, types.RunModeCycle)
-		w.WriteHeader(http.StatusAccepted)
-	})
+	h.engine.Run(target, run.UseStepTimings, types.RunModeCycle)
+	w.WriteHeader(http.StatusAccepted)
 }
 
-func stopSceneHandler(engine *run.Engine) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		engine.Stop()
-		w.WriteHeader(http.StatusAccepted)
-	})
+func (h *handlers) stopSceneHandler(w http.ResponseWriter, r *http.Request) {
+	h.engine.Stop()
+	w.WriteHeader(http.StatusAccepted)
 }
 
-func getDeviceIds(engine *run.Engine) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewEncoder(w).Encode(engine.DeviceMap.GetIdentifiers())
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-		}
+func (h *handlers) getDeviceIds(w http.ResponseWriter, r *http.Request) {
+	err := json.NewEncoder(w).Encode(h.engine.DeviceMap.GetIdentifiers())
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }

@@ -3,6 +3,7 @@ package run
 import (
 	"context"
 	"fmt"
+	"github.com/ChristianGaertner/dmx-controller/database"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/scene"
@@ -26,6 +27,7 @@ type SceneRun struct {
 }
 
 type Engine struct {
+	Db     database.Database
 	active *SceneRun
 
 	Renderer  dmx.BufferRenderer
@@ -46,8 +48,9 @@ type EngineClient interface {
 	OnActiveChange(sceneID *string) bool
 }
 
-func NewEngine(renderer dmx.BufferRenderer, deviceMap *fixture.DeviceMap, buffer *dmx.Buffer) *Engine {
+func NewEngine(renderer dmx.BufferRenderer, deviceMap *fixture.DeviceMap, buffer *dmx.Buffer, db database.Database) *Engine {
 	return &Engine{
+		Db:               db,
 		Renderer:         renderer,
 		DeviceMap:        deviceMap,
 		Buffer:           buffer,

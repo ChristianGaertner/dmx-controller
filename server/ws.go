@@ -41,24 +41,22 @@ type WSClient struct {
 	engine *run.Engine
 }
 
-func handleWebsocket(engine *run.Engine) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		conn, err := upgrader.Upgrade(w, r, nil)
-		if err != nil {
-			fmt.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+func (h *handlers) handleWebsocket(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-		client := &WSClient{
-			conn:   conn,
-			send:   make(chan []byte, 2),
-			engine: engine,
-		}
+	client := &WSClient{
+		conn:   conn,
+		send:   make(chan []byte, 2),
+		engine: h.engine,
+	}
 
-		engine.Register(client)
+	h.engine.Register(client)
 
-		go client.writePump()
-		go client.readPump()
-	})
+	go client.writePump()
+	go client.readPump()
 }

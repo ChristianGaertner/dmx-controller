@@ -7,18 +7,18 @@ import (
 )
 
 type Fixture interface {
-	GetId() string
+	GetDefinition() *DefinedFixture
 	NumChannels() uint16
 	ApplyValueTo(value *Value, d *Device)
 }
 
 type DefinedFixture struct {
-	Definition *definition.Definition
-	ActiveMode definition.ModeID
+	Definition *definition.Definition `json:"definition"`
+	ActiveMode definition.ModeID `json:"activeMode"`
 }
 
-func (f DefinedFixture) GetId() string {
-	return f.Definition.ID
+func (f DefinedFixture) GetDefinition() *DefinedFixture {
+	return &f
 }
 
 func (f DefinedFixture) NumChannels() uint16 {

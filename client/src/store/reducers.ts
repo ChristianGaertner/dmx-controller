@@ -1,4 +1,4 @@
-import { RunMode, RunParams, RunType, Scene } from "../types";
+import { DefinedFixture, RunMode, RunParams, RunType, Scene } from "../types";
 import { Action } from "./actionTypes";
 import {
   LOAD_SCENE_LIST_REQUEST,
@@ -122,7 +122,7 @@ export const running = (
 type DeviceStore = {
   ids: string[];
   fixtureMapping: {
-    [k: string]: string;
+    [deviceId: string]: DefinedFixture;
   };
   isFetching: boolean;
 };
@@ -152,7 +152,7 @@ export const devices = (
     case INIT_FIXTURES:
       return {
         ...state,
-        fixtureMapping: action.payload.fixtureIds,
+        fixtureMapping: action.payload.fixtures,
       };
     default:
       return state;

@@ -110,3 +110,42 @@ export type RunParams = {
   type: RunType;
   mode: RunMode;
 };
+
+enum CapabilityType {
+  IntensityMasterDimmer = "IntensityMasterDimmer",
+  IntensityRed = "IntensityRed",
+  IntensityGreen = "IntensityGreen",
+  IntensityBlue = "IntensityBlue",
+  StrobeSlowToFast = "StrobeSlowToFast",
+}
+
+export type DefinedFixture = {
+  definition: FixtureDefinition;
+  activeMode: number;
+};
+
+type FixtureDefinition = {
+  id: string;
+  modes: {
+    [k: number]: FixtureMode;
+  };
+};
+
+type FixtureMode = {
+  numChannels: number;
+  capabilities: { [k in keyof typeof CapabilityType]: ChannelTargetRange };
+  colorMacros: ColorMacroDefinition[];
+  hasVirtualDimmer: boolean;
+};
+
+type ColorMacroDefinition = {
+  color: Color;
+  name: string;
+  target: ChannelTargetRange;
+};
+
+type ChannelTargetRange = {
+  channel: number;
+  rangeStart: number;
+  rangeEnd: number;
+};

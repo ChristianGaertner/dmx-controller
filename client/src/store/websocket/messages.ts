@@ -1,6 +1,6 @@
 import { BaseAction } from "../actionTypes";
 import { RawMessage } from "./middleware";
-import { RunParams } from "../../types";
+import { DefinedFixture, RunParams } from "../../types";
 
 export type WsMessages =
   | OnActiveChangeMessage
@@ -35,8 +35,8 @@ export const INIT_FIXTURES = "@websocket/INIT_FIXTURES";
 type InitFixtures = WsMessage<
   typeof INIT_FIXTURES,
   {
-    fixtureIds: {
-      [k: string]: string;
+    fixtures: {
+      [deviceId: string]: DefinedFixture;
     };
   }
 >;

@@ -29,15 +29,15 @@ func NewChannelFromIndex(index int) Channel {
 	return NewChannel(ChannelIndex(index + 1))
 }
 
-func (c *Channel) MarshalJSON() ([]byte, error) {
-	return json.Marshal(c.value)
+func (c Channel) MarshalJSON() ([]byte, error) {
+	return json.Marshal(int(c.value))
 }
 
 func (c *Channel) UnmarshalJSON(data []byte) error {
 	var i int
 
 	if err := json.Unmarshal(data, &i); err != nil {
-		return fmt.Errorf("Channel should be a number, got %s", data)
+		return fmt.Errorf("channel should be a number, got %s", data)
 	}
 
 	*c = NewChannel(ChannelIndex(i))

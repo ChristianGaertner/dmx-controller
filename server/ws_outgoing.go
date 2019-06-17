@@ -38,23 +38,23 @@ func (wsc *WSClient) OnActiveChange(sceneID *string, progress float64) bool {
 }
 
 type initFixturesPayload struct {
-	FixtureIds map[fixture.DeviceIdentifier]string `json:"fixtureIds"`
+	Fixtures map[fixture.DeviceIdentifier]*fixture.DefinedFixture `json:"fixtures"`
 }
 
 func (wsc *WSClient) InitFixtures(deviceMap *fixture.DeviceMap) bool {
 
-	ids := make(map[fixture.DeviceIdentifier]string)
+	fixs := make(map[fixture.DeviceIdentifier]*fixture.DefinedFixture)
 
 	for _, dev := range deviceMap.GetIdentifiers() {
 
-		ids[dev] = deviceMap.Get(dev).Fixture.GetId()
+		fixs[dev] = deviceMap.Get(dev).Fixture.GetDefinition()
 	}
 
 	msg := message{
 		MessageType: MsgTypeInitFixtures,
 		Timestamp: time.Now(),
 		Payload: initFixturesPayload{
-			FixtureIds: ids,
+			Fixtures: fixs,
 		},
 	}
 	data, err := json.Marshal(msg)

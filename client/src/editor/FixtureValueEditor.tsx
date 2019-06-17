@@ -1,12 +1,16 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Color, FixtureValue } from "../types";
+import { Color, FixtureMode, FixtureModeUtil, FixtureValue } from "../types";
 import { AppState } from "../store";
-import { getFixtureValueForEditing } from "../store/editor/selectors";
+import {
+  getFixtureModeForEditing,
+  getFixtureValueForEditing,
+} from "../store/editor/selectors";
 import { Dialog } from "../components/Dialog";
 import { deselectFixtureValue, setFixtureValue } from "../store/editor/actions";
 
 type StateProps = {
+  fixtureMode: FixtureMode | null;
   value: FixtureValue | null;
 };
 
@@ -19,47 +23,58 @@ type Props = StateProps & DispatchProps;
 
 const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
   value,
+  fixtureMode,
   set,
   close,
 }) =>
-  value && (
+  value &&
+  fixtureMode && (
     <Dialog title="Edit Fixture Value" onRequestClose={close}>
       <div className="p-4 flex flex-col">
-        <ValueRow
-          active={value.dimmer !== undefined}
-          label="Dimmer"
-          value={(value.dimmer || 0) * 1000}
-          onChange={(v: number) =>
-            set({
-              ...value,
-              dimmer: v && parseFloat((v / 1000).toFixed(2)),
-            })
-          }
-          inputProps={{ type: "range", min: 0, max: 1000 }}
-        />
-        <ValueRow
-          active={value.color !== undefined}
-          label="Color"
-          value={value.color ? Color2Hex(value.color) : "#000000"}
-          onChange={(v: string) => {
-            // open the dimmer if it is not open... just a convience functionality
-            const dimmer = value.dimmer === undefined ? 1 : value.dimmer;
-            set({ ...value, color: Hex2Color(v), dimmer });
-          }}
-          inputProps={{ type: "color" }}
-        />
-        <ValueRow
-          active={value.strobe !== undefined}
-          label="Strobe"
-          value={(value.strobe || 0) * 1000}
-          onChange={(v: number) =>
-            set({
-              ...value,
-              strobe: v && parseFloat((v / 1000).toFixed(2)),
-            })
-          }
-          inputProps={{ type: "range", min: 0, max: 1000 }}
-        />
+        {FixtureModeUtil.hasDimmer(fixtureMode) && (
+          <ValueRow
+            active={value.dimmer !== undefined}
+            label="Dimmer"
+            value={(value.dimmer || 0) * 1000}
+            onChange={(v: number) =>
+              set({
+                ...value,
+                dimmer: v && parseFloat((v / 1000).toFixed(2)),
+              })
+            }
+            inputProps={{ type: "range", min: 0, max: 1000 }}
+          />
+        )}
+        {FixtureModeUtil.hasFullColorRange(fixtureMode) && (
+          <ValueRow
+            active={value.color !== undefined}
+            label="Color"
+            value={value.color ? Color2Hex(value.color) : "#000000"}
+            onChange={(v: string) => {
+              // open the dimmer if it is not open... just a convience functionality
+              const dimmer =
+                v !== undefined && value.dimmer === undefined
+                  ? 1
+                  : value.dimmer;
+              set({ ...value, color: Hex2Color(v), dimmer });
+            }}
+            inputProps={{ type: "color" }}
+          />
+        )}
+        {FixtureModeUtil.hasStrobe(fixtureMode) && (
+          <ValueRow
+            active={value.strobe !== undefined}
+            label="Strobe"
+            value={(value.strobe || 0) * 1000}
+            onChange={(v: number) =>
+              set({
+                ...value,
+                strobe: v && parseFloat((v / 1000).toFixed(2)),
+              })
+            }
+            inputProps={{ type: "range", min: 0, max: 1000 }}
+          />
+        )}
       </div>
     </Dialog>
   );
@@ -102,6 +117,7 @@ const ValueRow: React.FunctionComponent<ValueRowProps> = ({
 
 const mapStateToProps = (state: AppState): StateProps => ({
   value: getFixtureValueForEditing(state),
+  fixtureMode: getFixtureModeForEditing(state),
 });
 
 const mapDispatchToProps: DispatchProps = {

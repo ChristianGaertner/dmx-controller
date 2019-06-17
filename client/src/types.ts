@@ -111,7 +111,7 @@ export type RunParams = {
   mode: RunMode;
 };
 
-enum CapabilityType {
+export enum CapabilityType {
   IntensityMasterDimmer = "IntensityMasterDimmer",
   IntensityRed = "IntensityRed",
   IntensityGreen = "IntensityGreen",
@@ -131,12 +131,26 @@ type FixtureDefinition = {
   };
 };
 
-type FixtureMode = {
+export type FixtureMode = {
   numChannels: number;
   capabilities: { [k in keyof typeof CapabilityType]: ChannelTargetRange };
   colorMacros: ColorMacroDefinition[];
   hasVirtualDimmer: boolean;
 };
+
+export class FixtureModeUtil {
+  static hasDimmer = (mode: FixtureMode) =>
+    CapabilityType.IntensityMasterDimmer in mode.capabilities ||
+    mode.hasVirtualDimmer;
+
+  static hasFullColorRange = (mode: FixtureMode) =>
+    CapabilityType.IntensityRed in mode.capabilities &&
+    CapabilityType.IntensityGreen in mode.capabilities &&
+    CapabilityType.IntensityBlue in mode.capabilities;
+
+  static hasStrobe = (mode: FixtureMode) =>
+    CapabilityType.StrobeSlowToFast in mode.capabilities;
+}
 
 type ColorMacroDefinition = {
   color: Color;

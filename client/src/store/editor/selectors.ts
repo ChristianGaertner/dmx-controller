@@ -1,5 +1,5 @@
 import { AppState } from "../index";
-import { Effect, FixtureValue, Scene, Timings } from "../../types";
+import { Effect, FixtureMode, FixtureValue, Scene, Timings } from "../../types";
 import { EditorUiStore } from "./reducers";
 
 const getUiState = (state: AppState): EditorUiStore => state.editor.ui;
@@ -34,6 +34,26 @@ export const getFixtureValueForEditing = (
   }
 
   return step.values[deviceId] || ({} as FixtureValue);
+};
+
+export const getFixtureModeForEditing = (
+  state: AppState,
+): FixtureMode | null => {
+  const uiState = getUiState(state);
+
+  if (!uiState.selectedFixtureValue) {
+    return null;
+  }
+
+  const { deviceId } = uiState.selectedFixtureValue;
+
+  const definedFixture = state.devices.fixtureMapping[deviceId];
+
+  if (!definedFixture) {
+    return null;
+  }
+
+  return definedFixture.definition.modes[definedFixture.activeMode];
 };
 
 export const getTimingsForEditing = (state: AppState): Timings | null => {

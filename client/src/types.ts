@@ -134,7 +134,7 @@ type FixtureDefinition = {
 export type FixtureMode = {
   numChannels: number;
   capabilities: { [k in keyof typeof CapabilityType]: ChannelTargetRange };
-  colorMacros: ColorMacroDefinition[];
+  colorMacros: ColorMacroDefinition[] | null;
   hasVirtualDimmer: boolean;
 };
 
@@ -150,6 +150,9 @@ export class FixtureModeUtil {
 
   static hasStrobe = (mode: FixtureMode) =>
     CapabilityType.StrobeSlowToFast in mode.capabilities;
+
+  static hasColorWheel = (mode: FixtureMode) =>
+    mode.colorMacros && mode.colorMacros.length > 0;
 }
 
 type ColorMacroDefinition = {

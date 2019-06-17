@@ -8,6 +8,7 @@ import {
 } from "../store/editor/selectors";
 import { Dialog } from "../components/Dialog";
 import { deselectFixtureValue, setFixtureValue } from "../store/editor/actions";
+import { Select } from "../components/Select";
 
 type StateProps = {
   fixtureMode: FixtureMode | null;
@@ -61,6 +62,29 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
             inputProps={{ type: "color" }}
           />
         )}
+        {FixtureModeUtil.hasColorWheel(fixtureMode) && (
+          <ValueRow
+            active={value.color !== undefined}
+            label="Color"
+            value={value.color ? Color2Hex(value.color) : "#000000"}
+            onChange={(v: string) => {
+              set({ ...value, color: Hex2Color(v) });
+            }}
+            render={rProps => (
+              <Select value={rProps.value} onChange={rProps.onChange}>
+                <option value="">Default</option>
+                {(fixtureMode.colorMacros || []).map(macro => (
+                  <option
+                    key={Color2Hex(macro.color)}
+                    value={Color2Hex(macro.color)}
+                  >
+                    {macro.name}
+                  </option>
+                ))}
+              </Select>
+            )}
+          />
+        )}
         {FixtureModeUtil.hasStrobe(fixtureMode) && (
           <ValueRow
             active={value.strobe !== undefined}
@@ -84,32 +108,37 @@ type ValueRowProps = {
   value: any;
   onChange: (value: any | undefined) => void;
   label: string;
-  inputProps: any;
+  inputProps?: any;
+  render?: (rProps: ValueRowProps) => React.ReactNode;
 };
 
-const ValueRow: React.FunctionComponent<ValueRowProps> = ({
-  active,
+const DefaultInput: React.FunctionComponent<ValueRowProps> = ({
   value,
   onChange,
-  label,
   inputProps,
 }) => (
+  <input
+    value={value}
+    onChange={e => onChange(e.target.value)}
+    {...inputProps}
+  />
+);
+
+const ValueRow: React.FunctionComponent<ValueRowProps> = props => (
   <div className="flex items-center w-1/2 my-2">
     <span className="bg-gray-800 flex justify-start items-center p-2 flex-grow rounded-l">
       <input
         type="checkbox"
-        checked={active}
-        onChange={e => onChange(e.target.checked ? value : undefined)}
+        checked={props.active}
+        onChange={e =>
+          props.onChange(e.target.checked ? props.value : undefined)
+        }
       />
-      <label className="ml-2">{label}</label>
+      <label className="ml-2">{props.label}</label>
     </span>
     <div className="ml-auto flex flex-row w-1/2">
       <div className="mx-2">
-        <input
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          {...inputProps}
-        />
+        {props.render ? props.render(props) : <DefaultInput {...props} />}
       </div>
     </div>
   </div>
@@ -131,15 +160,15 @@ export const FixtureValueEditor = connect(
 )(FixtureValueEditorComp);
 
 const Color2Hex = (color: Color): string => {
-  let r = (color.R * 255).toString(16);
+  let r = Math.round(color.R * 255).toString(16);
   if (r.length < 2) {
     r = "0" + r;
   }
-  let g = (color.G * 255).toString(16);
+  let g = Math.round(color.G * 255).toString(16);
   if (g.length < 2) {
     g = "0" + g;
   }
-  let b = (color.B * 255).toString(16);
+  let b = Math.round(color.B * 255).toString(16);
   if (b.length < 2) {
     b = "0" + b;
   }

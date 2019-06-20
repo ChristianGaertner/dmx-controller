@@ -15,7 +15,7 @@ type UniverseId uint32
 type PatchPosition uint64
 
 func NewPatchPosition(universe UniverseId, address Channel) PatchPosition {
-	return PatchPosition(uint64(universe) << 32 | uint64(address.ToSliceIndex()))
+	return PatchPosition(uint64(universe)<<32 | uint64(address.ToSliceIndex()))
 }
 
 func (p PatchPosition) GetAddress() Channel {

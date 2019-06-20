@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/gorilla/websocket"
 	"time"
@@ -38,22 +39,25 @@ func (wsc *WSClient) OnActiveChange(sceneID *string, progress float64) bool {
 }
 
 type initFixturesPayload struct {
+	Patch    map[fixture.DeviceIdentifier]dmx.PatchPosition       `json:"patch"`
 	Fixtures map[fixture.DeviceIdentifier]*fixture.DefinedFixture `json:"fixtures"`
 }
 
 func (wsc *WSClient) InitFixtures(deviceMap *fixture.DeviceMap) bool {
 
+	patch := make(map[fixture.DeviceIdentifier]dmx.PatchPosition)
 	fixs := make(map[fixture.DeviceIdentifier]*fixture.DefinedFixture)
 
 	for _, dev := range deviceMap.GetIdentifiers() {
-
 		fixs[dev] = deviceMap.Get(dev).Fixture.GetDefinition()
+		patch[dev] = deviceMap.GetPatchPosition(dev)
 	}
 
 	msg := message{
 		MessageType: MsgTypeInitFixtures,
-		Timestamp: time.Now(),
+		Timestamp:   time.Now(),
 		Payload: initFixturesPayload{
+			Patch:    patch,
 			Fixtures: fixs,
 		},
 	}

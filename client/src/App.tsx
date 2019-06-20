@@ -8,6 +8,7 @@ import { setTab, UiTab } from "./store/actions/setTab";
 import { AppState } from "./store";
 import { getActiveTab } from "./store/selectors";
 import { wsConnect } from "./store/websocket/actions";
+import { PatchView } from "./patch/PatchView";
 
 type StateProps = {
   tab: UiTab;
@@ -37,6 +38,7 @@ const App: React.FunctionComponent<Props> = ({
       <Sidebar tab={tab} setTab={setTab} />
       {tab === UiTab.LIVE && <SceneRunner />}
       {tab === UiTab.PROGRAM && <Editor />}
+      {tab === UiTab.PATCH && <PatchView />}
     </div>
   );
 };

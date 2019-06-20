@@ -14,7 +14,7 @@ type Fixture interface {
 
 type DefinedFixture struct {
 	Definition *definition.Definition `json:"definition"`
-	ActiveMode definition.ModeID `json:"activeMode"`
+	ActiveMode definition.ModeID      `json:"activeMode"`
 }
 
 func (f DefinedFixture) GetDefinition() *DefinedFixture {

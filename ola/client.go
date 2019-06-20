@@ -26,7 +26,7 @@ type Client struct {
 
 type response struct {
 	Buffer []byte
-	Err error
+	Err    error
 }
 
 func New(address string) (*Client, error) {
@@ -78,7 +78,7 @@ func (c *Client) callRPCMethod(ctx context.Context, name string, pb proto.Messag
 		return fmt.Errorf("could not marshal message: %s", err)
 	}
 
-	t := Type_REQUEST;
+	t := Type_REQUEST
 	wrapper := &RpcMessage{
 		Type:   &t,
 		Id:     proto.Uint32(c.messageId.Get()),
@@ -110,7 +110,6 @@ func (c *Client) callRPCMethod(ctx context.Context, name string, pb proto.Messag
 	c.responses[*wrapper.Id] = data
 
 	c.requestTrigger <- true
-
 
 	var res response
 	select {
@@ -162,7 +161,7 @@ func (c *Client) recv() error {
 
 	res := response{
 		Buffer: wrapper.Buffer,
-		Err: resError,
+		Err:    resError,
 	}
 
 	if consumer, ok := c.responses[*wrapper.Id]; ok {

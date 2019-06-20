@@ -3,6 +3,7 @@ import { BaseAction } from "../actionTypes";
 export enum UiTab {
   LIVE,
   PROGRAM,
+  PATCH,
 }
 
 export const SET_TAB = "@ui/SET_TAB";

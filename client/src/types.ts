@@ -49,6 +49,11 @@ export const NewStep = (): Step => ({
   },
 });
 
+export type PatchPosition = {
+  universeId: number;
+  address: number;
+};
+
 export type FixtureValue = {
   dimmer?: number;
   color?: Color;

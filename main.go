@@ -19,7 +19,7 @@ var addr = flag.String("address", ":8080", "Address of the server to listen on")
 var setupFile = flag.String("setup", "", "path to setup json definition")
 var databaseFile = flag.String("database", "", "path to the database file, will be created if needed")
 
-var gracefulTimeout = flag.Duration("graceful-timeout", time.Second * 15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
+var gracefulTimeout = flag.Duration("graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 
 func main() {
 	flag.Parse()

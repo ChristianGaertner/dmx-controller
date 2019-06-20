@@ -41,13 +41,13 @@ func (d *Device) Get(channel dmx.Channel) dmx.Value {
 
 type DeviceMap struct {
 	devices map[DeviceIdentifier]*Device
-	patch   map[dmx.PatchPosition]*Device
+	patch   map[DeviceIdentifier]dmx.PatchPosition
 }
 
 func NewDeviceMap() *DeviceMap {
 	return &DeviceMap{
 		devices: make(map[DeviceIdentifier]*Device),
-		patch:   make(map[dmx.PatchPosition]*Device),
+		patch:   make(map[DeviceIdentifier]dmx.PatchPosition),
 	}
 }
 
@@ -64,8 +64,12 @@ func (dM *DeviceMap) Get(id DeviceIdentifier) *Device {
 	return dM.devices[id]
 }
 
+func (dM *DeviceMap) GetPatchPosition(id DeviceIdentifier) dmx.PatchPosition {
+	return dM.patch[id]
+}
+
 func (dM *DeviceMap) Patch(p dmx.PatchPosition, d *Device) {
-	dM.patch[p] = d
+	dM.patch[d.Uuid] = p
 	dM.devices[d.Uuid] = d
 }
 
@@ -76,7 +80,8 @@ func (dM *DeviceMap) Reset() {
 }
 
 func (dM *DeviceMap) Render(buffer *dmx.Buffer) {
-	for p, device := range dM.patch {
+	for deviceId, p := range dM.patch {
+		device := dM.Get(deviceId)
 		values := device.GetValues()
 		buffer.Apply(p, values)
 		device.Reset()

@@ -1,6 +1,6 @@
 import { BaseAction } from "../actionTypes";
 import { RawMessage } from "./middleware";
-import { DefinedFixture, RunParams } from "../../types";
+import { DefinedFixture, PatchPosition, RunParams } from "../../types";
 
 export type WsMessages =
   | OnActiveChangeMessage
@@ -37,6 +37,9 @@ type InitFixtures = WsMessage<
   {
     fixtures: {
       [deviceId: string]: DefinedFixture;
+    };
+    patch: {
+      [deviceId: string]: PatchPosition;
     };
   }
 >;

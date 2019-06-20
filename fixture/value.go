@@ -8,6 +8,7 @@ type Value struct {
 	Dimmer *types.DimmerValue `json:"dimmer,omitempty"`
 	Color  *types.Color       `json:"color,omitempty"`
 	Strobe *types.Frequency   `json:"strobe,omitempty"`
+	Preset *types.PresetID    `json:"preset,omitempty"`
 }
 
 func Lerp(a, b *Value, percentUp, percentDown float64) *Value {
@@ -21,6 +22,7 @@ func Lerp(a, b *Value, percentUp, percentDown float64) *Value {
 		Dimmer: types.LerpDimmerValue(a.Dimmer, b.Dimmer, percentUp, percentDown),
 		Color:  types.LerpColor(a.Color, b.Color, percentUp, percentDown),
 		Strobe: types.LerpFrequency(a.Strobe, b.Strobe, percentUp, percentDown),
+		Preset: types.LerpPreset(a.Preset, b.Preset, percentUp, percentDown),
 	}
 }
 
@@ -53,9 +55,19 @@ func Merge(a, b *Value) *Value {
 		strobe = b.Strobe
 	}
 
+	var preset *types.PresetID
+	if a.Preset != nil && b.Preset == nil {
+		preset = a.Preset
+	} else if a.Preset != nil && b.Preset != nil {
+		preset = types.LerpPreset(a.Preset, b.Preset, 0.5, 0.5)
+	} else {
+		preset = b.Preset
+	}
+
 	return &Value{
 		Dimmer: dimmer,
 		Color:  color,
 		Strobe: strobe,
+		Preset: preset,
 	}
 }

@@ -7,20 +7,20 @@
         "ledBarLeft": {
           "name": "LED BAR Left",
           "startAddress": 1,
-          "fixtureId": "test-fixture",
-          "mode": 0
+          "fixtureId": "stairville/led-bar-240-8-rgb-30",
+          "mode": 2
         },
         "ledBarMiddle": {
           "name": "LED BAR Middle",
           "startAddress": 17,
-          "fixtureId": "test-fixture",
-          "mode": 0
+          "fixtureId": "stairville/led-bar-240-8-rgb-30",
+          "mode": 2
         },
         "ledBarRight": {
           "name": "LED BAR Right",
           "startAddress": 33,
-          "fixtureId": "test-fixture",
-          "mode": 0
+          "fixtureId": "stairville/led-bar-240-8-rgb-30",
+          "mode": 2
         },
         "spotLeftWindow": {
           "name": "Spot Left To Window",

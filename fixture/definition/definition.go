@@ -41,6 +41,7 @@ func FromJson(data []byte) (*Definition, error) {
 type Mode struct {
 	NumChannels      uint16                                `json:"numChannels"`
 	Capabilities     map[CapabilityType]ChannelTargetRange `json:"capabilities"`
+	Presets          map[types.PresetID]Preset             `json:"presets"`
 	ColorMacros      []ColorMacroDefinition                `json:"colorMacros"`
 	HasVirtualDimmer bool                                  `json:"hasVirtualDimmer"`
 }
@@ -49,6 +50,12 @@ type ChannelTargetRange struct {
 	Channel    dmx.Channel `json:"channel"`
 	RangeStart dmx.Value   `json:"rangeStart"`
 	RangeEnd   dmx.Value   `json:"rangeEnd"`
+}
+
+type Preset struct {
+	Name    string             `json:"name"`
+	Default bool               `json:"default"`
+	Target  ChannelTargetRange `json:"target"`
 }
 
 type ColorMacroDefinition struct {

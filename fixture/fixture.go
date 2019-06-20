@@ -37,6 +37,12 @@ func (f DefinedFixture) ApplyValueTo(value *Value, d *Device) {
 	if capa, ok := mode.Capabilities[definition.StrobeSlowToFast]; value.Strobe != nil && ok {
 		set(d, float64(*value.Strobe), capa)
 	}
+
+	if value.Preset != nil {
+		if preset, ok := mode.Presets[*value.Preset]; ok {
+			d.Set(preset.Target.Channel, preset.Target.RangeEnd)
+		}
+	}
 }
 
 func set(d *Device, value float64, capa definition.ChannelTargetRange) {

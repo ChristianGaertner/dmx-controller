@@ -99,6 +99,34 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
             inputProps={{ type: "range", min: 0, max: 1000 }}
           />
         )}
+        {fixtureMode.presets !== null && (
+          <ValueRow
+            active={value.preset !== undefined}
+            label="Preset"
+            value={
+              value.preset !== undefined
+                ? value.preset
+                : FixtureModeUtil.defaultPresetId(fixtureMode)
+            }
+            onChange={(v: string) =>
+              set({ ...value, preset: !!v ? v : undefined })
+            }
+            render={rProps => (
+              <Select value={rProps.value} onChange={rProps.onChange}>
+                {FixtureModeUtil.defaultPresetId(fixtureMode) === undefined && (
+                  <option value="">Default</option>
+                )}
+                {Object.entries(fixtureMode.presets || {})
+                  .sort(([a], [b]) => a.localeCompare(b))
+                  .map(([presetId, preset]) => (
+                    <option key={presetId} value={presetId}>
+                      {preset.name}
+                    </option>
+                  ))}
+              </Select>
+            )}
+          />
+        )}
       </div>
     </Dialog>
   );

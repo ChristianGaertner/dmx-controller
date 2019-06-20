@@ -53,6 +53,7 @@ export type FixtureValue = {
   dimmer?: number;
   color?: Color;
   strobe?: number;
+  preset?: string;
 };
 
 type BaseEffect = {
@@ -133,31 +134,50 @@ type FixtureDefinition = {
 
 export type FixtureMode = {
   numChannels: number;
-  capabilities: { [k in keyof typeof CapabilityType]: ChannelTargetRange };
+  capabilities:
+    | { [k in keyof typeof CapabilityType]: ChannelTargetRange }
+    | null;
+  presets: { [presetId: string]: Preset } | null;
   colorMacros: ColorMacroDefinition[] | null;
   hasVirtualDimmer: boolean;
 };
 
 export class FixtureModeUtil {
   static hasDimmer = (mode: FixtureMode) =>
-    CapabilityType.IntensityMasterDimmer in mode.capabilities ||
-    mode.hasVirtualDimmer;
+    mode.capabilities &&
+    (CapabilityType.IntensityMasterDimmer in mode.capabilities ||
+      mode.hasVirtualDimmer);
 
   static hasFullColorRange = (mode: FixtureMode) =>
+    mode.capabilities &&
     CapabilityType.IntensityRed in mode.capabilities &&
     CapabilityType.IntensityGreen in mode.capabilities &&
     CapabilityType.IntensityBlue in mode.capabilities;
 
   static hasStrobe = (mode: FixtureMode) =>
-    CapabilityType.StrobeSlowToFast in mode.capabilities;
+    mode.capabilities && CapabilityType.StrobeSlowToFast in mode.capabilities;
 
   static hasColorWheel = (mode: FixtureMode) =>
     mode.colorMacros && mode.colorMacros.length > 0;
+
+  static defaultPresetId = (mode: FixtureMode): string | undefined => {
+    const maybePreset = Object.entries(mode.presets || {}).find(
+      ([id, preset]) => preset.default,
+    );
+
+    return maybePreset ? maybePreset[0] : undefined;
+  };
 }
 
 type ColorMacroDefinition = {
   color: Color;
   name: string;
+  target: ChannelTargetRange;
+};
+
+type Preset = {
+  name: string;
+  default: boolean;
   target: ChannelTargetRange;
 };
 

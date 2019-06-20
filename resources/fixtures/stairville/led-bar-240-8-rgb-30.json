@@ -1,0 +1,302 @@
+{
+  "id": "stairville/led-bar-240-8-rgb-30",
+  "modes": {
+    "2": {
+      "numChannels": 2,
+      "presets": {
+        "00off": {
+          "name": "LEDs off",
+          "default": true,
+          "target": {
+            "channel": 1,
+            "rangeStart": 0,
+            "rangeEnd": 7
+          }
+        },
+        "01r": {
+          "name": "Constant unicoloured pattern in red",
+          "target": {
+            "channel": 1,
+            "rangeStart": 8,
+            "rangeEnd": 15
+          }
+        },
+        "02rg": {
+          "name": "Constant unicoloured pattern in red and green",
+          "target": {
+            "channel": 1,
+            "rangeStart": 16,
+            "rangeEnd": 23
+          }
+        },
+        "03g": {
+          "name": "Constant unicoloured pattern in green",
+          "target": {
+            "channel": 1,
+            "rangeStart": 24,
+            "rangeEnd": 31
+          }
+        },
+        "04bg": {
+          "name": "Constant unicoloured pattern in blue and green",
+          "target": {
+            "channel": 1,
+            "rangeStart": 32,
+            "rangeEnd": 39
+          }
+        },
+        "05b": {
+          "name": "Constant unicoloured pattern in blue",
+          "target": {
+            "channel": 1,
+            "rangeStart": 40,
+            "rangeEnd": 47
+          }
+        },
+        "06br": {
+          "name": "Constant unicoloured pattern in blue and red",
+          "target": {
+            "channel": 1,
+            "rangeStart": 48,
+            "rangeEnd": 55
+          }
+        },
+        "07rgb": {
+          "name": "Constant unicoloured pattern in red, green and blue",
+          "target": {
+            "channel": 1,
+            "rangeStart": 56,
+            "rangeEnd": 63
+          }
+        },
+        "08show1": {
+          "name": "Preprogrammed automatic show #1",
+          "target": {
+            "channel": 1,
+            "rangeStart": 64,
+            "rangeEnd": 71
+          }
+        },
+        "09show2": {
+          "name": "Preprogrammed automatic show #2",
+          "target": {
+            "channel": 1,
+            "rangeStart": 72,
+            "rangeEnd": 79
+          }
+        },
+        "10show3": {
+          "name": "Preprogrammed automatic show #3",
+          "target": {
+            "channel": 1,
+            "rangeStart": 80,
+            "rangeEnd": 87
+          }
+        },
+        "11show4": {
+          "name": "Preprogrammed automatic show #4",
+          "target": {
+            "channel": 1,
+            "rangeStart": 88,
+            "rangeEnd": 95
+          }
+        },
+        "12show5": {
+          "name": "Preprogrammed automatic show #5",
+          "target": {
+            "channel": 1,
+            "rangeStart": 96,
+            "rangeEnd": 103
+          }
+        },
+        "13show6": {
+          "name": "Preprogrammed automatic show #6",
+          "target": {
+            "channel": 1,
+            "rangeStart": 104,
+            "rangeEnd": 111
+          }
+        },
+        "14show7": {
+          "name": "Preprogrammed automatic show #7",
+          "target": {
+            "channel": 1,
+            "rangeStart": 112,
+            "rangeEnd": 119
+          }
+        },
+        "15show8": {
+          "name": "Preprogrammed automatic show #8",
+          "target": {
+            "channel": 1,
+            "rangeStart": 120,
+            "rangeEnd": 127
+          }
+        },
+        "16show9": {
+          "name": "Preprogrammed automatic show #9",
+          "target": {
+            "channel": 1,
+            "rangeStart": 128,
+            "rangeEnd": 135
+          }
+        },
+        "17show10": {
+          "name": "Preprogrammed automatic show #10",
+          "target": {
+            "channel": 1,
+            "rangeStart": 136,
+            "rangeEnd": 143
+          }
+        },
+        "18show11": {
+          "name": "Preprogrammed automatic show #11",
+          "target": {
+            "channel": 1,
+            "rangeStart": 144,
+            "rangeEnd": 151
+          }
+        },
+        "19show12": {
+          "name": "Preprogrammed automatic show #12",
+          "target": {
+            "channel": 1,
+            "rangeStart": 152,
+            "rangeEnd": 159
+          }
+        },
+        "20show13": {
+          "name": "Preprogrammed automatic show #13",
+          "target": {
+            "channel": 1,
+            "rangeStart": 160,
+            "rangeEnd": 167
+          }
+        },
+        "21show14": {
+          "name": "Preprogrammed automatic show #14",
+          "target": {
+            "channel": 1,
+            "rangeStart": 168,
+            "rangeEnd": 175
+          }
+        },
+        "22show15": {
+          "name": "Preprogrammed automatic show #15",
+          "target": {
+            "channel": 1,
+            "rangeStart": 176,
+            "rangeEnd": 183
+          }
+        },
+        "23show16": {
+          "name": "Preprogrammed automatic show #16",
+          "target": {
+            "channel": 1,
+            "rangeStart": 184,
+            "rangeEnd": 191
+          }
+        },
+        "24show17": {
+          "name": "Preprogrammed automatic show #17",
+          "target": {
+            "channel": 1,
+            "rangeStart": 192,
+            "rangeEnd": 199
+          }
+        },
+        "25show18": {
+          "name": "Preprogrammed automatic show #18",
+          "target": {
+            "channel": 1,
+            "rangeStart": 200,
+            "rangeEnd": 207
+          }
+        },
+        "26show19": {
+          "name": "Preprogrammed automatic show #19",
+          "target": {
+            "channel": 1,
+            "rangeStart": 208,
+            "rangeEnd": 215
+          }
+        },
+        "27show20": {
+          "name": "Preprogrammed automatic show #20",
+          "target": {
+            "channel": 1,
+            "rangeStart": 216,
+            "rangeEnd": 223
+          }
+        },
+        "28show21": {
+          "name": "Preprogrammed automatic show #21",
+          "target": {
+            "channel": 1,
+            "rangeStart": 224,
+            "rangeEnd": 231
+          }
+        },
+        "29sound": {
+          "name": "Sound-controlled shows",
+          "target": {
+            "channel": 1,
+            "rangeStart": 232,
+            "rangeEnd": 255
+          }
+        }
+      }
+    },
+    "3": {
+      "numChannels": 3,
+      "hasVirtualDimmer": true,
+      "capabilities": {
+        "IntensityRed": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    },
+    "5": {
+      "numChannels": 5,
+      "capabilities": {
+        "IntensityRed": {
+          "channel": 1,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityGreen": {
+          "channel": 2,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityBlue": {
+          "channel": 3,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "IntensityMasterDimmer": {
+          "channel": 4,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        },
+        "StrobeSlowToFast": {
+          "channel": 5,
+          "rangeStart": 0,
+          "rangeEnd": 255
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { FixtureMode, PatchPosition, RunParams, Scene } from "../types";
+import { FixtureMode, RunParams, Scene } from "../types";
 import { AppState } from "./index";
 import { UiTab } from "./actions/setTab";
 
@@ -36,15 +36,38 @@ export const getFixtureMode = (
   return definedFixture.definition.modes[definedFixture.activeMode];
 };
 
-// TODO: multiple universes
 export type DevicePatch = {
-  patch: PatchPosition;
+  startAddress: number;
   deviceId: string;
+  name: string;
   numChannels: number;
 };
 export type UniversePatch = { [universeId: number]: DevicePatch[] };
-export const getPatchedDevices = (state: AppState): UniversePatch =>
-  Object.entries(state.devices.patch)
+export const getPatchedDevices = (state: AppState): UniversePatch => {
+  const result: UniversePatch = {};
+
+  for (let [, universe] of Object.entries(state.devices.setup.universes)) {
+    result[universe.id] = Object.entries(universe.devices)
+      .map(([deviceId, deviceSetup]) => ({
+        deviceId,
+        name: deviceSetup.name,
+        startAddress: deviceSetup.startAddress,
+        numChannels: (() => {
+          const mode = getFixtureMode(state, deviceId);
+
+          if (!mode) {
+            return 0;
+          }
+
+          return mode.numChannels;
+        })(),
+      }))
+      .sort((a, b) => a.startAddress - b.startAddress);
+  }
+
+  return result;
+}; /*
+  Object.entries(state.devices.setup)
     .map(([deviceId, patch]) => ({
       deviceId,
       patch,
@@ -69,3 +92,4 @@ export const getPatchedDevices = (state: AppState): UniversePatch =>
       }),
       {} as UniversePatch,
     );
+*/

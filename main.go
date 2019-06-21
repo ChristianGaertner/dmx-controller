@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/database"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
-	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/run"
 	"github.com/ChristianGaertner/dmx-controller/server"
 	"github.com/ChristianGaertner/dmx-controller/setup"
@@ -61,13 +60,12 @@ func main() {
 	log.Printf("initializing %d dmx universes", len(s.GetUniverseIds()))
 	buffer.Init(s.GetUniverseIds())
 
-	deviceMap := fixture.NewDeviceMap()
-	err = s.PatchDeviceMap(deviceMap)
+	deviceMap, err := s.PatchDeviceMap()
 	if err != nil {
 		panic(err)
 	}
 
-	engine := run.NewEngine(renderer, deviceMap, buffer, db)
+	engine := run.NewEngine(renderer, s, deviceMap, buffer, db)
 
 	onExit := make(chan bool)
 	ctx, cancel := context.WithCancel(context.Background())

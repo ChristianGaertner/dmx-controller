@@ -49,11 +49,6 @@ export const NewStep = (): Step => ({
   },
 });
 
-export type PatchPosition = {
-  universeId: number;
-  address: number;
-};
-
 export type FixtureValue = {
   dimmer?: number;
   color?: Color;
@@ -199,4 +194,23 @@ type ChannelTargetRange = {
 type Generic = {
   name: string;
   target: ChannelTargetRange;
+};
+
+export type SerializedSetup = {
+  universes: { [k: string]: SerialisedUniverse };
+};
+
+export type SerialisedUniverse = {
+  name: string;
+  id: number;
+  devices: {
+    [deviceId: string]: SerialisedDeviceSetup;
+  };
+};
+
+type SerialisedDeviceSetup = {
+  name: string;
+  startAddress: number;
+  fixtureId: string;
+  mode: number;
 };

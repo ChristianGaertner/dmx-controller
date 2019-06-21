@@ -4,8 +4,8 @@ import (
 	"context"
 	"github.com/ChristianGaertner/dmx-controller/database"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
-	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/scene"
+	"github.com/ChristianGaertner/dmx-controller/setup"
 	"github.com/ChristianGaertner/dmx-controller/types"
 )
 
@@ -36,7 +36,8 @@ type Engine struct {
 	defaultRunParams SceneRunParams
 
 	Renderer  dmx.BufferRenderer
-	DeviceMap *fixture.DeviceMap
+	Setup     *setup.Setup
+	DeviceMap *setup.DeviceMap
 	Buffer    *dmx.Buffer
 
 	runScene  chan SceneRun
@@ -61,10 +62,11 @@ func (e *Engine) onActiveChange(sceneID *string, progress float64) {
 	}
 }
 
-func NewEngine(renderer dmx.BufferRenderer, deviceMap *fixture.DeviceMap, buffer *dmx.Buffer, db database.Database) *Engine {
+func NewEngine(renderer dmx.BufferRenderer, setup *setup.Setup, deviceMap *setup.DeviceMap, buffer *dmx.Buffer, db database.Database) *Engine {
 	return &Engine{
 		Db:               db,
 		Renderer:         renderer,
+		Setup:            setup,
 		DeviceMap:        deviceMap,
 		Buffer:           buffer,
 		runScene:         make(chan SceneRun),

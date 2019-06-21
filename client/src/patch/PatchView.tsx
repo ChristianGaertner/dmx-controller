@@ -35,7 +35,7 @@ const UniversePatchView: React.FunctionComponent<{ patch: DevicePatch[] }> = ({
           <PatchSection startAddress={start} target={target} />
         </>
       ),
-      start: target.patch.address + target.numChannels,
+      start: target.startAddress + target.numChannels,
     }),
     {
       comp: <></>,
@@ -49,9 +49,10 @@ const UniversePatchView: React.FunctionComponent<{ patch: DevicePatch[] }> = ({
       <PatchSection
         startAddress={patched.start}
         target={{
-          patch: { address: 513, universeId: 0 },
+          startAddress: 513,
           deviceId: "",
           numChannels: 0,
+          name: "",
         }}
       />
     </div>
@@ -63,19 +64,24 @@ const PatchSection: React.FunctionComponent<{
   target: DevicePatch;
 }> = props => (
   <>
-    {props.target.patch.address !== props.startAddress &&
+    {props.target.startAddress !== props.startAddress &&
       Array.from(
-        Array(props.target.patch.address - props.startAddress).keys(),
+        Array(props.target.startAddress - props.startAddress).keys(),
       ).map((_, i) => (
         <EmptyPosition key={i} address={props.startAddress + i} />
       ))}
     {props.target.numChannels > 0 && (
       <div
-        className="border-blue-400 my-1 border p-1 h-12 hover:bg-blue-900 flex flex-col text-sm"
+        className="border-blue-400 my-1 border p-1 h-12 hover:bg-blue-900 flex flex-col text-sm overflow-hidden"
         style={{ width: `${props.target.numChannels * 50}px` }}
       >
-        <span>{props.target.deviceId}</span>
-        <span>{props.target.patch.address}</span>
+        <div className="flex justify-between flex-shrink-0">
+          <span>{props.target.startAddress}</span>
+          <span>
+            {props.target.startAddress + props.target.numChannels - 1}
+          </span>
+        </div>
+        <span>{props.target.name}</span>
       </div>
     )}
   </>
@@ -85,10 +91,12 @@ const EmptyPosition: React.FunctionComponent<{ address: number }> = ({
   address,
 }) => (
   <div
-    className="border-blue-900 my-1 border p-1 h-12"
+    className="border-blue-900 my-1 border p-1 h-12 text-sm"
     style={{ width: "50px" }}
   >
-    {address}
+    <div className="flex">
+      <span>{address}</span>
+    </div>
   </div>
 );
 

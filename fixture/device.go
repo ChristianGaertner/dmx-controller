@@ -1,7 +1,6 @@
 package fixture
 
 import (
-	"context"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 )
 
@@ -37,66 +36,6 @@ func (d *Device) Set(channel dmx.Channel, value dmx.Value) {
 
 func (d *Device) Get(channel dmx.Channel) dmx.Value {
 	return d.values[channel.ToSliceIndex()]
-}
-
-type DeviceMap struct {
-	devices map[DeviceIdentifier]*Device
-	patch   map[DeviceIdentifier]dmx.PatchPosition
-}
-
-func NewDeviceMap() *DeviceMap {
-	return &DeviceMap{
-		devices: make(map[DeviceIdentifier]*Device),
-		patch:   make(map[DeviceIdentifier]dmx.PatchPosition),
-	}
-}
-
-func (dM *DeviceMap) GetIdentifiers() []DeviceIdentifier {
-	var ids []DeviceIdentifier
-	for id := range dM.devices {
-		ids = append(ids, id)
-	}
-
-	return ids
-}
-
-func (dM *DeviceMap) Get(id DeviceIdentifier) *Device {
-	return dM.devices[id]
-}
-
-func (dM *DeviceMap) GetPatchPosition(id DeviceIdentifier) dmx.PatchPosition {
-	return dM.patch[id]
-}
-
-func (dM *DeviceMap) Patch(p dmx.PatchPosition, d *Device) {
-	dM.patch[d.Uuid] = p
-	dM.devices[d.Uuid] = d
-}
-
-func (dM *DeviceMap) Reset() {
-	for _, device := range dM.devices {
-		device.Reset()
-	}
-}
-
-func (dM *DeviceMap) Render(buffer *dmx.Buffer) {
-	for deviceId, p := range dM.patch {
-		device := dM.Get(deviceId)
-		values := device.GetValues()
-		buffer.Apply(p, values)
-		device.Reset()
-	}
-}
-
-func (dM *DeviceMap) RenderLoop(ctx context.Context, onRender <-chan bool, buffer *dmx.Buffer) {
-	for {
-		select {
-		case <-onRender:
-			dM.Render(buffer)
-		case <-ctx.Done():
-			return
-		}
-	}
 }
 
 func (d *Device) MarshalText() ([]byte, error) {

@@ -1,10 +1,10 @@
 import {
   DefinedFixture,
-  PatchPosition,
   RunMode,
   RunParams,
   RunType,
   Scene,
+  SerializedSetup,
 } from "../types";
 import { Action } from "./actionTypes";
 import {
@@ -131,16 +131,16 @@ type DeviceStore = {
   fixtureMapping: {
     [deviceId: string]: DefinedFixture;
   };
-  patch: {
-    [deviceId: string]: PatchPosition;
-  };
+  setup: SerializedSetup;
   isFetching: boolean;
 };
 
 const initialDeviceStore: DeviceStore = {
   ids: [],
   fixtureMapping: {},
-  patch: {},
+  setup: {
+    universes: {},
+  },
   isFetching: false,
 };
 
@@ -164,7 +164,7 @@ export const devices = (
       return {
         ...state,
         fixtureMapping: action.payload.fixtures,
-        patch: action.payload.patch,
+        setup: action.payload.setup,
       };
     default:
       return state;

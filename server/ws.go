@@ -62,5 +62,5 @@ func (h *handlers) handleWebsocket(w http.ResponseWriter, r *http.Request) {
 	go client.readPump()
 
 	// init
-	client.InitFixtures(h.engine.DeviceMap)
+	client.InitFixtures(h.engine.Setup, h.engine.DeviceMap)
 }

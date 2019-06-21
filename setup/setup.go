@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 )
 
-type serialisedSetup struct {
+type Setup struct {
 	Universes map[string]serialisedUniverse `json:"universes"`
 }
 
@@ -26,13 +26,14 @@ type serialisedDeviceSetup struct {
 	Mode         definition.ModeID `json:"mode"`
 }
 
-func (s *serialisedSetup) PatchDeviceMap(deviceMap *fixture.DeviceMap) error {
+func (s *Setup) PatchDeviceMap() (*DeviceMap, error) {
+	deviceMap := NewDeviceMap()
 	for _, universe := range s.Universes {
 		for deviceId, setup := range universe.Devices {
 
 			def, err := definition.Load(setup.FixtureId)
 			if err != nil {
-				return fmt.Errorf("cannot load fixture for device %s: %e", deviceId, err)
+				return deviceMap, fmt.Errorf("cannot load fixture for device %s: %e", deviceId, err)
 			}
 
 			fix := fixture.DefinedFixture{
@@ -45,10 +46,10 @@ func (s *serialisedSetup) PatchDeviceMap(deviceMap *fixture.DeviceMap) error {
 		}
 	}
 
-	return nil
+	return deviceMap, nil
 }
 
-func (s *serialisedSetup) GetUniverseIds() []dmx.UniverseId {
+func (s *Setup) GetUniverseIds() []dmx.UniverseId {
 	var ids []dmx.UniverseId
 	for _, u := range s.Universes {
 		ids = append(ids, u.ID)
@@ -57,8 +58,8 @@ func (s *serialisedSetup) GetUniverseIds() []dmx.UniverseId {
 	return ids
 }
 
-func Load(fileName string) (*serialisedSetup, error) {
-	var s serialisedSetup
+func Load(fileName string) (*Setup, error) {
+	var s Setup
 
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {

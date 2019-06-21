@@ -46,7 +46,6 @@ func main() {
 	buffer := dmx.NewBuffer()
 	//renderer := &dmx.StdOutRenderer{NumChannels: 10}
 	//renderer := &dmx.NilRenderer{}
-	//renderer, err := dmx.NewEnttecRenderer()
 	renderer, err := dmx.NewOlaRPCRenderer(*olaRpcEndpoint)
 	if err != nil {
 		panic(err)

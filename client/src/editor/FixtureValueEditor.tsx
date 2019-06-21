@@ -9,6 +9,7 @@ import {
 import { Dialog } from "../components/Dialog";
 import { deselectFixtureValue, setFixtureValue } from "../store/editor/actions";
 import { Select } from "../components/Select";
+import { Slider } from "./components/Slider";
 
 type StateProps = {
   fixtureMode: FixtureMode | null;
@@ -36,14 +37,14 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
           <ValueRow
             active={value.dimmer !== undefined}
             label="Dimmer"
-            value={(value.dimmer || 0) * 1000}
+            value={value.dimmer || 0}
             onChange={(v: number) =>
               set({
                 ...value,
-                dimmer: v && parseFloat((v / 1000).toFixed(2)),
+                dimmer: v,
               })
             }
-            inputProps={{ type: "range", min: 0, max: 1000 }}
+            slider={true}
           />
         )}
         {FixtureModeUtil.hasFullColorRange(fixtureMode) && (
@@ -160,6 +161,7 @@ type ValueRowProps = {
   onChange: (value: any | undefined) => void;
   label: string;
   inputProps?: any;
+  slider?: boolean;
   render?: (rProps: ValueRowProps) => React.ReactNode;
 };
 
@@ -189,7 +191,11 @@ const ValueRow: React.FunctionComponent<ValueRowProps> = props => (
     </span>
     <div className="ml-auto flex flex-row w-1/2">
       <div className="mx-2">
-        {props.render ? props.render(props) : <DefaultInput {...props} />}
+        {props.slider && (
+          <Slider value={props.value} onChange={props.onChange} />
+        )}
+        {!props.slider &&
+          (props.render ? props.render(props) : <DefaultInput {...props} />)}
       </div>
     </div>
   </div>

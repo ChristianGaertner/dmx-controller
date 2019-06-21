@@ -127,6 +127,29 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
             )}
           />
         )}
+        {fixtureMode.generic !== null &&
+          Object.entries(fixtureMode.generic).map(([id, generic]) => (
+            <ValueRow
+              key={id}
+              active={!!value.generic && id in value.generic}
+              label={generic.name}
+              value={
+                !!value.generic && id in value.generic
+                  ? 1000 * value.generic[id]
+                  : 0
+              }
+              inputProps={{ type: "range", min: 0, max: 1000 }}
+              onChange={(v: number) => {
+                set({
+                  ...value,
+                  generic: {
+                    ...value.generic,
+                    [id]: v && parseFloat((v / 1000).toFixed(2)),
+                  },
+                });
+              }}
+            />
+          ))}
       </div>
     </Dialog>
   );

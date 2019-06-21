@@ -42,6 +42,7 @@ type Mode struct {
 	NumChannels      uint16                                `json:"numChannels"`
 	Capabilities     map[CapabilityType]ChannelTargetRange `json:"capabilities"`
 	Presets          map[types.PresetID]Preset             `json:"presets"`
+	Generic          map[types.GenericID]Generic           `json:"generic"`
 	ColorMacros      []ColorMacroDefinition                `json:"colorMacros"`
 	HasVirtualDimmer bool                                  `json:"hasVirtualDimmer"`
 }
@@ -50,6 +51,11 @@ type ChannelTargetRange struct {
 	Channel    dmx.Channel `json:"channel"`
 	RangeStart dmx.Value   `json:"rangeStart"`
 	RangeEnd   dmx.Value   `json:"rangeEnd"`
+}
+
+type Generic struct {
+	Name   string             `json:"name"`
+	Target ChannelTargetRange `json:"target"`
 }
 
 type Preset struct {

@@ -26,10 +26,9 @@
           }
         },
         "ledBarLeft": {
-          "color": {
-            "R": 1,
-            "G": 0,
-            "B": 0
+          "preset": "14show7",
+          "generic": {
+            "speed_sound": 0.5
           }
         }
       }

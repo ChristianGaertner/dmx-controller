@@ -3,6 +3,16 @@
   "modes": {
     "2": {
       "numChannels": 2,
+      "generic": {
+        "speed_sound": {
+          "name": "Show Speed / Sound Sensitivity",
+          "target": {
+            "channel": 2,
+            "rangeStart": 0,
+            "rangeEnd": 255
+          }
+        }
+      },
       "presets": {
         "00off": {
           "name": "LEDs off",

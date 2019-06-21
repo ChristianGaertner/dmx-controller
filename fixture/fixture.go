@@ -43,6 +43,12 @@ func (f DefinedFixture) ApplyValueTo(value *Value, d *Device) {
 			d.Set(preset.Target.Channel, preset.Target.RangeEnd)
 		}
 	}
+
+	for id, value := range value.Generic {
+		if generic, ok := mode.Generic[id]; ok {
+			set(d, float64(value), generic.Target)
+		}
+	}
 }
 
 func set(d *Device, value float64, capa definition.ChannelTargetRange) {

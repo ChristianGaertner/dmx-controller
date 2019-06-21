@@ -9,6 +9,8 @@ type Value struct {
 	Color  *types.Color       `json:"color,omitempty"`
 	Strobe *types.Frequency   `json:"strobe,omitempty"`
 	Preset *types.PresetID    `json:"preset,omitempty"`
+
+	Generic map[types.GenericID]types.DimmerValue `json:"generic,omitempty"`
 }
 
 func Lerp(a, b *Value, percentUp, percentDown float64) *Value {
@@ -18,11 +20,13 @@ func Lerp(a, b *Value, percentUp, percentDown float64) *Value {
 	if b == nil {
 		b = new(Value)
 	}
+
 	return &Value{
-		Dimmer: types.LerpDimmerValue(a.Dimmer, b.Dimmer, percentUp, percentDown),
-		Color:  types.LerpColor(a.Color, b.Color, percentUp, percentDown),
-		Strobe: types.LerpFrequency(a.Strobe, b.Strobe, percentUp, percentDown),
-		Preset: types.LerpPreset(a.Preset, b.Preset, percentUp, percentDown),
+		Dimmer:  types.LerpDimmerValue(a.Dimmer, b.Dimmer, percentUp, percentDown),
+		Color:   types.LerpColor(a.Color, b.Color, percentUp, percentDown),
+		Strobe:  types.LerpFrequency(a.Strobe, b.Strobe, percentUp, percentDown),
+		Preset:  types.LerpPreset(a.Preset, b.Preset, percentUp, percentDown),
+		Generic: lerpGeneric(a.Generic, b.Generic, percentUp, percentDown),
 	}
 }
 
@@ -64,10 +68,46 @@ func Merge(a, b *Value) *Value {
 		preset = b.Preset
 	}
 
-	return &Value{
-		Dimmer: dimmer,
-		Color:  color,
-		Strobe: strobe,
-		Preset: preset,
+	var generic map[types.GenericID]types.DimmerValue
+	if a.Generic != nil && b.Generic == nil {
+		generic = a.Generic
+	} else if a.Generic != nil && b.Generic != nil {
+		generic = lerpGeneric(a.Generic, b.Generic, 0.5, 0.5)
+	} else {
+		generic = b.Generic
 	}
+
+	return &Value{
+		Dimmer:  dimmer,
+		Color:   color,
+		Strobe:  strobe,
+		Preset:  preset,
+		Generic: generic,
+	}
+}
+
+func lerpGeneric(a, b map[types.GenericID]types.DimmerValue, percentUp, percentDown float64) map[types.GenericID]types.DimmerValue {
+	if a == nil && b == nil {
+		return nil
+	}
+
+	var ids []types.GenericID
+
+	for v := range a {
+		ids = append(ids, v)
+	}
+	for v := range b {
+		ids = append(ids, v)
+	}
+
+	lerped := make(map[types.GenericID]types.DimmerValue)
+
+	for _, id := range ids {
+		va := a[id]
+		vb := b[id]
+		lerped[id] = *types.LerpDimmerValue(&va, &vb, percentUp, percentDown)
+	}
+
+
+	return lerped
 }

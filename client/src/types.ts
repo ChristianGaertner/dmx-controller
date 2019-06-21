@@ -59,6 +59,9 @@ export type FixtureValue = {
   color?: Color;
   strobe?: number;
   preset?: string;
+  generic?: {
+    [genericId: string]: number;
+  };
 };
 
 type BaseEffect = {
@@ -143,6 +146,7 @@ export type FixtureMode = {
     | { [k in keyof typeof CapabilityType]: ChannelTargetRange }
     | null;
   presets: { [presetId: string]: Preset } | null;
+  generic: { [genericId: string]: Generic } | null;
   colorMacros: ColorMacroDefinition[] | null;
   hasVirtualDimmer: boolean;
 };
@@ -190,4 +194,9 @@ type ChannelTargetRange = {
   channel: number;
   rangeStart: number;
   rangeEnd: number;
+};
+
+type Generic = {
+  name: string;
+  target: ChannelTargetRange;
 };

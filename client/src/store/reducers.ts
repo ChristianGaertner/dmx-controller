@@ -1,5 +1,4 @@
 import {
-  DefinedFixture,
   FixtureDefinition,
   RunMode,
   RunParams,

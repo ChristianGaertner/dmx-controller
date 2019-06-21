@@ -5,7 +5,7 @@ import {
   DevicePatch,
   getPatchedDevices,
   UniversePatch,
-} from "../store/selectors";
+} from "../store/patch/selectors";
 
 type StateProps = {
   patch: UniversePatch;

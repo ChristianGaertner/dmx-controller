@@ -41,34 +41,8 @@ export const getFixtureMode = (
   return def.modes[deviceSetup.mode];
 };
 
-export type DevicePatch = {
-  startAddress: number;
-  deviceId: string;
-  name: string;
-  numChannels: number;
-};
-export type UniversePatch = { [universeId: number]: DevicePatch[] };
-export const getPatchedDevices = (state: AppState): UniversePatch => {
-  const result: UniversePatch = {};
+export const getDeviceName = (state: AppState, id: string): string | null => {
+  const d = state.devices.deviceSetup[id];
 
-  for (let [, universe] of Object.entries(state.devices.setup.universes)) {
-    result[universe.id] = Object.entries(universe.devices)
-      .map(([deviceId, deviceSetup]) => ({
-        deviceId,
-        name: deviceSetup.name,
-        startAddress: deviceSetup.startAddress,
-        numChannels: (() => {
-          const mode = getFixtureMode(state, deviceId);
-
-          if (!mode) {
-            throw "No Fixture Mode found";
-          }
-
-          return mode.numChannels;
-        })(),
-      }))
-      .sort((a, b) => a.startAddress - b.startAddress);
-  }
-
-  return result;
+  return !!d ? d.name : null;
 };

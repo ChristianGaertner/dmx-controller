@@ -1,9 +1,11 @@
 import {
   DefinedFixture,
+  FixtureDefinition,
   RunMode,
   RunParams,
   RunType,
   Scene,
+  SerialisedDeviceSetup,
   SerializedSetup,
 } from "../types";
 import { Action } from "./actionTypes";
@@ -128,8 +130,8 @@ export const running = (
 
 type DeviceStore = {
   ids: string[];
-  fixtureMapping: {
-    [deviceId: string]: DefinedFixture;
+  deviceSetup: {
+    [deviceId: string]: SerialisedDeviceSetup;
   };
   setup: SerializedSetup;
   isFetching: boolean;
@@ -137,7 +139,7 @@ type DeviceStore = {
 
 const initialDeviceStore: DeviceStore = {
   ids: [],
-  fixtureMapping: {},
+  deviceSetup: {},
   setup: {
     universes: {},
   },
@@ -163,8 +165,38 @@ export const devices = (
     case INIT_FIXTURES:
       return {
         ...state,
-        fixtureMapping: action.payload.fixtures,
         setup: action.payload.setup,
+        deviceSetup: Object.values(action.payload.setup.universes)
+          .flatMap(u => Object.entries(u.devices))
+          .reduce(
+            (acc, [id, dev]) => ({
+              ...acc,
+              [id]: dev,
+            }),
+            state.deviceSetup,
+          ),
+      };
+    default:
+      return state;
+  }
+};
+
+type FixtureStore = {
+  [fixtureId: string]: FixtureDefinition;
+};
+
+export const fixtures = (state: FixtureStore = {}, action: Action) => {
+  switch (action.type) {
+    case INIT_FIXTURES:
+      return {
+        ...state,
+        ...Object.values(action.payload.fixtures).reduce(
+          (fixs, fixture) => ({
+            ...fixs,
+            [fixture.definition.id]: fixture.definition,
+          }),
+          {},
+        ),
       };
     default:
       return state;

@@ -1,4 +1,4 @@
-import { FixtureMode, RunParams, Scene } from "../types";
+import { FixtureDefinition, FixtureMode, RunParams, Scene } from "../types";
 import { AppState } from "./index";
 import { UiTab } from "./actions/setTab";
 
@@ -23,17 +23,22 @@ export const getActiveTab = (state: AppState): UiTab => state.ui.activeTab;
 export const getRunParams = (state: AppState): RunParams =>
   state.running.runParams;
 
+export const getFixtureDefinition = (
+  state: AppState,
+  id: string,
+): FixtureDefinition | null => state.fixtures[id];
+
 export const getFixtureMode = (
   state: AppState,
   deviceId: string,
 ): FixtureMode | null => {
-  const definedFixture = state.devices.fixtureMapping[deviceId];
+  const deviceSetup = state.devices.deviceSetup[deviceId];
+  if (!deviceSetup) return null;
 
-  if (!definedFixture) {
-    return null;
-  }
+  const def = getFixtureDefinition(state, deviceSetup.fixtureId);
+  if (!def) return null;
 
-  return definedFixture.definition.modes[definedFixture.activeMode];
+  return def.modes[deviceSetup.mode];
 };
 
 export type DevicePatch = {
@@ -56,7 +61,7 @@ export const getPatchedDevices = (state: AppState): UniversePatch => {
           const mode = getFixtureMode(state, deviceId);
 
           if (!mode) {
-            return 0;
+            throw "No Fixture Mode found";
           }
 
           return mode.numChannels;
@@ -66,30 +71,4 @@ export const getPatchedDevices = (state: AppState): UniversePatch => {
   }
 
   return result;
-}; /*
-  Object.entries(state.devices.setup)
-    .map(([deviceId, patch]) => ({
-      deviceId,
-      patch,
-      numChannels: (() => {
-        const mode = getFixtureMode(state, deviceId);
-
-        if (!mode) {
-          return 0;
-        }
-
-        return mode.numChannels;
-      })(),
-    }))
-    .sort((a, b) => a.patch.address - b.patch.address)
-    .reduce(
-      (universes, devicePatch) => ({
-        ...universes,
-        [devicePatch.patch.universeId]: [
-          ...(universes[devicePatch.patch.universeId] || []),
-          devicePatch,
-        ],
-      }),
-      {} as UniversePatch,
-    );
-*/
+};

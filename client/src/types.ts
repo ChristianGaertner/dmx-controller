@@ -128,7 +128,7 @@ export type DefinedFixture = {
   activeMode: number;
 };
 
-type FixtureDefinition = {
+export type FixtureDefinition = {
   id: string;
   modes: {
     [k: number]: FixtureMode;
@@ -208,7 +208,7 @@ export type SerialisedUniverse = {
   };
 };
 
-type SerialisedDeviceSetup = {
+export type SerialisedDeviceSetup = {
   name: string;
   startAddress: number;
   fixtureId: string;

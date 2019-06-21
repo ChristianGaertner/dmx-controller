@@ -1,14 +1,23 @@
 import * as React from "react";
 import cx from "classnames";
 
+export const percentRenderer = (value: number) =>
+  `${(value * 100).toFixed(0)}%`;
+
+export const byteRenderer = (value: number) => (value * 255).toFixed(0);
+
 type Props = {
   value: number;
   onChange: (value: number) => void;
+  renderLabel?: (value: number) => React.ReactNode;
 };
 
 const RESOLUTION = 1000;
 
-export const Slider: React.FunctionComponent<Props> = props => {
+export const Slider: React.FunctionComponent<Props> = ({
+  renderLabel = percentRenderer,
+  ...props
+}) => {
   const value = props.value * RESOLUTION;
   const rawOnChange = props.onChange;
   const onChange = React.useCallback(
@@ -90,7 +99,7 @@ export const Slider: React.FunctionComponent<Props> = props => {
       />
 
       <div className="absolute inset-0 flex z-10 justify-center items-center">
-        {(props.value * 100).toFixed(0)}%
+        {renderLabel(value / RESOLUTION)}
       </div>
 
       <div className="invisible">Stretch</div>

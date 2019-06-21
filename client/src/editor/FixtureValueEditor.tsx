@@ -9,7 +9,7 @@ import {
 import { Dialog } from "../components/Dialog";
 import { deselectFixtureValue, setFixtureValue } from "../store/editor/actions";
 import { Select } from "../components/Select";
-import { Slider } from "./components/Slider";
+import { byteRenderer, Slider } from "./components/Slider";
 
 type StateProps = {
   fixtureMode: FixtureMode | null;
@@ -38,14 +38,12 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
             active={value.dimmer !== undefined}
             label="Dimmer"
             value={value.dimmer || 0}
-            onChange={(v: number) =>
-              set({
-                ...value,
-                dimmer: v,
-              })
-            }
-            slider={true}
-          />
+            onChange={(v: number) => set({ ...value, dimmer: v })}
+          >
+            {({ value, onChange }) => (
+              <Slider value={value} onChange={onChange} />
+            )}
+          </ValueRow>
         )}
         {FixtureModeUtil.hasFullColorRange(fixtureMode) && (
           <ValueRow
@@ -60,8 +58,15 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
                   : value.dimmer;
               set({ ...value, color: Hex2Color(v), dimmer });
             }}
-            inputProps={{ type: "color" }}
-          />
+          >
+            {({ value, onChange }) => (
+              <input
+                type="color"
+                value={value}
+                onChange={e => onChange(e.target.value)}
+              />
+            )}
+          </ValueRow>
         )}
         {FixtureModeUtil.hasColorWheel(fixtureMode) && (
           <ValueRow
@@ -71,8 +76,9 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
             onChange={(v: string) => {
               set({ ...value, color: Hex2Color(v) });
             }}
-            render={rProps => (
-              <Select value={rProps.value} onChange={rProps.onChange}>
+          >
+            {({ value, onChange }) => (
+              <Select value={value} onChange={onChange}>
                 <option value="">Default</option>
                 {(fixtureMode.colorMacros || []).map(macro => (
                   <option
@@ -84,21 +90,19 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
                 ))}
               </Select>
             )}
-          />
+          </ValueRow>
         )}
         {FixtureModeUtil.hasStrobe(fixtureMode) && (
           <ValueRow
             active={value.strobe !== undefined}
             label="Strobe"
-            value={(value.strobe || 0) * 1000}
-            onChange={(v: number) =>
-              set({
-                ...value,
-                strobe: v && parseFloat((v / 1000).toFixed(2)),
-              })
-            }
-            inputProps={{ type: "range", min: 0, max: 1000 }}
-          />
+            value={value.strobe || 0}
+            onChange={(v: number) => set({ ...value, strobe: v })}
+          >
+            {({ value, onChange }) => (
+              <Slider value={value} onChange={onChange} />
+            )}
+          </ValueRow>
         )}
         {fixtureMode.presets !== null && (
           <ValueRow
@@ -112,8 +116,9 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
             onChange={(v: string) =>
               set({ ...value, preset: !!v ? v : undefined })
             }
-            render={rProps => (
-              <Select value={rProps.value} onChange={rProps.onChange}>
+          >
+            {({ value, onChange }) => (
+              <Select value={value} onChange={onChange}>
                 {FixtureModeUtil.defaultPresetId(fixtureMode) === undefined && (
                   <option value="">Default</option>
                 )}
@@ -126,7 +131,7 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
                   ))}
               </Select>
             )}
-          />
+          </ValueRow>
         )}
         {fixtureMode.generic !== null &&
           Object.entries(fixtureMode.generic).map(([id, generic]) => (
@@ -135,21 +140,26 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
               active={!!value.generic && id in value.generic}
               label={generic.name}
               value={
-                !!value.generic && id in value.generic
-                  ? 1000 * value.generic[id]
-                  : 0
+                !!value.generic && id in value.generic ? value.generic[id] : 0
               }
-              inputProps={{ type: "range", min: 0, max: 1000 }}
               onChange={(v: number) => {
                 set({
                   ...value,
                   generic: {
                     ...value.generic,
-                    [id]: v && parseFloat((v / 1000).toFixed(2)),
+                    [id]: v,
                   },
                 });
               }}
-            />
+            >
+              {({ value, onChange }) => (
+                <Slider
+                  value={value}
+                  onChange={onChange}
+                  renderLabel={byteRenderer}
+                />
+              )}
+            </ValueRow>
           ))}
       </div>
     </Dialog>
@@ -160,22 +170,8 @@ type ValueRowProps = {
   value: any;
   onChange: (value: any | undefined) => void;
   label: string;
-  inputProps?: any;
-  slider?: boolean;
-  render?: (rProps: ValueRowProps) => React.ReactNode;
+  children: (rProps: ValueRowProps) => React.ReactNode;
 };
-
-const DefaultInput: React.FunctionComponent<ValueRowProps> = ({
-  value,
-  onChange,
-  inputProps,
-}) => (
-  <input
-    value={value}
-    onChange={e => onChange(e.target.value)}
-    {...inputProps}
-  />
-);
 
 const ValueRow: React.FunctionComponent<ValueRowProps> = props => (
   <div className="flex items-center w-1/2 my-2">
@@ -190,13 +186,7 @@ const ValueRow: React.FunctionComponent<ValueRowProps> = props => (
       <label className="ml-2">{props.label}</label>
     </span>
     <div className="ml-auto flex flex-row w-1/2">
-      <div className="mx-2">
-        {props.slider && (
-          <Slider value={props.value} onChange={props.onChange} />
-        )}
-        {!props.slider &&
-          (props.render ? props.render(props) : <DefaultInput {...props} />)}
-      </div>
+      <div className="mx-2">{props.children(props)}</div>
     </div>
   </div>
 );

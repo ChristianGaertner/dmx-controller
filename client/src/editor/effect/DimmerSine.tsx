@@ -2,6 +2,7 @@ import * as React from "react";
 import { DimmerSineEffect } from "../../types";
 import { Select } from "../../components/Select";
 import { Input } from "../../components/Input";
+import { Slider } from "../components/Slider";
 
 enum PhasePreset {
   P0_360 = "P0_360",
@@ -16,36 +17,14 @@ type Props = {
 };
 
 export const DimmerSine: React.FunctionComponent<Props> = ({ effect, set }) => (
-  <div className="flex flex-col">
+  <div className="flex flex-col p-4">
     <span>
-      Min: ({(effect.min * 100).toFixed(0)}%){" "}
-      <input
-        type="range"
-        min={0}
-        max={1000}
-        value={effect.min * 1000}
-        onChange={e =>
-          set({
-            ...effect,
-            min: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2)),
-          })
-        }
-      />
+      Min
+      <Slider value={effect.min} onChange={min => set({ ...effect, min })} />
     </span>
     <span>
-      Max: ({(effect.max * 100).toFixed(0)}%){" "}
-      <input
-        type="range"
-        min={0}
-        max={1000}
-        value={effect.max * 1000}
-        onChange={e =>
-          set({
-            ...effect,
-            max: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2)),
-          })
-        }
-      />
+      Max
+      <Slider value={effect.max} onChange={max => set({ ...effect, max })} />
     </span>
     <span>
       Phase:
@@ -62,17 +41,10 @@ export const DimmerSine: React.FunctionComponent<Props> = ({ effect, set }) => (
           CUSTOM (0..{(effect.phase * 360).toFixed(0)})
         </option>
       </Select>
-      <input
-        type="range"
-        min={-1000}
-        max={1000}
-        value={effect.phase * 1000}
-        onChange={e =>
-          set({
-            ...effect,
-            phase: parseFloat((parseFloat(e.target.value) / 1000).toFixed(2)),
-          })
-        }
+      <Slider
+        value={(effect.phase + 1) / 2}
+        onChange={phase => set({ ...effect, phase: phase * 2 - 1 })}
+        renderLabel={v => `0..${((v * 2 - 1) * 360).toFixed(0)}`}
       />
     </span>
     <span>

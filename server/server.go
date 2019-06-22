@@ -30,8 +30,6 @@ func ListenAndServe(ctx context.Context, addr string, engine *run.Engine, gracef
 	r.HandleFunc("/api/v1/resources/scene/{id}", h.getSceneHandler).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene", h.addSceneHandler).Methods("POST")
 
-	r.HandleFunc("/api/v1/resources/device", h.getDeviceIds).Methods("GET")
-
 	r.HandleFunc("/api/v1/run/scene/{id}", h.runSceneHandler).Methods("POST")
 	r.HandleFunc("/api/v1/stop/scene", h.stopSceneHandler).Methods("POST")
 
@@ -127,11 +125,4 @@ func (h *handlers) runSceneHandler(w http.ResponseWriter, r *http.Request) {
 func (h *handlers) stopSceneHandler(w http.ResponseWriter, r *http.Request) {
 	h.engine.Stop()
 	w.WriteHeader(http.StatusAccepted)
-}
-
-func (h *handlers) getDeviceIds(w http.ResponseWriter, r *http.Request) {
-	err := json.NewEncoder(w).Encode(h.engine.DeviceMap.GetIdentifiers())
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
 }

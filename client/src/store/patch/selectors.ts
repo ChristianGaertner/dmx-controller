@@ -11,7 +11,7 @@ export type UniversePatch = { [universeId: number]: DevicePatch[] };
 export const getPatchedDevices = (state: AppState): UniversePatch => {
   const result: UniversePatch = {};
 
-  for (let [, universe] of Object.entries(state.devices.setup.universes)) {
+  for (let universe of Object.values(state.devices.setup.universes)) {
     result[universe.id] = Object.entries(universe.devices)
       .map(([deviceId, deviceSetup]) => ({
         deviceId,
@@ -32,3 +32,8 @@ export const getPatchedDevices = (state: AppState): UniversePatch => {
 
   return result;
 };
+
+export const getDeviceIds = (state: AppState): string[] =>
+  Object.values(state.devices.setup.universes).flatMap(u =>
+    Object.keys(u.devices),
+  );

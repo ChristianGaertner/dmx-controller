@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { AppState } from "../../store";
-import { getDeviceIds } from "../../store/selectors";
+import { getDeviceIds } from "../../store/patch/selectors";
 import {
   DragDropContext,
   Draggable,

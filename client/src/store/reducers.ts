@@ -17,10 +17,6 @@ import {
 import { RUN_SCENE } from "./actions/runScene";
 import { editor } from "./editor/reducers";
 import { websocket } from "./websocket/reducers";
-import {
-  LOAD_DEVICES_REQUEST,
-  LOAD_DEVICES_RESPONSE,
-} from "./actions/loadDevices";
 import { SET_TAB, UiTab } from "./actions/setTab";
 import {
   INIT_FIXTURES,
@@ -128,7 +124,6 @@ export const running = (
 };
 
 type DeviceStore = {
-  ids: string[];
   deviceSetup: {
     [deviceId: string]: SerialisedDeviceSetup;
   };
@@ -137,7 +132,6 @@ type DeviceStore = {
 };
 
 const initialDeviceStore: DeviceStore = {
-  ids: [],
   deviceSetup: {},
   setup: {
     universes: {},
@@ -150,17 +144,6 @@ export const devices = (
   action: Action,
 ) => {
   switch (action.type) {
-    case LOAD_DEVICES_REQUEST:
-      return {
-        ...state,
-        isFetching: true,
-      };
-    case LOAD_DEVICES_RESPONSE:
-      return {
-        ...state,
-        isFetching: false,
-        ids: action.payload.devices,
-      };
     case INIT_FIXTURES:
       return {
         ...state,

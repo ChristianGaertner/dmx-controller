@@ -108,6 +108,5 @@ func lerpGeneric(a, b map[types.GenericID]types.DimmerValue, percentUp, percentD
 		lerped[id] = *types.LerpDimmerValue(&va, &vb, percentUp, percentDown)
 	}
 
-
 	return lerped
 }

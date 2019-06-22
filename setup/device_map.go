@@ -47,7 +47,6 @@ func (dM *DeviceMap) Reset() {
 	}
 }
 
-
 func (dM *DeviceMap) Render(buffer *dmx.Buffer) {
 	for deviceId, p := range dM.patch {
 		device := dM.Get(deviceId)

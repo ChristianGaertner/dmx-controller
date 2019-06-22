@@ -16,8 +16,6 @@ export const getRunningScene = (state: AppState): string | null =>
 export const getSceneProgress = (state: AppState): number =>
   state.running.progress;
 
-export const getDeviceIds = (state: AppState): string[] => state.devices.ids;
-
 export const getActiveTab = (state: AppState): UiTab => state.ui.activeTab;
 
 export const getRunParams = (state: AppState): RunParams =>

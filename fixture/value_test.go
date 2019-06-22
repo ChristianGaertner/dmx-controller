@@ -22,10 +22,10 @@ func Test_lerpGeneric(t *testing.T) {
 		{
 			name: "nils",
 			args: args{
-				a: nil,
-				b: nil,
+				a:           nil,
+				b:           nil,
 				percentDown: 0.3,
-				percentUp: 0.3,
+				percentUp:   0.3,
 			},
 			want: nil,
 		},
@@ -42,7 +42,7 @@ func Test_lerpGeneric(t *testing.T) {
 					"baz": 1,
 				},
 				percentDown: 0.5,
-				percentUp: 0.5,
+				percentUp:   0.5,
 			},
 			want: map[types.GenericID]types.DimmerValue{
 				"foo": 0,
@@ -65,7 +65,7 @@ func Test_lerpGeneric(t *testing.T) {
 					"new": 0,
 				},
 				percentDown: 1,
-				percentUp: 0.5,
+				percentUp:   0.5,
 			},
 			want: map[types.GenericID]types.DimmerValue{
 				"foo": 0,

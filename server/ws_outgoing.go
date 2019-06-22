@@ -39,7 +39,7 @@ func (wsc *WSClient) OnActiveChange(sceneID *string, progress float64) bool {
 }
 
 type initFixturesPayload struct {
-	Setup *setup.Setup `json:"setup"`
+	Setup    *setup.Setup                                         `json:"setup"`
 	Fixtures map[fixture.DeviceIdentifier]*fixture.DefinedFixture `json:"fixtures"`
 }
 
@@ -55,7 +55,7 @@ func (wsc *WSClient) InitFixtures(setup *setup.Setup, deviceMap *setup.DeviceMap
 		MessageType: MsgTypeInitFixtures,
 		Timestamp:   time.Now(),
 		Payload: initFixturesPayload{
-			Setup: setup,
+			Setup:    setup,
 			Fixtures: fixs,
 		},
 	}

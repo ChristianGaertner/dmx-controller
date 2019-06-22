@@ -3,7 +3,6 @@ import { Sidebar } from "./Sidebar";
 import { Editor } from "./editor/Editor";
 import { SceneRunner } from "./live/SceneRunner";
 import { connect } from "react-redux";
-import { loadDevices } from "./store/actions/loadDevices";
 import { setTab, UiTab } from "./store/actions/setTab";
 import { AppState } from "./store";
 import { getActiveTab } from "./store/selectors";
@@ -15,23 +14,16 @@ type StateProps = {
 };
 
 type DispatchProps = {
-  loadDevices: () => void;
   setTab: (tab: UiTab) => void;
   wsConnect: () => void;
 };
 
 type Props = StateProps & DispatchProps;
 
-const App: React.FunctionComponent<Props> = ({
-  tab,
-  setTab,
-  loadDevices,
-  wsConnect,
-}) => {
+const App: React.FunctionComponent<Props> = ({ tab, setTab, wsConnect }) => {
   React.useEffect(() => {
-    loadDevices();
     wsConnect();
-  }, [loadDevices, wsConnect]);
+  }, [wsConnect]);
 
   return (
     <div className="flex flex-row">
@@ -48,7 +40,6 @@ const mapStateToProps = (state: AppState): StateProps => ({
 });
 
 const mapDispatchToProps: DispatchProps = {
-  loadDevices: loadDevices,
   setTab: setTab,
   wsConnect: wsConnect,
 };

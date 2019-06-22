@@ -15,7 +15,7 @@ import {
 import { addEffect, addStep } from "../store/editor/actions";
 import { EffectValue } from "./effect/EffectValue";
 import { AddButton } from "./components/AddButton";
-import { getDeviceIds } from "../store/selectors";
+import { getDeviceIds } from "../store/patch/selectors";
 
 type StateProps = {
   sceneID: string | null;

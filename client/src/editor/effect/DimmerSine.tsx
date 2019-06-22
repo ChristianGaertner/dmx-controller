@@ -3,6 +3,7 @@ import { DimmerSineEffect } from "../../types";
 import { Select } from "../../components/Select";
 import { Input } from "../../components/Input";
 import { Slider } from "../components/Slider";
+import { Button, ButtonSize, ButtonType } from "../../components/Button";
 
 enum PhasePreset {
   P0_360 = "P0_360",
@@ -32,27 +33,36 @@ export const DimmerSine: React.FunctionComponent<Props> = ({ effect, set }) => (
         onChange={max => set({ ...effect, max })}
       />
     </div>
-    <span>
-      Phase:
-      <Select
-        value={phaseToPreset(effect.phase)}
-        onChange={v =>
-          set({ ...effect, phase: presetToPhase(v as PhasePreset) })
-        }
-      >
-        <option value={PhasePreset.P0_360}>0..360</option>
-        <option value={PhasePreset.P0_n360}>0..-360</option>
-        <option value={PhasePreset.P0}>0</option>
-        <option value={PhasePreset.CUSTOM}>
-          CUSTOM (0..{(effect.phase * 360).toFixed(0)})
-        </option>
-      </Select>
+    <div className="flex flex-row items-center my-2">
       <Slider
+        label="Phase"
         value={(effect.phase + 1) / 2}
         onChange={phase => set({ ...effect, phase: phase * 2 - 1 })}
         renderLabel={v => `0..${((v * 2 - 1) * 360).toFixed(0)}`}
       />
-    </span>
+      <Button
+        label="0..360"
+        type={ButtonType.BLUE}
+        size={ButtonSize.SMALL}
+        onClick={() =>
+          set({ ...effect, phase: presetToPhase(PhasePreset.P0_360) })
+        }
+      />
+      <Button
+        label="0..-360"
+        type={ButtonType.BLUE}
+        size={ButtonSize.SMALL}
+        onClick={() =>
+          set({ ...effect, phase: presetToPhase(PhasePreset.P0_n360) })
+        }
+      />
+      <Button
+        label="0"
+        type={ButtonType.BLUE}
+        size={ButtonSize.SMALL}
+        onClick={() => set({ ...effect, phase: presetToPhase(PhasePreset.P0) })}
+      />
+    </div>
     <span>
       Speed (BPM){" "}
       <Input
@@ -62,20 +72,6 @@ export const DimmerSine: React.FunctionComponent<Props> = ({ effect, set }) => (
     </span>
   </div>
 );
-
-const phaseToPreset = (phase: number): PhasePreset => {
-  if (phase === 1) {
-    return PhasePreset.P0_360;
-  }
-  if (phase === -1) {
-    return PhasePreset.P0_n360;
-  }
-  if (phase === 0) {
-    return PhasePreset.P0;
-  }
-
-  return PhasePreset.CUSTOM;
-};
 
 const presetToPhase = (phase: PhasePreset): number => {
   switch (phase) {

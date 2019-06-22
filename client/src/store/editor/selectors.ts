@@ -13,6 +13,16 @@ export const getSceneForEditing = (state: AppState): Scene | null =>
 
 export const isSaving = (state: AppState): boolean => state.editor.saving;
 
+export const getSelectedDeviceId = (state: AppState) => {
+  const uiState = getUiState(state);
+
+  if (!uiState.selectedFixtureValue) {
+    return null;
+  }
+
+  return uiState.selectedFixtureValue.deviceId;
+};
+
 export const getFixtureValueForEditing = (
   state: AppState,
 ): FixtureValue | null => {

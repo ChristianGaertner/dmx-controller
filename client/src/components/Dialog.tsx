@@ -2,7 +2,7 @@ import * as React from "react";
 import cx from "classnames";
 
 type Props = {
-  title: string;
+  title: React.ReactNode;
   onRequestClose?: () => void;
 };
 

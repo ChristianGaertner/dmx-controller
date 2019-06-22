@@ -5,6 +5,7 @@ import { AppState } from "../../store";
 import {
   getFixtureModeForEditing,
   getFixtureValueForEditing,
+  getSelectedDeviceId,
 } from "../../store/editor/selectors";
 import { Dialog } from "../../components/Dialog";
 import {
@@ -17,8 +18,10 @@ import { GenericControl } from "./GenericControl";
 import { ShutterControl } from "./ShutterControl";
 import { ColorWheelControl } from "./ColorWheelControl";
 import { ColorControl } from "./ColorControl";
+import { Device } from "../Device";
 
 type StateProps = {
+  deviceId: string | null;
   fixtureMode: FixtureMode | null;
   value: FixtureValue | null;
 };
@@ -31,6 +34,7 @@ type DispatchProps = {
 type Props = StateProps & DispatchProps;
 
 const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
+  deviceId,
   value,
   fixtureMode,
   set,
@@ -38,7 +42,7 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
 }) =>
   value &&
   fixtureMode && (
-    <Dialog title="Edit Fixture Value" onRequestClose={close}>
+    <Dialog title={deviceId && <Device id={deviceId} />} onRequestClose={close}>
       <div className="p-4 flex flex-col">
         <DimmerControl
           fixtureMode={fixtureMode}
@@ -75,6 +79,7 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
   );
 
 const mapStateToProps = (state: AppState): StateProps => ({
+  deviceId: getSelectedDeviceId(state),
   value: getFixtureValueForEditing(state),
   fixtureMode: getFixtureModeForEditing(state),
 });

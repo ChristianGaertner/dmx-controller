@@ -7,6 +7,7 @@ export const percentRenderer = (value: number) =>
 export const byteRenderer = (value: number) => (value * 255).toFixed(0);
 
 type Props = {
+  label?: React.ReactNode;
   value: number;
   onChange: (value: number) => void;
   renderLabel?: (value: number) => React.ReactNode;
@@ -89,6 +90,10 @@ export const Slider: React.FunctionComponent<Props> = ({
           style={{ left: `calc(${(tick + 1) * 10}% - 0.5px)`, width: "1px" }}
         />
       ))}
+
+      {props.label && (
+        <div className="absolute bottom-0 z-20 text-sm">{props.label}</div>
+      )}
 
       <div
         style={{ width: `${(props.value * 100).toFixed(0)}%` }}

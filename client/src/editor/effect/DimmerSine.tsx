@@ -18,14 +18,20 @@ type Props = {
 
 export const DimmerSine: React.FunctionComponent<Props> = ({ effect, set }) => (
   <div className="flex flex-col p-4">
-    <span>
-      Min
-      <Slider value={effect.min} onChange={min => set({ ...effect, min })} />
-    </span>
-    <span>
-      Max
-      <Slider value={effect.max} onChange={max => set({ ...effect, max })} />
-    </span>
+    <div className="my-2">
+      <Slider
+        label="Min"
+        value={effect.min}
+        onChange={min => set({ ...effect, min })}
+      />
+    </div>
+    <div className="my-2">
+      <Slider
+        label="Max"
+        value={effect.max}
+        onChange={max => set({ ...effect, max })}
+      />
+    </div>
     <span>
       Phase:
       <Select

@@ -3,7 +3,7 @@ import { SceneSelector } from "./SceneSelector";
 import { SceneEditor } from "./SceneEditor";
 import { DefaultTimings } from "./DefaultTimings";
 import { SaveButton } from "./SaveButton";
-import { FixtureValueEditor } from "./FixtureValueEditor";
+import { FixtureValueEditor } from "./fixturevalue/FixtureValueEditor";
 import { StepEditor } from "./StepEditor";
 import { ResetButton } from "./ResetButton";
 import { EffectEditor } from "./effect/EffectEditor";

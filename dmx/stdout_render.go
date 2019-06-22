@@ -54,5 +54,5 @@ func (s *NilRenderer) Boot(ctx context.Context) error {
 }
 
 func (s *NilRenderer) GetTicker(ctx context.Context) *time.Ticker {
-	return time.NewTicker(25 * time.Second)
+	return time.NewTicker(25 * time.Minute)
 }

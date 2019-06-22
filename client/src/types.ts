@@ -52,7 +52,7 @@ export const NewStep = (): Step => ({
 export type FixtureValue = {
   dimmer?: number;
   color?: Color;
-  strobe?: number;
+  shutter?: Shutter;
   preset?: string;
   generic?: {
     [genericId: string]: number;
@@ -100,6 +100,17 @@ export type Color = {
   B: number;
 };
 
+export enum ShutterState {
+  ShutterOpen = "ShutterOpen",
+  ShutterClosed = "ShutterClosed",
+  ShutterStrobe = "ShutterStrobe",
+}
+
+export type Shutter = {
+  state: ShutterState;
+  strobeFrequency: number;
+};
+
 export enum RunMode {
   OneShot = 0,
   OneShotHold = 1,
@@ -120,6 +131,8 @@ export enum CapabilityType {
   IntensityRed = "IntensityRed",
   IntensityGreen = "IntensityGreen",
   IntensityBlue = "IntensityBlue",
+  ShutterOpen = "ShutterOpen",
+  ShutterClosed = "ShutterClosed",
   StrobeSlowToFast = "StrobeSlowToFast",
 }
 
@@ -158,8 +171,30 @@ export class FixtureModeUtil {
     CapabilityType.IntensityGreen in mode.capabilities &&
     CapabilityType.IntensityBlue in mode.capabilities;
 
-  static hasStrobe = (mode: FixtureMode) =>
-    mode.capabilities && CapabilityType.StrobeSlowToFast in mode.capabilities;
+  static getAvailableShutterStates = (
+    mode: FixtureMode,
+  ): ReadonlyArray<ShutterState> => {
+    if (!mode.capabilities) {
+      return [];
+    }
+
+    const states = [];
+
+    if (CapabilityType.ShutterOpen in mode.capabilities) {
+      states.push(ShutterState.ShutterOpen);
+    }
+    if (CapabilityType.ShutterClosed in mode.capabilities) {
+      states.push(ShutterState.ShutterClosed);
+    }
+    if (CapabilityType.StrobeSlowToFast in mode.capabilities) {
+      states.push(ShutterState.ShutterStrobe);
+    }
+
+    return states;
+  };
+
+  static hasShutter = (mode: FixtureMode) =>
+    FixtureModeUtil.getAvailableShutterStates(mode).length > 0;
 
   static hasColorWheel = (mode: FixtureMode) =>
     mode.colorMacros && mode.colorMacros.length > 0;

@@ -5,10 +5,10 @@ import (
 )
 
 type Value struct {
-	Dimmer *types.DimmerValue `json:"dimmer,omitempty"`
-	Color  *types.Color       `json:"color,omitempty"`
-	Strobe *types.Frequency   `json:"strobe,omitempty"`
-	Preset *types.PresetID    `json:"preset,omitempty"`
+	Dimmer  *types.DimmerValue `json:"dimmer,omitempty"`
+	Color   *types.Color       `json:"color,omitempty"`
+	Shutter *types.Shutter     `json:"shutter"`
+	Preset  *types.PresetID    `json:"preset,omitempty"`
 
 	Generic map[types.GenericID]types.DimmerValue `json:"generic,omitempty"`
 }
@@ -24,7 +24,7 @@ func Lerp(a, b *Value, percentUp, percentDown float64) *Value {
 	return &Value{
 		Dimmer:  types.LerpDimmerValue(a.Dimmer, b.Dimmer, percentUp, percentDown),
 		Color:   types.LerpColor(a.Color, b.Color, percentUp, percentDown),
-		Strobe:  types.LerpFrequency(a.Strobe, b.Strobe, percentUp, percentDown),
+		Shutter: types.LerpShutter(a.Shutter, b.Shutter, percentUp, percentDown),
 		Preset:  types.LerpPreset(a.Preset, b.Preset, percentUp, percentDown),
 		Generic: lerpGeneric(a.Generic, b.Generic, percentUp, percentDown),
 	}
@@ -50,13 +50,13 @@ func Merge(a, b *Value) *Value {
 		color = b.Color
 	}
 
-	var strobe *types.Frequency
-	if a.Strobe != nil && b.Strobe == nil {
-		strobe = a.Strobe
+	var shutter *types.Shutter
+	if a.Shutter != nil && b.Shutter == nil {
+		shutter = a.Shutter
 	} else if a.Color != nil && b.Color != nil {
-		strobe = types.LerpFrequency(a.Strobe, b.Strobe, 0.5, 0.5)
+		shutter = types.LerpShutter(a.Shutter, b.Shutter, 0.5, 0.5)
 	} else {
-		strobe = b.Strobe
+		shutter = b.Shutter
 	}
 
 	var preset *types.PresetID
@@ -80,7 +80,7 @@ func Merge(a, b *Value) *Value {
 	return &Value{
 		Dimmer:  dimmer,
 		Color:   color,
-		Strobe:  strobe,
+		Shutter: shutter,
 		Preset:  preset,
 		Generic: generic,
 	}

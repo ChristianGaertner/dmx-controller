@@ -1,6 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Color, FixtureMode, FixtureModeUtil, FixtureValue } from "../types";
+import {
+  Color,
+  FixtureMode,
+  FixtureModeUtil,
+  FixtureValue,
+  Shutter,
+  ShutterState,
+} from "../types";
 import { AppState } from "../store";
 import {
   getFixtureModeForEditing,
@@ -92,15 +99,35 @@ const FixtureValueEditorComp: React.FunctionComponent<Props> = ({
             )}
           </ValueRow>
         )}
-        {FixtureModeUtil.hasStrobe(fixtureMode) && (
+        {FixtureModeUtil.hasShutter(fixtureMode) && (
           <ValueRow
-            active={value.strobe !== undefined}
-            label="Strobe"
-            value={value.strobe || 0}
-            onChange={(v: number) => set({ ...value, strobe: v })}
+            active={value.shutter !== undefined}
+            label="Shutter"
+            value={value.shutter}
+            onChange={(v: Shutter) => set({ ...value, shutter: v })}
           >
-            {({ value, onChange }) => (
-              <Slider value={value} onChange={onChange} />
+            {({ value, onChange }: { value?: Shutter; onChange: Function }) => (
+              <>
+                <Select
+                  value={value ? value.state : ""}
+                  onChange={s => onChange({ ...value, state: s })}
+                >
+                  <option value="">N/A</option>
+                  {FixtureModeUtil.getAvailableShutterStates(fixtureMode).map(
+                    state => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ),
+                  )}
+                </Select>
+                {value && value.state === ShutterState.ShutterStrobe && (
+                  <Slider
+                    value={value.strobeFrequency || 0}
+                    onChange={f => onChange({ ...value, strobeFrequency: f })}
+                  />
+                )}
+              </>
             )}
           </ValueRow>
         )}

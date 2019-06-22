@@ -27,7 +27,6 @@ func (dM *DeviceMap) GetIdentifiers() []fixture.DeviceIdentifier {
 	return ids
 }
 
-
 func (dM *DeviceMap) Get(id fixture.DeviceIdentifier) *fixture.Device {
 	return dM.devices[id]
 }

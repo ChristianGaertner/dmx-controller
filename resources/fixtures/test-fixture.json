@@ -24,10 +24,20 @@
           "rangeStart": 0,
           "rangeEnd": 255
         },
-        "StrobeSlowToFast": {
+        "ShutterOpen": {
           "channel": 5,
           "rangeStart": 0,
-          "rangeEnd": 255
+          "rangeEnd": 7
+        },
+        "ShutterClosed": {
+          "channel": 5,
+          "rangeStart": 8,
+          "rangeEnd": 15
+        },
+        "StrobeSlowToFast": {
+          "channel": 5,
+          "rangeStart": 8,
+          "rangeEnd": 248
         }
       }
     },

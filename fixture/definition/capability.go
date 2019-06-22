@@ -12,6 +12,8 @@ const (
 	IntensityGreen
 	IntensityBlue
 
+	ShutterOpen
+	ShutterClosed
 	StrobeSlowToFast
 )
 
@@ -26,6 +28,10 @@ func (t CapabilityType) MarshalText() ([]byte, error) {
 		s = "IntensityGreen"
 	case IntensityBlue:
 		s = "IntensityBlue"
+	case ShutterOpen:
+		s = "ShutterOpen"
+	case ShutterClosed:
+		s = "ShutterClosed"
 	case StrobeSlowToFast:
 		s = "StrobeSlowToFast"
 	}
@@ -44,6 +50,10 @@ func (t *CapabilityType) UnmarshalText(data []byte) error {
 		*t = IntensityGreen
 	case "IntensityBlue":
 		*t = IntensityBlue
+	case "ShutterOpen":
+		*t = ShutterOpen
+	case "ShutterClosed":
+		*t = ShutterClosed
 	case "StrobeSlowToFast":
 		*t = StrobeSlowToFast
 	default:

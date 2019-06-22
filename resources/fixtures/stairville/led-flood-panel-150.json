@@ -70,9 +70,14 @@
           "rangeStart": 0,
           "rangeEnd": 255
         },
+        "ShutterOpen": {
+          "channel": 5,
+          "rangeStart": 0,
+          "rangeEnd": 9
+        },
         "StrobeSlowToFast": {
           "channel": 5,
-          "rangeStart": 9,
+          "rangeStart": 10,
           "rangeEnd": 255
         }
       }

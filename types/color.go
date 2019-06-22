@@ -36,27 +36,6 @@ func ColorDistance(p, q *Color) float64 {
 	return math.Sqrt(math.Pow(p.R-q.R, 2) + math.Pow(p.G-q.G, 2) + math.Pow(p.B-q.B, 2))
 }
 
-type Frequency float64
-
-func NewFrequency(v float64) *Frequency {
-	return (*Frequency)(&v)
-}
-
-func LerpFrequency(a, b *Frequency, percentUp, percentDown float64) *Frequency {
-	va := Frequency(0)
-	if a != nil {
-		va = *a
-	}
-
-	vb := Frequency(0)
-	if b != nil {
-		vb = *b
-	}
-
-	f := Frequency(Lerp(float64(va), float64(vb), percentUp, percentDown))
-	return &f
-}
-
 // DimmerValue is in the range of 0 [off] to 1 [full]
 type DimmerValue float64
 

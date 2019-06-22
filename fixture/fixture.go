@@ -33,10 +33,7 @@ func (f DefinedFixture) ApplyValueTo(value *Value, d *Device) {
 	}
 
 	f.applyColor(value.Dimmer, value.Color, d)
-
-	if capa, ok := mode.Capabilities[definition.StrobeSlowToFast]; value.Strobe != nil && ok {
-		set(d, float64(*value.Strobe), capa)
-	}
+	f.applyShutter(value.Shutter, d)
 
 	if value.Preset != nil {
 		if preset, ok := mode.Presets[*value.Preset]; ok {
@@ -95,5 +92,27 @@ func (f DefinedFixture) applyColor(dimmer *types.DimmerValue, color *types.Color
 	}
 	if capa, ok := mode.Capabilities[definition.IntensityBlue]; color != nil && ok {
 		set(d, color.B, capa)
+	}
+}
+
+func (f DefinedFixture) applyShutter(shutter *types.Shutter, d *Device) {
+	if shutter == nil {
+		return
+	}
+	mode := f.Definition.Modes[f.ActiveMode]
+
+	switch shutter.State {
+	case types.ShutterOpen:
+		if capa, ok := mode.Capabilities[definition.ShutterOpen]; ok {
+			d.Set(capa.Channel, capa.RangeEnd)
+		}
+	case types.ShutterClosed:
+		if capa, ok := mode.Capabilities[definition.ShutterClosed]; ok {
+			d.Set(capa.Channel, capa.RangeEnd)
+		}
+	case types.ShutterStrobe:
+		if capa, ok := mode.Capabilities[definition.StrobeSlowToFast]; ok {
+			set(d, float64(shutter.StrobeFrequency), capa)
+		}
 	}
 }

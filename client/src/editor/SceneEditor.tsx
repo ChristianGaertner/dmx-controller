@@ -97,7 +97,9 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
               })}
             >
               <td>
-                <Device id={deviceId} />
+                <div className="p-4 uppercase tracking-wider">
+                  <Device id={deviceId} />
+                </div>
               </td>
 
               {steps.map((step, i) => (

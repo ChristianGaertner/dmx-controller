@@ -10,6 +10,7 @@ import {
   DroppableProvided,
   DropResult,
 } from "react-beautiful-dnd";
+import { Device } from "../Device";
 
 const CheckableDevice: React.FunctionComponent<
   { id: string; divProps?: Object } & Props
@@ -32,7 +33,7 @@ const CheckableDevice: React.FunctionComponent<
         }}
       />
     </span>
-    <span>{id}</span>
+    <Device id={id} />
   </div>
 );
 
@@ -91,7 +92,7 @@ const DeviceSelectorComp: React.FunctionComponent<Props> = props => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="p-4 flex">
+      <div className="p-4 flex flex-col">
         <Droppable droppableId="DEVICES" direction="horizontal">
           {(dropProvided: DroppableProvided) => (
             <div className="flex" ref={dropProvided.innerRef}>
@@ -102,10 +103,11 @@ const DeviceSelectorComp: React.FunctionComponent<Props> = props => {
             </div>
           )}
         </Droppable>
-        <div className="border-l-2 border-blue-900" />
-        {inactiveDeviceIds.map(id => (
-          <CheckableDevice key={id} id={id} {...props} />
-        ))}
+        <div className="flex mt-2">
+          {inactiveDeviceIds.map(id => (
+            <CheckableDevice key={id} id={id} {...props} />
+          ))}
+        </div>
       </div>
     </DragDropContext>
   );

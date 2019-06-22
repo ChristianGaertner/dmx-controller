@@ -26,10 +26,15 @@ export const ColorWheelControl: React.FunctionComponent<Props> = props => {
           props.fixtureMode.colorMacros.map(macro => (
             <button
               key={color2Hex(macro.color)}
-              className={cx("w-8 h-8 rounded m-2 scale-0-8 transition", {
+              className={cx("w-8 h-8 m-2 scale-0-8 transition border-8", {
                 "scale-1": props.value === macro.color,
               })}
-              style={{ backgroundColor: color2Hex(macro.color) }}
+              style={{
+                ...(props.value === macro.color && {
+                  backgroundColor: color2Hex(macro.color),
+                }),
+                borderColor: color2Hex(macro.color),
+              }}
               onClick={() => props.onChange(macro.color)}
             />
           ))}

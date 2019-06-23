@@ -107,6 +107,7 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 
 			}
 		case r := <-e.runScene:
+			r.stepInfo.ActiveSince = e.metronom.TimeCode()
 			e.active = &r
 		case <-e.stopScene:
 			e.active = nil

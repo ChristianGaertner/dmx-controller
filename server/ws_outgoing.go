@@ -23,14 +23,8 @@ func (wsc *WSClient) OnActiveChange(sceneID *string, progress float64) bool {
 		},
 	}
 
-	data, err := json.Marshal(msg)
-	if err != nil {
-		// TODO logging
-		panic(err)
-	}
-
 	select {
-	case wsc.send <- data:
+	case wsc.send <- msg:
 		return true
 	default:
 		close(wsc.send)
@@ -59,14 +53,9 @@ func (wsc *WSClient) InitFixtures(setup *setup.Setup, deviceMap *setup.DeviceMap
 			Fixtures: fixs,
 		},
 	}
-	data, err := json.Marshal(msg)
-	if err != nil {
-		// TODO logging
-		panic(err)
-	}
 
 	select {
-	case wsc.send <- data:
+	case wsc.send <- msg:
 		return true
 	default:
 		close(wsc.send)
@@ -98,7 +87,13 @@ func (wsc *WSClient) writePump() {
 			if err != nil {
 				return
 			}
-			_, err = w.Write(message)
+
+			data, err := json.Marshal(message)
+			if err != nil {
+				return
+			}
+
+			_, err = w.Write(data)
 			if err != nil {
 				return
 			}

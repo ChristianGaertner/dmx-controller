@@ -39,7 +39,7 @@ const (
 type WSClient struct {
 	conn *websocket.Conn
 
-	send   chan []byte
+	send   chan interface{}
 	engine *run.Engine
 }
 
@@ -53,7 +53,7 @@ func (h *handlers) handleWebsocket(w http.ResponseWriter, r *http.Request) {
 
 	client := &WSClient{
 		conn:   conn,
-		send:   make(chan []byte, 2),
+		send:   make(chan interface{}, 2),
 		engine: h.engine,
 	}
 

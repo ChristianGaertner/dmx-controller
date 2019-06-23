@@ -4,34 +4,17 @@ import (
 	"context"
 	"github.com/ChristianGaertner/dmx-controller/database"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
+	"github.com/ChristianGaertner/dmx-controller/metronom"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/setup"
 	"github.com/ChristianGaertner/dmx-controller/types"
+	"math"
 )
-
-type RunnerID string
-
-type Type int
-
-const (
-	UseStepTimings Type = iota
-)
-
-type SceneRun struct {
-	scene  *scene.Scene
-	params SceneRunParams
-
-	stop chan chan bool
-}
-
-type SceneRunParams struct {
-	Type Type
-	Mode types.RunMode
-}
 
 type Engine struct {
 	Db database.Database
 
+	metronom         metronom.Metronom
 	active           *SceneRun
 	defaultRunParams SceneRunParams
 
@@ -65,6 +48,7 @@ func (e *Engine) onActiveChange(sceneID *string, progress float64) {
 func NewEngine(renderer dmx.BufferRenderer, setup *setup.Setup, deviceMap *setup.DeviceMap, buffer *dmx.Buffer, db database.Database) *Engine {
 	return &Engine{
 		Db:               db,
+		metronom:         metronom.New(),
 		Renderer:         renderer,
 		Setup:            setup,
 		DeviceMap:        deviceMap,
@@ -92,41 +76,42 @@ func (e *Engine) Unregister(c EngineClient) {
 
 func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 
-	onEval := make(chan bool)
-
-	go e.DeviceMap.RenderLoop(ctx, onEval, e.Buffer)
+	go e.metronom.Start(ctx)
 	go e.Buffer.Render(ctx, e.Renderer, onExit)
 
+	prevProgress := float64(0)
 	for {
 		select {
-		case r := <-e.runScene:
-			r.stop = make(chan chan bool)
-			ctx, cancel := context.WithCancel(ctx)
-			onFinish := make(chan bool)
-			e.active = &r
-
-			go e.runTimebased(ctx, r.scene, onEval, onFinish)
-			go func() {
-				// wait for finish or stop signal
-				select {
-				case <-onFinish:
-					close(onFinish)
-					cancel()
+		case <-e.metronom.Tick():
+			done := e.active.Step(e.metronom)
+			if done {
+				if e.active != nil {
 					e.active = nil
-				case done := <-r.stop:
-					cancel()
-					// wait for the runner to exit
-					<-onFinish
-					e.active = nil
-					done <- true
+					e.DeviceMap.Render(e.Buffer)
+					e.onActiveChange(nil, 0)
 				}
-			}()
-		case <-e.stopScene:
-			if e.active != nil {
-				wait := make(chan bool)
-				e.active.stop <- wait
-				<-wait
+			} else {
+				// render
+				out := e.active.eval(e.metronom.TimeCode())
+				for id, val := range out {
+					e.DeviceMap.Get(id).Fixture.ApplyValueTo(val, e.DeviceMap.Get(id))
+				}
+
+				e.DeviceMap.Render(e.Buffer)
+
+				progress := float64(e.active.stepInfo.Active) / float64(e.active.scene.NumSteps())
+				if diff := math.Abs(progress - prevProgress); diff > 1e-2 {
+					prevProgress = progress
+					e.onActiveChange(&e.active.scene.ID, progress)
+				}
+
 			}
+		case r := <-e.runScene:
+			e.active = &r
+		case <-e.stopScene:
+			e.active = nil
+			e.DeviceMap.Render(e.Buffer)
+			e.onActiveChange(nil, 0)
 		case p := <-e.setRunParams:
 			e.defaultRunParams = p
 			if e.active != nil {
@@ -137,16 +122,12 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 		case c := <-e.unregisterClient:
 			delete(e.clients, c)
 		case <-ctx.Done():
-			close(e.stopScene)
-			close(e.runScene)
 			return
-		default:
 		}
 	}
 }
 
 func (e *Engine) Run(scene *scene.Scene) {
-	e.Stop()
 	e.runScene <- SceneRun{scene: scene, params: e.defaultRunParams}
 }
 
@@ -160,5 +141,8 @@ func (e *Engine) SetRunParams(params SceneRunParams) {
 
 func (e *Engine) PreviewStep(step *scene.Step) {
 	tmp := scene.New("PREVIEW/"+step.ID, []*scene.Step{step}, 1, 0, 0)
-	e.Run(tmp)
+	e.runScene <- SceneRun{scene: tmp, params: SceneRunParams{
+		Type: UseStepTimings,
+		Mode: types.RunModeOneShotHold,
+	}}
 }

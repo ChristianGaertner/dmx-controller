@@ -43,6 +43,14 @@ func (s *Scene) GetStepIndexAt(tc types.TimeCode) (index int, ok bool) {
 	return -1, false
 }
 
+func (s *Scene) GetStepAtIndex(idx int) *sequencedStep {
+	return s.sequence[idx]
+}
+
+func (s *Scene) NumSteps() int {
+	return len(s.sequence)
+}
+
 func (s *Scene) Duration() time.Duration {
 	return time.Duration(s.sequence[len(s.sequence)-1].End)
 }

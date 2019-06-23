@@ -1,7 +1,6 @@
 package setup
 
 import (
-	"context"
 	"github.com/ChristianGaertner/dmx-controller/dmx"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 )
@@ -52,16 +51,5 @@ func (dM *DeviceMap) Render(buffer *dmx.Buffer) {
 		values := device.GetValues()
 		buffer.Apply(p, values)
 		device.Reset()
-	}
-}
-
-func (dM *DeviceMap) RenderLoop(ctx context.Context, onRender <-chan bool, buffer *dmx.Buffer) {
-	for {
-		select {
-		case <-onRender:
-			dM.Render(buffer)
-		case <-ctx.Done():
-			return
-		}
 	}
 }

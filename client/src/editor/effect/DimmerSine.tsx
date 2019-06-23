@@ -1,6 +1,5 @@
 import * as React from "react";
 import { DimmerSineEffect } from "../../types";
-import { Select } from "../../components/Select";
 import { Input } from "../../components/Input";
 import { Slider } from "../components/Slider";
 import { Button, ButtonSize, ButtonType } from "../../components/Button";

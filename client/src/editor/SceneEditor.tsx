@@ -16,6 +16,7 @@ import { addEffect, addStep } from "../store/editor/actions";
 import { EffectValue } from "./effect/EffectValue";
 import { AddButton } from "./components/AddButton";
 import { getDeviceIds } from "../store/patch/selectors";
+import { PreviewButton } from "./components/PreviewButton";
 
 type StateProps = {
   sceneID: string | null;
@@ -71,10 +72,15 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
                   timings={step.timings}
                   defaultTimings={scene.defaultTimings}
                 />
-                <AddButton
-                  onClick={() => addEffect(step.id, EffectType.DimmerSineType)}
-                  label="ADD FX"
-                />
+                <div className="flex justify-around">
+                  <PreviewButton stepId={step.id} />
+                  <AddButton
+                    onClick={() =>
+                      addEffect(step.id, EffectType.DimmerSineType)
+                    }
+                    label="ADD FX"
+                  />
+                </div>
                 {step.effects &&
                   step.effects.map(fx => (
                     <EffectValue key={fx.id} effect={fx} />

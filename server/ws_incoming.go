@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/run"
+	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"github.com/gorilla/websocket"
 	"log"
@@ -14,6 +15,10 @@ import (
 type runParamsPayload struct {
 	Type run.Type      `json:"type"`
 	Mode types.RunMode `json:"mode"`
+}
+
+type previewStepPayload struct {
+	Step *scene.Step `json:"step"`
 }
 
 func (wsc *WSClient) readPump() {
@@ -56,6 +61,9 @@ func (wsc *WSClient) readPump() {
 				Mode: payload.Mode,
 			}
 			wsc.engine.SetRunParams(params)
+		case previewStepPayload:
+			payload := msg.Payload.(previewStepPayload)
+			wsc.engine.PreviewStep(payload.Step)
 		}
 	}
 }

@@ -11,7 +11,7 @@ import (
 const (
 	writeWait      = 10 * time.Second
 	pongWait       = 20 * time.Second
-	maxMessageSize = 512
+	maxMessageSize = 1 << 13
 )
 
 var upgrader = websocket.Upgrader{
@@ -33,6 +33,7 @@ const (
 	MsgTypeOnActiveChange = "ON_ACTIVE_CHANGE"
 	MsgTypeInitFixtures   = "INIT_FIXTURES"
 	MsgTypeSendRunParams  = "SEND_RUN_PARAMS"
+	MsgTypePreviewStep    = "PREVIEW_STEP"
 )
 
 type WSClient struct {

@@ -18,6 +18,7 @@ export const GenericControl: React.FunctionComponent<Props> = props => {
     <>
       {Object.entries(props.fixtureMode.generic).map(([id, generic]) => (
         <ControlSurface
+          key={id}
           label={generic.name}
           defined={props.value !== undefined && props.value[id] !== undefined}
           onDeactivate={() => {

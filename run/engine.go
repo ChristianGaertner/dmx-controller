@@ -157,3 +157,8 @@ func (e *Engine) Stop() {
 func (e *Engine) SetRunParams(params SceneRunParams) {
 	e.setRunParams <- params
 }
+
+func (e *Engine) PreviewStep(step *scene.Step) {
+	tmp := scene.New("PREVIEW/"+step.ID, []*scene.Step{step}, 1, 0, 0)
+	e.Run(tmp)
+}

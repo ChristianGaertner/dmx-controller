@@ -29,9 +29,19 @@ func (m *message) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if x.MessageType == MsgTypeSendRunParams {
+	switch x.MessageType {
+	case MsgTypeSendRunParams:
 		var payload runParamsPayload
 
+		err = json.Unmarshal(*objMap["payload"], &payload)
+		if err != nil {
+			return err
+		}
+
+		m.Payload = payload
+		return nil
+	case MsgTypePreviewStep:
+		var payload previewStepPayload
 		err = json.Unmarshal(*objMap["payload"], &payload)
 		if err != nil {
 			return err

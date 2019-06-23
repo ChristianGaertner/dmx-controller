@@ -13,6 +13,7 @@ import {
   ON_HIGHLIGHT_EFFECT,
   SET_EFFECT,
   ADD_EFFECT,
+  PREVIEW_STEP,
 } from "./actions";
 import { Action } from "../actionTypes";
 import { NewEffect, NewStep, Scene } from "../../types";
@@ -22,6 +23,7 @@ type EditorStore = {
   ui: EditorUiStore;
   scene: Scene | null;
   saving: boolean;
+  stepPreview: string | null;
 };
 
 export type EditorUiStore = {
@@ -44,6 +46,7 @@ const initialValue: EditorStore = {
   ui: uiInitialValue,
   scene: null,
   saving: false,
+  stepPreview: null,
 };
 
 export const editor = (
@@ -212,6 +215,11 @@ export const editor = (
         },
       };
     }
+    case PREVIEW_STEP:
+      return {
+        ...state,
+        stepPreview: action.payload.stepId,
+      };
     default:
       return {
         ...state,

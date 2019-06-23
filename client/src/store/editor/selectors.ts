@@ -1,5 +1,12 @@
 import { AppState } from "../index";
-import { Effect, FixtureMode, FixtureValue, Scene, Timings } from "../../types";
+import {
+  Effect,
+  FixtureMode,
+  FixtureValue,
+  Scene,
+  Step,
+  Timings,
+} from "../../types";
 import { EditorUiStore } from "./reducers";
 import { getFixtureMode } from "../selectors";
 
@@ -136,6 +143,19 @@ export const getHighlightedEffectDevices = (
 
   return effect.devices;
 };
+
+export const getStepForEditing = (
+  state: AppState,
+  stepId: string,
+): Step | undefined => {
+  const scene = getSceneForEditing(state);
+  if (!scene) return undefined;
+
+  return scene.steps.find(step => step.id === stepId);
+};
+
+export const isStepPreviewing = (state: AppState, stepId: string): boolean =>
+  state.editor.stepPreview === stepId;
 
 function flatMap<T, U>(array: T[], mapFunc: (x: T) => U[]): U[] {
   return array.reduce(

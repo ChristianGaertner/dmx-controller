@@ -1,10 +1,11 @@
 import { BaseAction } from "../actionTypes";
 import { RawMessage } from "./middleware";
-import { DefinedFixture, RunParams, SerializedSetup } from "../../types";
+import { DefinedFixture, RunParams, SerializedSetup, Step } from "../../types";
 
 export type WsMessages =
   | OnActiveChangeMessage
   | SendRunModeMessage
+  | PreviewStepMessage
   | InitFixtures;
 
 export interface WsMessage<T extends string, P> extends BaseAction {
@@ -55,5 +56,15 @@ type SendRunModeMessage = WsMessage<typeof SEND_RUN_PARAMS, RunParams>;
 export const sendRunParams = (params: RunParams): SendRunModeMessage => ({
   type: SEND_RUN_PARAMS,
   payload: params,
+  timestamp: new Date(),
+});
+
+export const PREVIEW_STEP = "@websocket/send/PREVIEW_STEP";
+type PreviewStepMessage = WsMessage<typeof PREVIEW_STEP, { step: Step }>;
+export const requestStepPreview = (step: Step): PreviewStepMessage => ({
+  type: PREVIEW_STEP,
+  payload: {
+    step: step,
+  },
   timestamp: new Date(),
 });

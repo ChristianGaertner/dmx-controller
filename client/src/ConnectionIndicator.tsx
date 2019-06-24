@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { AppState } from "./store";
 import { ConnectionState } from "./store/websocket/types";
 import { getConnectionState } from "./store/websocket/selectors";
+import { useActions } from "./store/util";
+import { wsConnect } from "./store/websocket/actions";
 
 type StateProps = {
   state: ConnectionState;
@@ -12,8 +14,16 @@ type StateProps = {
 type Props = StateProps;
 
 const ConnectionIndicatorComp: React.FunctionComponent<Props> = ({ state }) => {
+  const actions = useActions({ wsConnect: wsConnect });
+
+  const onClick = React.useCallback(() => {
+    if (state === ConnectionState.DISCONNECTED) {
+      actions.wsConnect();
+    }
+  }, [actions, state]);
+
   return (
-    <div className="flex items-center p-2">
+    <button className="flex items-center p-2" onClick={onClick}>
       <div className="w-6 h-6 mr-1">
         <div
           className={cx("absolute ml-2 mt-2 rounded-full w-2 h-2", {
@@ -31,7 +41,7 @@ const ConnectionIndicatorComp: React.FunctionComponent<Props> = ({ state }) => {
         />
       </div>
       <span
-        className={cx("w-32", {
+        className={cx("w-32 text-left", {
           "text-green-300": state === ConnectionState.CONNECTED,
           "text-red-300": state === ConnectionState.DISCONNECTED,
           "text-yellow-300": state === ConnectionState.CONNECTING,
@@ -39,7 +49,7 @@ const ConnectionIndicatorComp: React.FunctionComponent<Props> = ({ state }) => {
       >
         {getText(state)}
       </span>
-    </div>
+    </button>
   );
 };
 

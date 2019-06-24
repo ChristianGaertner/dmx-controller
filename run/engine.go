@@ -82,31 +82,35 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 	prevProgress := float64(0)
 	for {
 		select {
-		case <-e.metronom.Tick():
+		case tc := <-e.metronom.Tick():
 			done := e.active.Step(e.metronom)
 			if done {
 				if e.active != nil {
 					e.active = nil
 					e.DeviceMap.Render(e.Buffer)
-					e.onActiveChange(nil, 0)
 				}
 			} else {
 				// render
-				out := e.active.eval(e.metronom.TimeCode())
+				out := e.active.eval(tc)
 				for id, val := range out {
 					e.DeviceMap.Get(id).Fixture.ApplyValueTo(val, e.DeviceMap.Get(id))
 				}
 
 				e.DeviceMap.Render(e.Buffer)
+			}
 
-				progress := float64(e.active.stepInfo.Active) / float64(e.active.scene.NumSteps())
-				if diff := math.Abs(progress - prevProgress); diff > 1e-2 {
-					prevProgress = progress
-					e.onActiveChange(&e.active.scene.ID, progress)
+			progress := e.active.GetProgress(e.metronom)
+			if diff := math.Abs(progress - prevProgress); diff > 1e-2 {
+				prevProgress = progress
+
+				var sceneID *string
+				if e.active != nil {
+					sceneID = &e.active.scene.ID
 				}
-
+				e.onActiveChange(sceneID, progress)
 			}
 		case r := <-e.runScene:
+			r.activeSince = e.metronom.TimeCode()
 			r.stepInfo.ActiveSince = e.metronom.TimeCode()
 			e.active = &r
 		case <-e.stopScene:

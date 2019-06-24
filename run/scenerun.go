@@ -71,3 +71,20 @@ func (s *SceneRun) applyRunMode() bool {
 
 	return false
 }
+
+func (s *SceneRun) GetProgress(metronom metronom.Metronom) float64 {
+	if s == nil {
+		return 0
+	}
+
+	progress := float64(s.stepInfo.Active) / float64(s.scene.NumSteps())
+
+	// progress gives us the progress in discrete steps
+	// we need the timecode to estimate the progress inside of the step and add that to the progress
+	step := s.scene.GetStepAtIndex(s.stepInfo.Active)
+	stepProgress := float64(metronom.TimeCode()-s.stepInfo.ActiveSince) / float64(*step.Timings.Duration)
+
+	progress = progress + float64(float64(stepProgress)/float64(s.scene.NumSteps()))
+
+	return progress
+}

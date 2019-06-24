@@ -13,6 +13,7 @@ export type RawMessage = {
   type: string;
   timestamp: string;
   payload: any;
+  stats?: any;
 };
 
 class ReduxWebsocket {

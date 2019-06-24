@@ -1,6 +1,12 @@
 import { BaseAction } from "../actionTypes";
 import { RawMessage } from "./middleware";
-import { DefinedFixture, RunParams, SerializedSetup, Step } from "../../types";
+import {
+  DefinedFixture,
+  RunParams,
+  SerializedSetup,
+  Stats,
+  Step,
+} from "../../types";
 
 export type WsMessages =
   | OnActiveChangeMessage
@@ -12,6 +18,7 @@ export interface WsMessage<T extends string, P> extends BaseAction {
   type: T;
   payload: P;
   timestamp: Date;
+  stats?: Stats;
 }
 
 export const ON_ACTIVE_CHANGE = "@websocket/ON_ACTIVE_CHANGE";
@@ -30,6 +37,7 @@ export const onActiveChangeMessage = (
   payload: msg.payload,
   timestamp: new Date(msg.timestamp),
   hidden: true,
+  stats: msg.stats,
 });
 
 export const INIT_FIXTURES = "@websocket/INIT_FIXTURES";
@@ -47,6 +55,7 @@ export const initFixtures = (msg: RawMessage): InitFixtures => ({
   type: INIT_FIXTURES,
   payload: msg.payload,
   timestamp: new Date(msg.timestamp),
+  stats: msg.stats,
 });
 
 export const WS_SEND_PREFIX = "@websocket/send/";

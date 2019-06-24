@@ -21,6 +21,7 @@ func (wsc *WSClient) OnActiveChange(sceneID *string, progress float64) bool {
 			SceneID:  sceneID,
 			Progress: progress,
 		},
+		Stats: wsc.engine.StatsMonitor.Get(),
 	}
 
 	select {
@@ -52,6 +53,7 @@ func (wsc *WSClient) InitFixtures(setup *setup.Setup, deviceMap *setup.DeviceMap
 			Setup:    setup,
 			Fixtures: fixs,
 		},
+		Stats: wsc.engine.StatsMonitor.Get(),
 	}
 
 	select {

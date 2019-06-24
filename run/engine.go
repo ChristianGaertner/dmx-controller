@@ -7,6 +7,7 @@ import (
 	"github.com/ChristianGaertner/dmx-controller/metronom"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/ChristianGaertner/dmx-controller/setup"
+	"github.com/ChristianGaertner/dmx-controller/system"
 	"github.com/ChristianGaertner/dmx-controller/types"
 	"math"
 )
@@ -18,10 +19,11 @@ type Engine struct {
 	active           *SceneRun
 	defaultRunParams SceneRunParams
 
-	Renderer  dmx.BufferRenderer
-	Setup     *setup.Setup
-	DeviceMap *setup.DeviceMap
-	Buffer    *dmx.Buffer
+	Renderer     dmx.BufferRenderer
+	Setup        *setup.Setup
+	DeviceMap    *setup.DeviceMap
+	Buffer       *dmx.Buffer
+	StatsMonitor system.StatsMonitor
 
 	runScene  chan SceneRun
 	stopScene chan bool
@@ -53,6 +55,7 @@ func NewEngine(renderer dmx.BufferRenderer, setup *setup.Setup, deviceMap *setup
 		Setup:            setup,
 		DeviceMap:        deviceMap,
 		Buffer:           buffer,
+		StatsMonitor:     system.NewStatsMonitor(),
 		runScene:         make(chan SceneRun),
 		stopScene:        make(chan bool),
 		registerClient:   make(chan EngineClient),
@@ -76,6 +79,7 @@ func (e *Engine) Unregister(c EngineClient) {
 
 func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 
+	go e.StatsMonitor.StartDaemon(ctx)
 	go e.metronom.Start(ctx)
 	go e.Buffer.Render(ctx, e.Renderer, onExit)
 

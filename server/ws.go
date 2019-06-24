@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/run"
+	"github.com/ChristianGaertner/dmx-controller/system"
 	"github.com/gorilla/websocket"
 	"net/http"
 	"time"
@@ -24,9 +25,10 @@ var upgrader = websocket.Upgrader{
 }
 
 type message struct {
-	MessageType string      `json:"type"`
-	Timestamp   time.Time   `json:"timestamp"`
-	Payload     interface{} `json:"payload"`
+	MessageType string       `json:"type"`
+	Timestamp   time.Time    `json:"timestamp"`
+	Payload     interface{}  `json:"payload"`
+	Stats       system.Stats `json:"stats"`
 }
 
 const (

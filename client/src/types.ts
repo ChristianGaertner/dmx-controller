@@ -249,3 +249,8 @@ export type SerialisedDeviceSetup = {
   fixtureId: string;
   mode: number;
 };
+
+export type Stats = {
+  heapAlloc: number;
+  heapSys: number;
+};

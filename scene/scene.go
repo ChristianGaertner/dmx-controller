@@ -33,26 +33,12 @@ func (s *Scene) Eval(tc types.TimeCode, activeFor time.Duration, stepIndex, prev
 	return s.sequence[stepIndex].Eval(tc, activeFor, prev)
 }
 
-func (s *Scene) GetStepIndexAt(tc types.TimeCode) (index int, ok bool) {
-	for idx, step := range s.sequence {
-		if step.Start <= tc && step.End >= tc {
-			return idx, true
-		}
-	}
-
-	return -1, false
-}
-
 func (s *Scene) GetStepAtIndex(idx int) *sequencedStep {
 	return s.sequence[idx]
 }
 
 func (s *Scene) NumSteps() int {
 	return len(s.sequence)
-}
-
-func (s *Scene) Duration() time.Duration {
-	return time.Duration(s.sequence[len(s.sequence)-1].End)
 }
 
 func computeSequence(steps []*Step, sceneTimings Timings) []*sequencedStep {

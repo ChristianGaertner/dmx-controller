@@ -2,8 +2,14 @@ import uuid from "./uuid";
 
 export type Scene = {
   id: string;
+  meta: SceneMeta;
   defaultTimings: Timings;
   steps: Step[];
+};
+
+export type SceneMeta = {
+  id: string;
+  name: string;
 };
 
 export type Timings = {

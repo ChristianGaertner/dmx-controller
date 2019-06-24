@@ -149,7 +149,11 @@ func (e *Engine) SetRunParams(params SceneRunParams) {
 }
 
 func (e *Engine) PreviewStep(step *scene.Step) {
-	tmp := scene.New("PREVIEW/"+step.ID, []*scene.Step{step}, 1, 0, 0)
+	meta := scene.Meta{
+		ID:   "PREVIEW/" + step.ID,
+		Name: "PREVIEW/" + step.ID,
+	}
+	tmp := scene.New(meta, []*scene.Step{step}, 1, 0, 0)
 	e.runScene <- SceneRun{scene: tmp, params: SceneRunParams{
 		Type: UseStepTimings,
 		Mode: types.RunModeOneShotHold,

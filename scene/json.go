@@ -2,10 +2,12 @@ package scene
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 type encodedScene struct {
 	ID             string  `json:"id"`
+	Meta           Meta    `json:"meta"`
 	Steps          []*Step `json:"steps"`
 	DefaultTimings Timings `json:"defaultTimings"`
 }
@@ -20,6 +22,7 @@ func (s *Scene) MarshalJSON() ([]byte, error) {
 
 	x := encodedScene{
 		ID:             s.ID,
+		Meta:           s.Meta,
 		Steps:          steps,
 		DefaultTimings: s.defaultTimings,
 	}
@@ -34,7 +37,11 @@ func (s *Scene) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	*s = *New(x.ID, x.Steps, *x.DefaultTimings.Duration, *x.DefaultTimings.FadeUp, *x.DefaultTimings.FadeDown)
+	if x.ID != x.Meta.ID {
+		return fmt.Errorf("IDs on encoded scene do not match, '%s' != '%s'", x.ID, x.Meta.ID)
+	}
+
+	*s = *New(x.Meta, x.Steps, *x.DefaultTimings.Duration, *x.DefaultTimings.FadeUp, *x.DefaultTimings.FadeDown)
 	return nil
 }
 

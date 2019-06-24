@@ -5,9 +5,10 @@ import { getRunningScene, getSceneList } from "../store/selectors";
 import { loadSceneList } from "../store/actions/loadScene";
 import { RunModeSelector } from "./RunModeSelector";
 import { TriggerButton } from "./TriggerButton";
+import { SceneMeta } from "../types";
 
 type StateProps = {
-  scenes: string[];
+  scenes: SceneMeta[];
   runningScene: string | null;
 };
 
@@ -32,9 +33,9 @@ const SceneRunnerComp: React.FunctionComponent<Props> = ({
       </div>
       <div className="flex">
         <div />
-        {scenes.map(id => (
-          <div key={id}>
-            <TriggerButton sceneId={id} />
+        {scenes.map(scene => (
+          <div key={scene.id}>
+            <TriggerButton scene={scene} />
           </div>
         ))}
       </div>

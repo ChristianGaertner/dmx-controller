@@ -4,6 +4,7 @@ import {
   RunParams,
   RunType,
   Scene,
+  SceneMeta,
   SerialisedDeviceSetup,
   SerializedSetup,
 } from "../types";
@@ -58,7 +59,7 @@ export const scenes = (scenes: SceneStore = {}, action: Action) => {
 
 type SceneListStore = {
   isFetching: boolean;
-  scenes: string[] | undefined;
+  scenes: SceneMeta[] | undefined;
 };
 
 export const sceneList = (

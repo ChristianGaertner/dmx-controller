@@ -1,4 +1,4 @@
-import { Scene } from "../../types";
+import { Scene, SceneMeta } from "../../types";
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
 import { apiBasePath } from "../config";
@@ -32,7 +32,7 @@ export interface LoadSceneListRequestAction extends BaseAction {
 export interface LoadSceneListResponseAction extends BaseAction {
   type: typeof LOAD_SCENE_LIST_RESPONSE;
   payload: {
-    scenes: string[];
+    scenes: SceneMeta[];
   };
 }
 

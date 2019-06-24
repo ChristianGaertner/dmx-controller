@@ -5,9 +5,10 @@ import { AppState } from "../store";
 import { runScene } from "../store/actions/runScene";
 import { Button, ButtonType } from "../components/Button";
 import { getRunningScene, getSceneProgress } from "../store/selectors";
+import { SceneMeta } from "../types";
 
 type OwnProps = {
-  sceneId: string;
+  scene: SceneMeta;
 };
 
 type StateProps = {
@@ -26,9 +27,9 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
   return (
     <Button
       type={props.active ? ButtonType.GREEN : ButtonType.BLUE}
-      label={`#${props.sceneId}`}
+      label={props.scene.name}
       onClick={
-        props.active ? props.stopScene : () => props.runScene(props.sceneId)
+        props.active ? props.stopScene : () => props.runScene(props.scene.id)
       }
       className="relative"
     >
@@ -45,7 +46,7 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
 };
 
 const mapStateToProps = (state: AppState, ownProps: OwnProps): StateProps => ({
-  active: getRunningScene(state) === ownProps.sceneId,
+  active: getRunningScene(state) === ownProps.scene.id,
   progress: getSceneProgress(state),
 });
 

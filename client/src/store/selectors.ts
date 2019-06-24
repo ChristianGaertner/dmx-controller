@@ -1,4 +1,10 @@
-import { FixtureDefinition, FixtureMode, RunParams, Scene } from "../types";
+import {
+  FixtureDefinition,
+  FixtureMode,
+  RunParams,
+  Scene,
+  SceneMeta,
+} from "../types";
 import { AppState } from "./index";
 import { UiTab } from "./actions/setTab";
 
@@ -7,7 +13,7 @@ export const getScene = (
   { id }: { id: string },
 ): Scene | undefined => (state.scenes[id] || {}).scene;
 
-export const getSceneList = (state: AppState): string[] =>
+export const getSceneList = (state: AppState): SceneMeta[] =>
   state.sceneList.scenes || [];
 
 export const getRunningScene = (state: AppState): string | null =>

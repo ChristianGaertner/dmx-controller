@@ -6,10 +6,11 @@ import { getSelectedSceneId } from "../store/editor/selectors";
 import { loadSceneList } from "../store/actions/loadScene";
 import { getSceneList } from "../store/selectors";
 import { Select } from "../components/Select";
+import { SceneMeta } from "../types";
 
 type StateProps = {
   selectedScene: string | null;
-  scenes: string[];
+  scenes: SceneMeta[];
 };
 
 type DispatchProps = {
@@ -33,9 +34,9 @@ const SceneSelectorComp: React.FunctionComponent<Props> = props => {
           onChange={props.selectScene}
         >
           {!props.selectedScene && <option value="-1">Select...</option>}
-          {props.scenes.map(id => (
-            <option key={id} value={id}>
-              Scene #{id}
+          {props.scenes.map(scene => (
+            <option key={scene.id} value={scene.id}>
+              {scene.name}
             </option>
           ))}
         </Select>

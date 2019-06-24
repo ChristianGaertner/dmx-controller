@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"github.com/ChristianGaertner/dmx-controller/scene"
 	"github.com/tidwall/buntdb"
-	"strings"
 )
 
 type Database interface {
 	SetScene(scene *scene.Scene) error
 	GetScene(id string) (*scene.Scene, error)
-	GetSceneIds() ([]string, error)
+	GetSceneList() ([]scene.Meta, error)
 	Close() error
 }
 
@@ -39,8 +38,20 @@ func (d *db) SetScene(scene *scene.Scene) error {
 	if err != nil {
 		return err
 	}
+
+	metaData, err := json.Marshal(scene.Meta)
+	if err != nil {
+		return err
+	}
+
 	return d.bunt.Update(func(tx *buntdb.Tx) error {
 		_, _, err := tx.Set(fmt.Sprintf("scene:%s", scene.ID), string(data), nil)
+		if err != nil {
+			return err
+		}
+
+		_, _, err = tx.Set(fmt.Sprintf("scene_meta:%s", scene.ID), string(metaData), nil)
+
 		return err
 	})
 }
@@ -60,15 +71,32 @@ func (d *db) GetScene(id string) (*scene.Scene, error) {
 	return &s, err
 }
 
-func (d *db) GetSceneIds() ([]string, error) {
-	var ids []string
+func (d *db) GetSceneList() ([]scene.Meta, error) {
+	var rawMeta []string
 
 	err := d.bunt.View(func(tx *buntdb.Tx) error {
-		return tx.AscendKeys("scene:*", func(key, value string) bool {
-			ids = append(ids, strings.TrimPrefix(key, "scene:"))
+		return tx.AscendKeys("scene_meta:*", func(key, value string) bool {
+			rawMeta = append(rawMeta, value)
 			return true
 		})
 	})
 
-	return ids, err
+	if err != nil {
+		return nil, err
+	}
+
+	var metas []scene.Meta
+
+	for _, s := range rawMeta {
+		var meta scene.Meta
+
+		err := json.Unmarshal([]byte(s), &meta)
+		if err != nil {
+			return nil, err
+		}
+
+		metas = append(metas, meta)
+	}
+
+	return metas, err
 }

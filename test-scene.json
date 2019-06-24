@@ -1,5 +1,9 @@
 {
   "id": "sc001",
+  "meta": {
+    "id": "sc001",
+    "name": "Test 1"
+  },
   "defaultTimings": {
     "duration": 1500000000,
     "fadeUp": 500000000,

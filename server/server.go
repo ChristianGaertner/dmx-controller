@@ -26,7 +26,7 @@ func ListenAndServe(ctx context.Context, addr string, engine *run.Engine, gracef
 	r := mux.NewRouter()
 
 	r.HandleFunc("/api/v1/ws", h.handleWebsocket)
-	r.HandleFunc("/api/v1/resources/scene", h.getSceneIds).Methods("GET")
+	r.HandleFunc("/api/v1/resources/scene", h.getSceneList).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene/{id}", h.getSceneHandler).Methods("GET")
 	r.HandleFunc("/api/v1/resources/scene", h.addSceneHandler).Methods("POST")
 
@@ -98,13 +98,14 @@ func (h *handlers) getSceneHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *handlers) getSceneIds(w http.ResponseWriter, r *http.Request) {
-	ids, err := h.engine.Db.GetSceneIds()
+func (h *handlers) getSceneList(w http.ResponseWriter, r *http.Request) {
+	meta, err := h.engine.Db.GetSceneList()
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	err = json.NewEncoder(w).Encode(ids)
+	err = json.NewEncoder(w).Encode(meta)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}

@@ -7,18 +7,25 @@ import (
 
 type Scene struct {
 	ID             string
+	Meta           Meta
 	defaultTimings Timings
 	sequence       []*sequencedStep
 }
 
-func New(id string, sequence []*Step, duration, fadeUp, fadeDown time.Duration) *Scene {
+type Meta struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+func New(meta Meta, sequence []*Step, duration, fadeUp, fadeDown time.Duration) *Scene {
 	timings := Timings{
 		Duration: &duration,
 		FadeUp:   &fadeUp,
 		FadeDown: &fadeDown,
 	}
 	return &Scene{
-		ID:             id,
+		ID:             meta.ID,
+		Meta:           meta,
 		sequence:       computeSequence(sequence, timings),
 		defaultTimings: timings,
 	}

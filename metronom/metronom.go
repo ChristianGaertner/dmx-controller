@@ -3,6 +3,7 @@ package metronom
 import (
 	"context"
 	"github.com/ChristianGaertner/dmx-controller/types"
+	"sync"
 	"time"
 )
 
@@ -16,6 +17,7 @@ type Metronom interface {
 }
 
 type metronom struct {
+	lock             sync.RWMutex
 	timeTicker       *time.Ticker
 	tc               types.TimeCode
 	t                chan types.TimeCode
@@ -43,7 +45,10 @@ func (m *metronom) Start(ctx context.Context) {
 			return
 		case <-m.timeTicker.C:
 			m.t <- m.tc
+
+			m.lock.Lock()
 			m.tc += types.TimeCode(float64(m.tickerResolution))
+			m.lock.Unlock()
 		}
 	}
 }
@@ -54,6 +59,8 @@ func (m *metronom) Stop() {
 }
 
 func (m *metronom) TimeCode() types.TimeCode {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	return m.tc
 }
 

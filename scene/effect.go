@@ -46,6 +46,7 @@ type DimmerSine struct {
 	Min     types.DimmerValue          `json:"min"`
 	Max     types.DimmerValue          `json:"max"`
 	Phase   float64                    `json:"phase"` // 0 = all in sync 1 = no overlap
+	Width   float64                    `json:"width"` // 0 = only postive part of the curve, 1 = full curve
 	Speed   types.BPM                  `json:"speed"`
 }
 
@@ -60,8 +61,8 @@ func (ds *DimmerSine) Generate(tc types.TimeCode) StepOutput {
 
 		sin := math.Sin(scaled + phaseOffset*float64(i))
 
-		if sin < 0 {
-			sin = 0
+		if sin < (-1 * ds.Width) {
+			sin = -ds.Width
 		}
 
 		value := float64(ds.Min) + sin*float64(ds.Max-ds.Min)

@@ -82,6 +82,7 @@ export type DimmerSineEffect = BaseEffect & {
   min: number;
   max: number;
   phase: number;
+  width: number;
   speed: number;
 };
 
@@ -95,6 +96,7 @@ export const NewEffect = (type: EffectType): Effect => {
         min: 0,
         max: 1,
         phase: 1,
+        width: 0,
         speed: 120,
       };
   }

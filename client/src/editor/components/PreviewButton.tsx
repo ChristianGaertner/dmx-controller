@@ -25,6 +25,13 @@ export const PreviewButton: React.FunctionComponent<{ stepId: string }> = ({
     stopStepPreview,
   });
 
+  React.useEffect(() => {
+    if (!step || !isPreviewing) {
+      return;
+    }
+    actions.requestStepPreview(step);
+  }, [step, isPreviewing, actions]);
+
   const onClick = React.useCallback(() => {
     if (isPreviewing) {
       actions.stopStepPreview(stepId);

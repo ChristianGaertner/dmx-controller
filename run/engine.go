@@ -49,7 +49,7 @@ func (e *Engine) onProgressChange(progress map[string]float64) {
 func NewEngine(renderer dmx.BufferRenderer, setup *setup.Setup, deviceMap *setup.DeviceMap, buffer *dmx.Buffer, db database.Database) *Engine {
 	return &Engine{
 		Db:               db,
-		metronom:         metronom.New(),
+		metronom:         metronom.New(120),
 		active:           make(map[string]*SceneRun),
 		Renderer:         renderer,
 		Setup:            setup,

@@ -9,31 +9,42 @@ import (
 
 type Metronom interface {
 	Start(ctx context.Context)
-	Stop()
+
+	SetBPM(bpm types.BPM)
 
 	TimeCode() types.TimeCode
+	BeatsSince(tc types.TimeCode) int
 
 	Tick() <-chan types.TimeCode
 }
 
 type metronom struct {
-	lock             sync.RWMutex
+	tcLock           sync.RWMutex
 	timeTicker       *time.Ticker
 	tc               types.TimeCode
 	t                chan types.TimeCode
 	tickerResolution time.Duration
+
+	setBPM      chan types.BPM
+	beat        types.BPM
+	beatTicker  *time.Ticker
+	beatHistory *beatHistory
 }
 
-func New() Metronom {
+func New(bpm types.BPM) Metronom {
 	tickerResolution := 50 * time.Millisecond
-	ticker := time.NewTicker(tickerResolution)
 
 	t := make(chan types.TimeCode)
 
 	return &metronom{
-		timeTicker:       ticker,
+		timeTicker:       time.NewTicker(tickerResolution),
 		t:                t,
 		tickerResolution: tickerResolution,
+
+		setBPM:      make(chan types.BPM),
+		beat:        bpm,
+		beatTicker:  time.NewTicker(bpm.AsDuration()),
+		beatHistory: newBeatHistory(100),
 	}
 }
 
@@ -42,26 +53,44 @@ func (m *metronom) Start(ctx context.Context) {
 		select {
 		case <-ctx.Done():
 			m.timeTicker.Stop()
+			m.beatTicker.Stop()
 			return
+		case bpm := <-m.setBPM:
+			m.beat = bpm
+			m.beatTicker.Stop()
+			m.beatTicker = time.NewTicker(m.beat.AsDuration())
 		case <-m.timeTicker.C:
 			m.t <- m.tc
 
-			m.lock.Lock()
+			m.tcLock.Lock()
 			m.tc += types.TimeCode(float64(m.tickerResolution))
-			m.lock.Unlock()
+			m.tcLock.Unlock()
+		case <-m.beatTicker.C:
+			m.tcLock.RLock()
+			m.beatHistory.Lock()
+
+			m.beatHistory.Record(m.tc)
+
+			m.beatHistory.Unlock()
+			m.tcLock.RUnlock()
 		}
 	}
 }
 
-func (m *metronom) Stop() {
-	m.timeTicker.Stop()
-	close(m.t)
+func (m *metronom) SetBPM(bpm types.BPM) {
+	m.setBPM <- bpm
 }
 
 func (m *metronom) TimeCode() types.TimeCode {
-	m.lock.RLock()
-	defer m.lock.RUnlock()
+	m.tcLock.RLock()
+	defer m.tcLock.RUnlock()
 	return m.tc
+}
+
+func (m *metronom) BeatsSince(tc types.TimeCode) int {
+	m.beatHistory.RLock()
+	defer m.beatHistory.RUnlock()
+	return m.beatHistory.BeatsSince(tc)
 }
 
 func (m *metronom) Tick() <-chan types.TimeCode {

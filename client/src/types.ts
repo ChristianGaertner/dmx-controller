@@ -127,6 +127,7 @@ export enum RunMode {
 
 export enum RunType {
   UseStepTimings = 0,
+  UseBeatTimings = 1,
 }
 
 export type RunParams = {

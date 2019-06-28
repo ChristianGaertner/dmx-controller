@@ -156,3 +156,7 @@ func (e *Engine) PreviewStep(step *scene.Step) {
 func (e *Engine) StopStepPreview(stepId string) {
 	e.stopScene <- "PREVIEW_" + stepId
 }
+
+func (e *Engine) SetBPM(bpm types.BPM) {
+	e.metronom.SetBPM(bpm)
+}

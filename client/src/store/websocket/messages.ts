@@ -13,6 +13,7 @@ export type WsMessages =
   | SendRunModeMessage
   | PreviewStepMessage
   | StopStepPreviewMessage
+  | SendBPMMessage
   | InitFixtures;
 
 export interface WsMessage<T extends string, P> extends BaseAction {
@@ -90,5 +91,13 @@ export const stopStepPreview = (stepId: string): StopStepPreviewMessage => ({
   payload: {
     stepId,
   },
+  timestamp: new Date(),
+});
+
+export const SEND_BPM = "@websocket/send/SEND_BPM";
+type SendBPMMessage = WsMessage<typeof SEND_BPM, { bpm: number }>;
+export const sendBPM = (bpm: number): SendBPMMessage => ({
+  type: SEND_BPM,
+  payload: { bpm },
   timestamp: new Date(),
 });

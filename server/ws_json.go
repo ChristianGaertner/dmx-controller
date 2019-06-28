@@ -58,6 +58,15 @@ func (m *message) UnmarshalJSON(data []byte) error {
 
 		m.Payload = payload
 		return nil
+	case MsgTypeSendBPM:
+		var payload sendBPMPayload
+		err = json.Unmarshal(*objMap["payload"], &payload)
+		if err != nil {
+			return err
+		}
+
+		m.Payload = payload
+		return nil
 	}
 
 	return fmt.Errorf("message type %s not recognized", x.MessageType)

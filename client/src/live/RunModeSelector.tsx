@@ -5,6 +5,7 @@ import { RunMode, RunParams, RunType } from "../types";
 import { sendRunParams } from "../store/websocket/messages";
 import { Button, ButtonType } from "../components/Button";
 import { getRunParams } from "../store/selectors";
+import { BPMDisplay } from "./BPMDisplay";
 
 type StateProps = {
   runParams: RunParams;
@@ -73,6 +74,7 @@ const RunModeSelectorComp: React.FunctionComponent<Props> = ({
           setRunParams({ ...runParams, type: RunType.UseBeatTimings })
         }
       />
+      <BPMDisplay />
     </div>
   </div>
 );

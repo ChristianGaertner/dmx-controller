@@ -25,6 +25,10 @@ type stopStepPreviewPayload struct {
 	StepId string `json:"stepId"`
 }
 
+type sendBPMPayload struct {
+	BPM types.BPM `json:"bpm"`
+}
+
 func (wsc *WSClient) readPump() {
 	defer func() {
 		_ = wsc.conn.Close()
@@ -71,6 +75,10 @@ func (wsc *WSClient) readPump() {
 		case stopStepPreviewPayload:
 			payload := msg.Payload.(stopStepPreviewPayload)
 			wsc.engine.StopStepPreview(payload.StepId)
+		case sendBPMPayload:
+			payload := msg.Payload.(sendBPMPayload)
+			wsc.engine.SetBPM(payload.BPM)
+
 		}
 	}
 }

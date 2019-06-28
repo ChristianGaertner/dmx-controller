@@ -21,6 +21,10 @@ type previewStepPayload struct {
 	Step *scene.Step `json:"step"`
 }
 
+type stopStepPreviewPayload struct {
+	StepId string `json:"stepId"`
+}
+
 func (wsc *WSClient) readPump() {
 	defer func() {
 		_ = wsc.conn.Close()
@@ -64,6 +68,9 @@ func (wsc *WSClient) readPump() {
 		case previewStepPayload:
 			payload := msg.Payload.(previewStepPayload)
 			wsc.engine.PreviewStep(payload.Step)
+		case stopStepPreviewPayload:
+			payload := msg.Payload.(stopStepPreviewPayload)
+			wsc.engine.StopStepPreview(payload.StepId)
 		}
 	}
 }

@@ -7,9 +7,10 @@ import {
 } from "../../store/editor/selectors";
 import { AppState } from "../../store";
 import { useActions } from "../../store/util";
-import { requestStepPreview } from "../../store/websocket/messages";
-import { previewStep, unpreviewStep } from "../../store/editor/actions";
-import { stopScene } from "../../store/actions/runScene";
+import {
+  requestStepPreview,
+  stopStepPreview,
+} from "../../store/websocket/messages";
 
 export const PreviewButton: React.FunctionComponent<{ stepId: string }> = ({
   stepId,
@@ -21,26 +22,16 @@ export const PreviewButton: React.FunctionComponent<{ stepId: string }> = ({
 
   const actions = useActions({
     requestStepPreview,
-    previewStep,
-    unpreviewStep,
-    stopScene,
+    stopStepPreview,
   });
-
-  React.useEffect(() => {
-    if (!step || !isPreviewing) {
-      return;
-    }
-    actions.requestStepPreview(step);
-  }, [step, isPreviewing, actions]);
 
   const onClick = React.useCallback(() => {
     if (isPreviewing) {
-      actions.stopScene("PREVIEW/" + stepId);
-      actions.unpreviewStep();
+      actions.stopStepPreview(stepId);
     } else {
-      actions.previewStep(stepId);
+      step && actions.requestStepPreview(step);
     }
-  }, [actions, isPreviewing, stepId]);
+  }, [actions, isPreviewing, stepId, step]);
 
   return (
     <button

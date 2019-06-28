@@ -12,6 +12,7 @@ export type WsMessages =
   | OnProgressChangeMessage
   | SendRunModeMessage
   | PreviewStepMessage
+  | StopStepPreviewMessage
   | InitFixtures;
 
 export interface WsMessage<T extends string, P> extends BaseAction {
@@ -75,6 +76,19 @@ export const requestStepPreview = (step: Step): PreviewStepMessage => ({
   type: PREVIEW_STEP,
   payload: {
     step: step,
+  },
+  timestamp: new Date(),
+});
+
+export const STOP_STEP_PREVIEW = "@websocket/send/STOP_STEP_PREVIEW";
+type StopStepPreviewMessage = WsMessage<
+  typeof STOP_STEP_PREVIEW,
+  { stepId: string }
+>;
+export const stopStepPreview = (stepId: string): StopStepPreviewMessage => ({
+  type: STOP_STEP_PREVIEW,
+  payload: {
+    stepId,
   },
   timestamp: new Date(),
 });

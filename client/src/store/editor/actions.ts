@@ -22,8 +22,7 @@ export type EditorAction =
   | SelectEffect
   | OnHighlightEffect
   | SetEffect
-  | AddEffect
-  | PreviewStep;
+  | AddEffect;
 
 interface SelectScene extends BaseAction {
   type: typeof SELECT_SCENE;
@@ -238,22 +237,4 @@ export const addEffect = (stepId: string, type: EffectType) => ({
     stepId,
     type,
   },
-});
-
-export const PREVIEW_STEP = "@editor/PREVIEW_STEP";
-interface PreviewStep extends BaseAction {
-  type: typeof PREVIEW_STEP;
-  payload: {
-    stepId: string | null;
-  };
-}
-
-export const previewStep = (stepId: string): PreviewStep => ({
-  type: PREVIEW_STEP,
-  payload: { stepId },
-});
-
-export const unpreviewStep = (): PreviewStep => ({
-  type: PREVIEW_STEP,
-  payload: { stepId: null },
 });

@@ -36,6 +36,7 @@ const (
 	MsgTypeInitFixtures     = "INIT_FIXTURES"
 	MsgTypeSendRunParams    = "SEND_RUN_PARAMS"
 	MsgTypePreviewStep      = "PREVIEW_STEP"
+	MsgTypeStopStepPreview  = "STOP_STEP_PREVIEW"
 )
 
 type WSClient struct {

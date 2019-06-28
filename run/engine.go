@@ -83,15 +83,13 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 	go e.metronom.Start(ctx)
 	go e.Buffer.Render(ctx, e.Renderer, onExit)
 
-	progress := make(map[string]float64)
-
 	for {
 		select {
 		case tc := <-e.metronom.Tick():
+			progress := make(map[string]float64)
 			for id, active := range e.active {
 				if done := active.Step(e.metronom); done {
 					delete(e.active, id)
-					delete(progress, id)
 				} else {
 					out := active.eval(tc)
 					for id, val := range out {
@@ -103,7 +101,6 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 			e.DeviceMap.Render(e.Buffer)
 
 			e.onProgressChange(progress)
-
 		case r := <-e.runScene:
 			r.activeSince = e.metronom.TimeCode()
 			r.stepInfo.ActiveSince = e.metronom.TimeCode()
@@ -139,12 +136,16 @@ func (e *Engine) SetRunParams(params SceneRunParams) {
 
 func (e *Engine) PreviewStep(step *scene.Step) {
 	meta := scene.Meta{
-		ID:   "PREVIEW/" + step.ID,
-		Name: "PREVIEW/" + step.ID,
+		ID:   "PREVIEW_" + step.ID,
+		Name: "PREVIEW_" + step.ID,
 	}
 	tmp := scene.New(meta, []*scene.Step{step}, 1, 0, 0)
 	e.runScene <- SceneRun{scene: tmp, params: SceneRunParams{
 		Type: UseStepTimings,
 		Mode: types.RunModeOneShotHold,
 	}}
+}
+
+func (e *Engine) StopStepPreview(stepId string) {
+	e.stopScene <- "PREVIEW_" + stepId
 }

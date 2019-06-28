@@ -32,10 +32,10 @@ type message struct {
 }
 
 const (
-	MsgTypeOnActiveChange = "ON_ACTIVE_CHANGE"
-	MsgTypeInitFixtures   = "INIT_FIXTURES"
-	MsgTypeSendRunParams  = "SEND_RUN_PARAMS"
-	MsgTypePreviewStep    = "PREVIEW_STEP"
+	MsgTypeOnProgressChange = "ON_PROGRESS_CHANGE"
+	MsgTypeInitFixtures     = "INIT_FIXTURES"
+	MsgTypeSendRunParams    = "SEND_RUN_PARAMS"
+	MsgTypePreviewStep      = "PREVIEW_STEP"
 )
 
 type WSClient struct {

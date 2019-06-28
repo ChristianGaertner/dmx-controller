@@ -9,16 +9,14 @@ import (
 )
 
 type activeSceneChangedPayload struct {
-	SceneID  *string `json:"sceneId"`
-	Progress float64 `json:"progress"`
+	Progress map[string]float64 `json:"progress"`
 }
 
-func (wsc *WSClient) OnActiveChange(sceneID *string, progress float64) bool {
+func (wsc *WSClient) OnProgressChange(progress map[string]float64) bool {
 	msg := message{
-		MessageType: MsgTypeOnActiveChange,
+		MessageType: MsgTypeOnProgressChange,
 		Timestamp:   time.Now(),
 		Payload: activeSceneChangedPayload{
-			SceneID:  sceneID,
 			Progress: progress,
 		},
 		Stats: wsc.engine.StatsMonitor.Get(),

@@ -9,7 +9,7 @@ import {
 } from "../../types";
 
 export type WsMessages =
-  | OnActiveChangeMessage
+  | OnProgressChangeMessage
   | SendRunModeMessage
   | PreviewStepMessage
   | InitFixtures;
@@ -21,19 +21,20 @@ export interface WsMessage<T extends string, P> extends BaseAction {
   stats?: Stats;
 }
 
-export const ON_ACTIVE_CHANGE = "@websocket/ON_ACTIVE_CHANGE";
-type OnActiveChangeMessage = WsMessage<
-  typeof ON_ACTIVE_CHANGE,
+export const ON_PROGRESS_CHANGE = "@websocket/ON_PROGRESS_CHANGE";
+type OnProgressChangeMessage = WsMessage<
+  typeof ON_PROGRESS_CHANGE,
   {
-    sceneId: string | null;
-    progress: number;
+    progress: {
+      [sceneID: string]: number;
+    };
   }
 >;
 
-export const onActiveChangeMessage = (
+export const onProgressChangeMessage = (
   msg: RawMessage,
-): OnActiveChangeMessage => ({
-  type: ON_ACTIVE_CHANGE,
+): OnProgressChangeMessage => ({
+  type: ON_PROGRESS_CHANGE,
   payload: msg.payload,
   timestamp: new Date(msg.timestamp),
   hidden: true,

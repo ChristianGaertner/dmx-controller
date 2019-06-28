@@ -4,7 +4,7 @@ import { WS_CONNECT, wsConnected, wsDisconnected } from "./actions";
 import { websocketEndpoint } from "../config";
 import {
   initFixtures,
-  onActiveChangeMessage,
+  onProgressChangeMessage,
   WS_SEND_PREFIX,
   WsMessage,
 } from "./messages";
@@ -28,8 +28,8 @@ class ReduxWebsocket {
     this.websocket.addEventListener("message", event => {
       const message = JSON.parse(event.data) as RawMessage;
       switch (message.type) {
-        case "ON_ACTIVE_CHANGE":
-          return dispatch(onActiveChangeMessage(message));
+        case "ON_PROGRESS_CHANGE":
+          return dispatch(onProgressChangeMessage(message));
         case "INIT_FIXTURES":
           return dispatch(initFixtures(message));
         default:

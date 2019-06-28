@@ -9,7 +9,7 @@ import { AppState } from "../../store";
 import { useActions } from "../../store/util";
 import { requestStepPreview } from "../../store/websocket/messages";
 import { previewStep, unpreviewStep } from "../../store/editor/actions";
-import { runScene } from "../../store/actions/runScene";
+import { stopScene } from "../../store/actions/runScene";
 
 export const PreviewButton: React.FunctionComponent<{ stepId: string }> = ({
   stepId,
@@ -23,7 +23,7 @@ export const PreviewButton: React.FunctionComponent<{ stepId: string }> = ({
     requestStepPreview,
     previewStep,
     unpreviewStep,
-    runScene,
+    stopScene,
   });
 
   React.useEffect(() => {
@@ -35,7 +35,7 @@ export const PreviewButton: React.FunctionComponent<{ stepId: string }> = ({
 
   const onClick = React.useCallback(() => {
     if (isPreviewing) {
-      actions.runScene(null);
+      actions.stopScene("PREVIEW/" + stepId);
       actions.unpreviewStep();
     } else {
       actions.previewStep(stepId);

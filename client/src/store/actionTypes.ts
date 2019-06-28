@@ -4,7 +4,7 @@ import {
   LoadSceneRequestAction,
   LoadSceneResponseAction,
 } from "./actions/loadScene";
-import { RunSceneAction } from "./actions/runScene";
+import { RunSceneAction, StopSceneAction } from "./actions/runScene";
 import { EditorAction } from "./editor/actions";
 import { Action as ReduxAction } from "redux";
 import { SetTabAction } from "./actions/setTab";
@@ -21,5 +21,6 @@ export type Action =
   | LoadSceneListRequestAction
   | LoadSceneListResponseAction
   | RunSceneAction
+  | StopSceneAction
   | EditorAction
   | WebsocketActions;

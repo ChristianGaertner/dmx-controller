@@ -16,11 +16,11 @@ export const getScene = (
 export const getSceneList = (state: AppState): SceneMeta[] =>
   state.sceneList.scenes || [];
 
-export const getRunningScene = (state: AppState): string | null =>
-  state.running.sceneId;
+export const isSceneRunning = (state: AppState, sceneId: string): boolean =>
+  state.running.sceneIds.includes(sceneId);
 
-export const getSceneProgress = (state: AppState): number =>
-  state.running.progress;
+export const getSceneProgress = (state: AppState, sceneId: string): number =>
+  state.running.progress[sceneId] || 0;
 
 export const getActiveTab = (state: AppState): UiTab => state.ui.activeTab;
 

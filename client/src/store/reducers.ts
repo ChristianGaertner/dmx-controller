@@ -15,13 +15,12 @@ import {
   LOAD_SCENE_REQUEST,
   LOAD_SCENE_RESPONSE,
 } from "./actions/loadScene";
-import { RUN_SCENE } from "./actions/runScene";
 import { editor } from "./editor/reducers";
 import { websocket } from "./websocket/reducers";
 import { SET_TAB, UiTab } from "./actions/setTab";
 import {
   INIT_FIXTURES,
-  ON_ACTIVE_CHANGE,
+  ON_PROGRESS_CHANGE,
   SEND_RUN_PARAMS,
 } from "./websocket/messages";
 
@@ -84,34 +83,29 @@ export const sceneList = (
 };
 
 type RunningSceneStore = {
-  sceneId: string | null;
-  progress: number;
-  requestedId: string | null;
+  sceneIds: string[];
+  progress: {
+    [sceneID: string]: number;
+  };
   runParams: RunParams;
 };
 
 export const running = (
   state: RunningSceneStore = {
-    sceneId: null,
-    progress: 0,
-    requestedId: null,
+    sceneIds: [],
+    progress: {},
     runParams: {
       mode: RunMode.Cycle,
       type: RunType.UseStepTimings,
     },
   },
   action: Action,
-) => {
+): RunningSceneStore => {
   switch (action.type) {
-    case RUN_SCENE:
+    case ON_PROGRESS_CHANGE:
       return {
         ...state,
-        requestedId: action.payload.id,
-      };
-    case ON_ACTIVE_CHANGE:
-      return {
-        ...state,
-        sceneId: action.payload.sceneId,
+        sceneIds: Object.keys(action.payload.progress),
         progress: action.payload.progress,
       };
     case SEND_RUN_PARAMS:

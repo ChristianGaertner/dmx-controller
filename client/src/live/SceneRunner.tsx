@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { AppState } from "../store";
-import { getRunningScene, getSceneList } from "../store/selectors";
+import { getSceneList } from "../store/selectors";
 import { loadSceneList } from "../store/actions/loadScene";
 import { RunModeSelector } from "./RunModeSelector";
 import { TriggerButton } from "./TriggerButton";
@@ -9,7 +9,6 @@ import { SceneMeta } from "../types";
 
 type StateProps = {
   scenes: SceneMeta[];
-  runningScene: string | null;
 };
 
 type DispatchProps = {
@@ -44,7 +43,6 @@ const SceneRunnerComp: React.FunctionComponent<Props> = ({
 };
 
 const mapStateToProps = (state: AppState): StateProps => ({
-  runningScene: getRunningScene(state),
   scenes: getSceneList(state),
 });
 

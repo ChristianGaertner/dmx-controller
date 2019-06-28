@@ -2,9 +2,9 @@ import * as React from "react";
 import { connect } from "react-redux";
 import cx from "classnames";
 import { AppState } from "../store";
-import { runScene } from "../store/actions/runScene";
+import { runScene, stopScene } from "../store/actions/runScene";
 import { Button, ButtonType } from "../components/Button";
-import { getRunningScene, getSceneProgress } from "../store/selectors";
+import { getSceneProgress, isSceneRunning } from "../store/selectors";
 import { SceneMeta } from "../types";
 
 type OwnProps = {
@@ -18,7 +18,7 @@ type StateProps = {
 
 type DispatchProps = {
   runScene: (id: string) => void;
-  stopScene: () => void;
+  stopScene: (id: string) => void;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -29,7 +29,9 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
       type={props.active ? ButtonType.GREEN : ButtonType.BLUE}
       label={props.scene.name}
       onClick={
-        props.active ? props.stopScene : () => props.runScene(props.scene.id)
+        props.active
+          ? () => props.stopScene(props.scene.id)
+          : () => props.runScene(props.scene.id)
       }
       className="relative"
     >
@@ -46,13 +48,13 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
 };
 
 const mapStateToProps = (state: AppState, ownProps: OwnProps): StateProps => ({
-  active: getRunningScene(state) === ownProps.scene.id,
-  progress: getSceneProgress(state),
+  active: isSceneRunning(state, ownProps.scene.id),
+  progress: getSceneProgress(state, ownProps.scene.id),
 });
 
 const mapDispatchToProps: DispatchProps = {
   runScene: runScene,
-  stopScene: () => runScene(null),
+  stopScene: stopScene,
 };
 
 export const TriggerButton = connect(

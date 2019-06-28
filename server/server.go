@@ -31,7 +31,7 @@ func ListenAndServe(ctx context.Context, addr string, engine *run.Engine, gracef
 	r.HandleFunc("/api/v1/resources/scene", h.addSceneHandler).Methods("POST")
 
 	r.HandleFunc("/api/v1/run/scene/{id}", h.runSceneHandler).Methods("POST")
-	r.HandleFunc("/api/v1/stop/scene", h.stopSceneHandler).Methods("POST")
+	r.HandleFunc("/api/v1/stop/scene/{id}", h.stopSceneHandler).Methods("POST")
 
 	r.Use(panicMiddleware)
 	r.Use(timeoutMiddleware)
@@ -124,6 +124,7 @@ func (h *handlers) runSceneHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handlers) stopSceneHandler(w http.ResponseWriter, r *http.Request) {
-	h.engine.Stop()
+	id := mux.Vars(r)["id"]
+	h.engine.Stop(id)
 	w.WriteHeader(http.StatusAccepted)
 }

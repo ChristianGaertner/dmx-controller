@@ -81,29 +81,33 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 
 	go e.StatsMonitor.StartDaemon(ctx)
 	go e.metronom.Start(ctx)
-	go e.Buffer.Render(ctx, e.Renderer, onExit)
+	render := e.Buffer.Render(ctx, e.Renderer, onExit)
 
 	for {
 		select {
-		case tc := <-e.metronom.Tick():
+		case <-e.metronom.Tick():
 			progress := make(map[string]float64)
-			output := make(scene.StepOutput)
 			for id, active := range e.active {
 				if done := active.Step(e.metronom); done {
 					delete(e.active, id)
 				} else {
-					out := active.eval(tc)
-					output = scene.HTPMergeStepOutput(output, out)
 					progress[id] = active.GetProgress(e.metronom)
 				}
+			}
+			e.onProgressChange(progress)
+		case done := <-render:
+			output := make(scene.StepOutput)
+			for _, active := range e.active {
+				out := active.eval(e.metronom.TimeCode())
+				output = scene.HTPMergeStepOutput(output, out)
 			}
 
 			for id, val := range output {
 				e.DeviceMap.Get(id).Fixture.ApplyValueTo(val, e.DeviceMap.Get(id))
 			}
-			e.DeviceMap.Render(e.Buffer)
 
-			e.onProgressChange(progress)
+			e.DeviceMap.Render(e.Buffer)
+			done <- true
 		case r := <-e.runScene:
 			r.activeSince = e.metronom.TimeCode()
 			r.stepInfo.ActiveSince = e.metronom.TimeCode()

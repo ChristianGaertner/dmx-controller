@@ -56,7 +56,8 @@ func (b *Buffer) Apply(p PatchPosition, values []Value) {
 	copy(b.universes[p.GetUniverseId()][addr.ToSliceIndex():], values)
 }
 
-func (b *Buffer) Render(ctx context.Context, renderer BufferRenderer, onExit chan<- bool) {
+func (b *Buffer) Render(ctx context.Context, renderer BufferRenderer, onExit chan<- bool) <-chan chan bool {
+	done := make(chan chan bool)
 	err := renderer.Boot(ctx)
 	if err != nil {
 		// TODO handle error in a better way?
@@ -64,20 +65,28 @@ func (b *Buffer) Render(ctx context.Context, renderer BufferRenderer, onExit cha
 	}
 	ticker := renderer.GetTicker(ctx)
 
-	for {
-		select {
-		case <-ticker.C:
-			b.RLock()
-			err := renderer.Render(ctx, b)
-			if err != nil {
-				// TODO handle error in a better way?
-				panic(err)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				wait := make(chan bool)
+				done <- wait
+				// TODO maybe add a timeout here??
+				<-wait
+
+				b.RLock()
+				err := renderer.Render(ctx, b)
+				if err != nil {
+					// TODO handle error in a better way?
+					panic(err)
+				}
+				b.RUnlock()
+			case <-ctx.Done():
+				ticker.Stop()
+				onExit <- true
+				return
 			}
-			b.RUnlock()
-		case <-ctx.Done():
-			ticker.Stop()
-			onExit <- true
-			return
 		}
-	}
+	}()
+	return done
 }

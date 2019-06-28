@@ -87,16 +87,19 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 		select {
 		case tc := <-e.metronom.Tick():
 			progress := make(map[string]float64)
+			output := make(scene.StepOutput)
 			for id, active := range e.active {
 				if done := active.Step(e.metronom); done {
 					delete(e.active, id)
 				} else {
 					out := active.eval(tc)
-					for id, val := range out {
-						e.DeviceMap.Get(id).Fixture.ApplyValueTo(val, e.DeviceMap.Get(id))
-					}
+					output = scene.HTPMergeStepOutput(output, out)
 					progress[id] = active.GetProgress(e.metronom)
 				}
+			}
+
+			for id, val := range output {
+				e.DeviceMap.Get(id).Fixture.ApplyValueTo(val, e.DeviceMap.Get(id))
 			}
 			e.DeviceMap.Render(e.Buffer)
 

@@ -6,8 +6,8 @@ type ShutterState uint32
 
 const (
 	ShutterOpen ShutterState = iota
-	ShutterClosed
 	ShutterStrobe
+	ShutterClosed
 )
 
 type Shutter struct {
@@ -44,6 +44,31 @@ func LerpShutter(a, b *Shutter, percentUp, percentDown float64) *Shutter {
 		State:           state,
 		StrobeFrequency: *LerpFrequency(&va.StrobeFrequency, &vb.StrobeFrequency, percentUp, percentDown),
 	}
+}
+
+func MaxShutter(a, b *Shutter) *Shutter {
+	if a == nil {
+		return b
+	}
+	if b == nil {
+		return a
+	}
+
+	// lower means 'more open'
+	if a.State < b.State {
+		return a
+	}
+
+	if a.State != ShutterStrobe && b.State != ShutterStrobe {
+		// States are equal and not shutter, return a or b... does not matter..
+		return b
+	}
+
+	if a.StrobeFrequency > b.StrobeFrequency {
+		return a
+	}
+
+	return b
 }
 
 type Frequency float64

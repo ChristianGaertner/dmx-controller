@@ -70,7 +70,7 @@ func (s *Step) getStepOutput(tc types.TimeCode) StepOutput {
 		out = append(out, fx.Generate(tc))
 	}
 
-	return MergeStepOutput(out...)
+	return HTPMergeStepOutput(out...)
 }
 
 func calcPercent(tc time.Duration, d time.Duration) float64 {

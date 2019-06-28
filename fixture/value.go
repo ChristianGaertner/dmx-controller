@@ -30,59 +30,20 @@ func Lerp(a, b *Value, percentUp, percentDown float64) *Value {
 	}
 }
 
-func Merge(a, b *Value) *Value {
-
-	var dimmer *types.DimmerValue
-	if a.Dimmer != nil && b.Dimmer == nil {
-		dimmer = a.Dimmer
-	} else if a.Dimmer != nil && b.Dimmer != nil {
-		dimmer = types.LerpDimmerValue(a.Dimmer, b.Dimmer, 0.5, 0.5)
-	} else {
-		dimmer = b.Dimmer
+func HTPMerge(a, b *Value) *Value {
+	if a == nil {
+		a = new(Value)
 	}
-
-	var color *types.Color
-	if a.Color != nil && b.Color == nil {
-		color = a.Color
-	} else if a.Color != nil && b.Color != nil {
-		color = types.LerpColor(a.Color, b.Color, 0.5, 0.5)
-	} else {
-		color = b.Color
-	}
-
-	var shutter *types.Shutter
-	if a.Shutter != nil && b.Shutter == nil {
-		shutter = a.Shutter
-	} else if a.Color != nil && b.Color != nil {
-		shutter = types.LerpShutter(a.Shutter, b.Shutter, 0.5, 0.5)
-	} else {
-		shutter = b.Shutter
-	}
-
-	var preset *types.PresetID
-	if a.Preset != nil && b.Preset == nil {
-		preset = a.Preset
-	} else if a.Preset != nil && b.Preset != nil {
-		preset = types.LerpPreset(a.Preset, b.Preset, 0.5, 0.5)
-	} else {
-		preset = b.Preset
-	}
-
-	var generic map[types.GenericID]types.DimmerValue
-	if a.Generic != nil && b.Generic == nil {
-		generic = a.Generic
-	} else if a.Generic != nil && b.Generic != nil {
-		generic = lerpGeneric(a.Generic, b.Generic, 0.5, 0.5)
-	} else {
-		generic = b.Generic
+	if b == nil {
+		b = new(Value)
 	}
 
 	return &Value{
-		Dimmer:  dimmer,
-		Color:   color,
-		Shutter: shutter,
-		Preset:  preset,
-		Generic: generic,
+		Dimmer:  types.MaxDimmerValue(a.Dimmer, b.Dimmer),
+		Color:   types.MaxColor(a.Color, b.Color),
+		Shutter: types.MaxShutter(a.Shutter, b.Shutter),
+		Preset:  types.MaxPresetID(a.Preset, b.Preset),
+		Generic: maxGeneric(a.Generic, b.Generic),
 	}
 }
 
@@ -109,4 +70,32 @@ func lerpGeneric(a, b map[types.GenericID]types.DimmerValue, percentUp, percentD
 	}
 
 	return lerped
+}
+
+func maxGeneric(a, b map[types.GenericID]types.DimmerValue) map[types.GenericID]types.DimmerValue {
+	if a == nil {
+		return b
+	}
+	if b == nil {
+		return a
+	}
+
+	var ids []types.GenericID
+
+	for v := range a {
+		ids = append(ids, v)
+	}
+	for v := range b {
+		ids = append(ids, v)
+	}
+
+	maxed := make(map[types.GenericID]types.DimmerValue)
+
+	for _, id := range ids {
+		va := a[id]
+		vb := b[id]
+		maxed[id] = *types.MaxDimmerValue(&va, &vb)
+	}
+
+	return maxed
 }

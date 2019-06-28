@@ -36,6 +36,21 @@ func ColorDistance(p, q *Color) float64 {
 	return math.Sqrt(math.Pow(p.R-q.R, 2) + math.Pow(p.G-q.G, 2) + math.Pow(p.B-q.B, 2))
 }
 
+func MaxColor(a, b *Color) *Color {
+	if a == nil {
+		return b
+	}
+	if b == nil {
+		return a
+	}
+
+	return &Color{
+		R: math.Max(a.R, b.R),
+		G: math.Max(a.G, b.G),
+		B: math.Max(a.B, b.B),
+	}
+}
+
 // DimmerValue is in the range of 0 [off] to 1 [full]
 type DimmerValue float64
 
@@ -56,4 +71,18 @@ func LerpDimmerValue(a, b *DimmerValue, percentUp, percentDown float64) *DimmerV
 
 	f := DimmerValue(Lerp(float64(va), float64(vb), percentUp, percentDown))
 	return &f
+}
+
+func MaxDimmerValue(a, b *DimmerValue) *DimmerValue {
+	if a == nil {
+		return b
+	}
+	if b == nil {
+		return a
+	}
+
+	if *a > *b {
+		return a
+	}
+	return b
 }

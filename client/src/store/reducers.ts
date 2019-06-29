@@ -83,17 +83,17 @@ export const sceneList = (
 };
 
 type RunningSceneStore = {
-  sceneIds: string[];
   progress: {
     [sceneID: string]: number;
   };
+  bpm: number;
   runParams: RunParams;
 };
 
 export const running = (
   state: RunningSceneStore = {
-    sceneIds: [],
     progress: {},
+    bpm: 120,
     runParams: {
       mode: RunMode.Cycle,
       type: RunType.UseStepTimings,
@@ -105,8 +105,8 @@ export const running = (
     case ON_PROGRESS_CHANGE:
       return {
         ...state,
-        sceneIds: Object.keys(action.payload.progress),
         progress: action.payload.progress,
+        bpm: action.payload.bpm,
       };
     case SEND_RUN_PARAMS:
       return {

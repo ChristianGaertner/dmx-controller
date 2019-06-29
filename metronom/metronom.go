@@ -11,6 +11,7 @@ type Metronom interface {
 	Start(ctx context.Context)
 
 	SetBPM(bpm types.BPM)
+	GetBPM() types.BPM
 
 	TimeCode() types.TimeCode
 	BeatsSince(tc types.TimeCode) int
@@ -79,6 +80,10 @@ func (m *metronom) Start(ctx context.Context) {
 
 func (m *metronom) SetBPM(bpm types.BPM) {
 	m.setBPM <- bpm
+}
+
+func (m *metronom) GetBPM() types.BPM {
+	return m.beat
 }
 
 func (m *metronom) TimeCode() types.TimeCode {

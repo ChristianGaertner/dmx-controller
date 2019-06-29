@@ -17,7 +17,7 @@ export const getSceneList = (state: AppState): SceneMeta[] =>
   state.sceneList.scenes || [];
 
 export const isSceneRunning = (state: AppState, sceneId: string): boolean =>
-  state.running.sceneIds.includes(sceneId);
+  sceneId in state.running.progress;
 
 export const getSceneProgress = (state: AppState, sceneId: string): number =>
   state.running.progress[sceneId] || 0;
@@ -26,6 +26,8 @@ export const getActiveTab = (state: AppState): UiTab => state.ui.activeTab;
 
 export const getRunParams = (state: AppState): RunParams =>
   state.running.runParams;
+
+export const getBPM = (state: AppState): number => state.running.bpm;
 
 export const getFixtureDefinition = (
   state: AppState,

@@ -35,12 +35,12 @@ type Engine struct {
 }
 
 type EngineClient interface {
-	OnProgressChange(progress map[string]float64) bool
+	OnProgressChange(progress map[string]float64, bpm types.BPM) bool
 }
 
 func (e *Engine) onProgressChange(progress map[string]float64) {
 	for c := range e.clients {
-		if ok := c.OnProgressChange(progress); !ok {
+		if ok := c.OnProgressChange(progress, e.metronom.GetBPM()); !ok {
 			delete(e.clients, c)
 		}
 	}

@@ -30,6 +30,7 @@ type OnProgressChangeMessage = WsMessage<
     progress: {
       [sceneID: string]: number;
     };
+    bpm: number;
   }
 >;
 

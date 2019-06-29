@@ -1,0 +1,13 @@
+.flash {
+  animation: flash;
+}
+
+@keyframes flash {
+  0% {
+    /* bg-gray-500 */
+    background: #a0aec0;
+  }
+  100% {
+    background: none;
+  }
+}

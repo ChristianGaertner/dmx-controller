@@ -155,7 +155,7 @@ export const getStepForEditing = (
 };
 
 export const isStepPreviewing = (state: AppState, stepId: string): boolean =>
-  state.running.sceneIds.includes("PREVIEW_" + stepId);
+  "PREVIEW_" + stepId in state.running.progress;
 
 function flatMap<T, U>(array: T[], mapFunc: (x: T) => U[]): U[] {
   return array.reduce(

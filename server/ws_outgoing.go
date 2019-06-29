@@ -4,20 +4,23 @@ import (
 	"encoding/json"
 	"github.com/ChristianGaertner/dmx-controller/fixture"
 	"github.com/ChristianGaertner/dmx-controller/setup"
+	"github.com/ChristianGaertner/dmx-controller/types"
 	"github.com/gorilla/websocket"
 	"time"
 )
 
 type activeSceneChangedPayload struct {
 	Progress map[string]float64 `json:"progress"`
+	BPM      types.BPM          `json:"bpm"`
 }
 
-func (wsc *WSClient) OnProgressChange(progress map[string]float64) bool {
+func (wsc *WSClient) OnProgressChange(progress map[string]float64, bpm types.BPM) bool {
 	msg := message{
 		MessageType: MsgTypeOnProgressChange,
 		Timestamp:   time.Now(),
 		Payload: activeSceneChangedPayload{
 			Progress: progress,
+			BPM:      bpm,
 		},
 		Stats: wsc.engine.StatsMonitor.Get(),
 	}

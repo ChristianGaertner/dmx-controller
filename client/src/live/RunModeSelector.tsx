@@ -21,7 +21,7 @@ const RunModeSelectorComp: React.FunctionComponent<Props> = ({
   runParams,
   setRunParams,
 }) => (
-  <div>
+  <div className="flex">
     <div>
       <Button
         type={
@@ -51,7 +51,7 @@ const RunModeSelectorComp: React.FunctionComponent<Props> = ({
         onClick={() => setRunParams({ ...runParams, mode: RunMode.Cycle })}
       />
     </div>
-    <div>
+    <div className="flex items-center">
       <Button
         type={
           runParams.type === RunType.UseStepTimings

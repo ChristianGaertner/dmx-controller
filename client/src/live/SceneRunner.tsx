@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import { AppState } from "../store";
 import { getSceneList } from "../store/selectors";
 import { loadSceneList } from "../store/actions/loadScene";
-import { RunModeSelector } from "./RunModeSelector";
 import { TriggerButton } from "./TriggerButton";
 import { SceneMeta } from "../types";
+import { BPMDisplay } from "./BPMDisplay";
 
 type StateProps = {
   scenes: SceneMeta[];
@@ -28,7 +28,7 @@ const SceneRunnerComp: React.FunctionComponent<Props> = ({
   return (
     <div className="flex flex-col">
       <div className="bg-gray-900 p-4">
-        <RunModeSelector />
+        <BPMDisplay />
       </div>
       <div className="flex">
         <div />

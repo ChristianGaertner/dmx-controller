@@ -117,7 +117,7 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
                   <StepValue
                     stepId={step.id}
                     deviceId={deviceId}
-                    value={step.values[deviceId]}
+                    value={step.values && step.values[deviceId]}
                   />
                 </td>
               ))}

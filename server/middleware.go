@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 )
@@ -11,6 +12,7 @@ func panicMiddleware(next http.Handler) http.Handler {
 		defer func() {
 			err := recover()
 			if err != nil {
+				log.Printf("recovered from panic: %s", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}()

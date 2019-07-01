@@ -60,10 +60,11 @@ func (s *Step) UnmarshalJSON(data []byte) error {
 	}
 
 	var values StepOutput
-
-	err = json.Unmarshal(*objMap["values"], &values)
-	if err != nil {
-		return err
+	if v, ok := objMap["values"]; ok && v != nil {
+		err = json.Unmarshal(*v, &values)
+		if err != nil {
+			return err
+		}
 	}
 
 	var timings Timings

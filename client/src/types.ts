@@ -38,7 +38,7 @@ export const computeTimings = (
 
 export type Step = {
   id: string;
-  values: {
+  values?: {
     [K: string]: FixtureValue;
   };
   effects?: Effect[];

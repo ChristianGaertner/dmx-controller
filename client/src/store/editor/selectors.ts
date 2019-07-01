@@ -51,7 +51,7 @@ export const getFixtureValueForEditing = (
     return null;
   }
 
-  return step.values[deviceId] || ({} as FixtureValue);
+  return (step.values && step.values[deviceId]) || ({} as FixtureValue);
 };
 
 export const getFixtureModeForEditing = (

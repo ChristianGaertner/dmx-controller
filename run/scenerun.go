@@ -29,6 +29,11 @@ type SceneRun struct {
 	stepInfo    StepInfo
 }
 
+type setSceneRunParams struct {
+	id     string
+	params SceneRunParams
+}
+
 type SceneRunParams struct {
 	Type Type
 	Mode types.RunMode

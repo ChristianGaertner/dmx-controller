@@ -87,17 +87,16 @@ type RunningSceneStore = {
     [sceneID: string]: number;
   };
   bpm: number;
-  runParams: RunParams;
+  runParams: {
+    [id: string]: RunParams;
+  };
 };
 
 export const running = (
   state: RunningSceneStore = {
     progress: {},
     bpm: 120,
-    runParams: {
-      mode: RunMode.Cycle,
-      type: RunType.UseStepTimings,
-    },
+    runParams: {},
   },
   action: Action,
 ): RunningSceneStore => {
@@ -111,7 +110,10 @@ export const running = (
     case SEND_RUN_PARAMS:
       return {
         ...state,
-        runParams: action.payload,
+        runParams: {
+          ...state.runParams,
+          [action.payload.id]: action.payload.params,
+        },
       };
     default:
       return state;

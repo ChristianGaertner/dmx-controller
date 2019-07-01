@@ -14,9 +14,8 @@ import (
 type Engine struct {
 	Db database.Database
 
-	metronom         metronom.Metronom
-	active           map[string]*SceneRun
-	defaultRunParams SceneRunParams
+	metronom metronom.Metronom
+	active   map[string]*SceneRun
 
 	Renderer     dmx.BufferRenderer
 	Setup        *setup.Setup
@@ -31,7 +30,7 @@ type Engine struct {
 	unregisterClient chan EngineClient
 	clients          map[EngineClient]bool
 
-	setRunParams chan SceneRunParams
+	setRunParams chan setSceneRunParams
 }
 
 type EngineClient interface {
@@ -61,11 +60,7 @@ func NewEngine(renderer dmx.BufferRenderer, setup *setup.Setup, deviceMap *setup
 		registerClient:   make(chan EngineClient),
 		unregisterClient: make(chan EngineClient),
 		clients:          make(map[EngineClient]bool),
-		setRunParams:     make(chan SceneRunParams),
-		defaultRunParams: SceneRunParams{
-			Mode: types.RunModeCycle,
-			Type: UseStepTimings,
-		},
+		setRunParams:     make(chan setSceneRunParams),
 	}
 }
 
@@ -115,9 +110,8 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 		case id := <-e.stopScene:
 			delete(e.active, id)
 		case p := <-e.setRunParams:
-			e.defaultRunParams = p
-			for _, active := range e.active {
-				active.params = p
+			if active, ok := e.active[p.id]; ok {
+				active.params = p.params
 			}
 		case c := <-e.registerClient:
 			e.clients[c] = true
@@ -129,16 +123,16 @@ func (e *Engine) Boot(ctx context.Context, onExit chan<- bool) {
 	}
 }
 
-func (e *Engine) Run(scene *scene.Scene) {
-	e.runScene <- SceneRun{scene: scene, params: e.defaultRunParams}
+func (e *Engine) Run(scene *scene.Scene, params SceneRunParams) {
+	e.runScene <- SceneRun{scene: scene, params: params}
 }
 
 func (e *Engine) Stop(sceneID string) {
 	e.stopScene <- sceneID
 }
 
-func (e *Engine) SetRunParams(params SceneRunParams) {
-	e.setRunParams <- params
+func (e *Engine) SetRunParams(id string, params SceneRunParams) {
+	e.setRunParams <- setSceneRunParams{id: id, params: params}
 }
 
 func (e *Engine) PreviewStep(step *scene.Step) {

@@ -112,6 +112,17 @@ func (h *handlers) getSceneList(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handlers) runSceneHandler(w http.ResponseWriter, r *http.Request) {
+
+	var body struct {
+		Params run.SceneRunParams `json:"params"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	id := mux.Vars(r)["id"]
 	target, err := h.engine.Db.GetScene(id)
 	if err != nil {
@@ -119,7 +130,7 @@ func (h *handlers) runSceneHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.engine.Run(target)
+	h.engine.Run(target, body.Params)
 	w.WriteHeader(http.StatusAccepted)
 }
 

@@ -24,8 +24,10 @@ export const getSceneProgress = (state: AppState, sceneId: string): number =>
 
 export const getActiveTab = (state: AppState): UiTab => state.ui.activeTab;
 
-export const getRunParams = (state: AppState): RunParams =>
-  state.running.runParams;
+export const getRunParams = (
+  state: AppState,
+  id: string,
+): RunParams | undefined => state.running.runParams[id];
 
 export const getBPM = (state: AppState): number => state.running.bpm;
 

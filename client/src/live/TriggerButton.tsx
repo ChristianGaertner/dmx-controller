@@ -22,9 +22,9 @@ type StateProps = {
 };
 
 type DispatchProps = {
-  runScene: (id: string) => void;
+  runScene: (id: string, params: RunParams) => void;
   stopScene: (id: string) => void;
-  setRunParams: (params: RunParams) => void;
+  setRunParams: (id: string, params: RunParams) => void;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -46,7 +46,7 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
             "bg-green-500": props.runParams.type === RunType.UseStepTimings,
           })}
           onClick={() =>
-            props.setRunParams({
+            props.setRunParams(props.scene.id, {
               ...props.runParams,
               type: RunType.UseStepTimings,
             })
@@ -59,7 +59,7 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
             "bg-green-500": props.runParams.type === RunType.UseBeatTimings,
           })}
           onClick={() =>
-            props.setRunParams({
+            props.setRunParams(props.scene.id, {
               ...props.runParams,
               type: RunType.UseBeatTimings,
             })
@@ -73,7 +73,7 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
         onClick={
           props.active
             ? () => props.stopScene(props.scene.id)
-            : () => props.runScene(props.scene.id)
+            : () => props.runScene(props.scene.id, props.runParams)
         }
       >
         {props.scene.name}
@@ -84,7 +84,10 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
             "bg-green-500": props.runParams.mode === RunMode.OneShot,
           })}
           onClick={() =>
-            props.setRunParams({ ...props.runParams, mode: RunMode.OneShot })
+            props.setRunParams(props.scene.id, {
+              ...props.runParams,
+              mode: RunMode.OneShot,
+            })
           }
         >
           S
@@ -94,7 +97,7 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
             "bg-green-500": props.runParams.mode === RunMode.OneShotHold,
           })}
           onClick={() =>
-            props.setRunParams({
+            props.setRunParams(props.scene.id, {
               ...props.runParams,
               mode: RunMode.OneShotHold,
             })
@@ -107,7 +110,10 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
             "bg-green-500": props.runParams.mode === RunMode.Cycle,
           })}
           onClick={() =>
-            props.setRunParams({ ...props.runParams, mode: RunMode.Cycle })
+            props.setRunParams(props.scene.id, {
+              ...props.runParams,
+              mode: RunMode.Cycle,
+            })
           }
         >
           C
@@ -127,7 +133,10 @@ const TriggerButtonComp: React.FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: AppState, ownProps: OwnProps): StateProps => ({
   active: isSceneRunning(state, ownProps.scene.id),
-  runParams: getRunParams(state),
+  runParams: getRunParams(state, ownProps.scene.id) || {
+    type: RunType.UseStepTimings,
+    mode: RunMode.Cycle,
+  },
   progress: getSceneProgress(state, ownProps.scene.id),
 });
 

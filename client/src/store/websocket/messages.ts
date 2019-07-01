@@ -10,7 +10,7 @@ import {
 
 export type WsMessages =
   | OnProgressChangeMessage
-  | SendRunModeMessage
+  | SendRunParamsMessage
   | PreviewStepMessage
   | StopStepPreviewMessage
   | SendBPMMessage
@@ -65,10 +65,16 @@ export const initFixtures = (msg: RawMessage): InitFixtures => ({
 export const WS_SEND_PREFIX = "@websocket/send/";
 
 export const SEND_RUN_PARAMS = "@websocket/send/SEND_RUN_PARAMS";
-type SendRunModeMessage = WsMessage<typeof SEND_RUN_PARAMS, RunParams>;
-export const sendRunParams = (params: RunParams): SendRunModeMessage => ({
+type SendRunParamsMessage = WsMessage<
+  typeof SEND_RUN_PARAMS,
+  { id: string; params: RunParams }
+>;
+export const sendRunParams = (
+  id: string,
+  params: RunParams,
+): SendRunParamsMessage => ({
   type: SEND_RUN_PARAMS,
-  payload: params,
+  payload: { id, params },
   timestamp: new Date(),
 });
 

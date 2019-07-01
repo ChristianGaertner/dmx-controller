@@ -13,8 +13,8 @@ import (
 )
 
 type runParamsPayload struct {
-	Type run.Type      `json:"type"`
-	Mode types.RunMode `json:"mode"`
+	ID     string             `json:"id"`
+	Params run.SceneRunParams `json:"params"`
 }
 
 type previewStepPayload struct {
@@ -64,11 +64,7 @@ func (wsc *WSClient) readPump() {
 		switch msg.Payload.(type) {
 		case runParamsPayload:
 			payload := msg.Payload.(runParamsPayload)
-			params := run.SceneRunParams{
-				Type: payload.Type,
-				Mode: payload.Mode,
-			}
-			wsc.engine.SetRunParams(params)
+			wsc.engine.SetRunParams(payload.ID, payload.Params)
 		case previewStepPayload:
 			payload := msg.Payload.(previewStepPayload)
 			wsc.engine.PreviewStep(payload.Step)

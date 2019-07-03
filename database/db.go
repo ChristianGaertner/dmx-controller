@@ -10,6 +10,7 @@ import (
 type Database interface {
 	SetScene(scene *scene.Scene) error
 	GetScene(id string) (*scene.Scene, error)
+	DeleteScene(id string) error
 	GetSceneList() ([]scene.Meta, error)
 	Close() error
 }
@@ -52,6 +53,18 @@ func (d *db) SetScene(scene *scene.Scene) error {
 
 		_, _, err = tx.Set(fmt.Sprintf("scene_meta:%s", scene.ID), string(metaData), nil)
 
+		return err
+	})
+}
+
+func (d *db) DeleteScene(id string) error {
+	return d.bunt.Update(func(tx *buntdb.Tx) error {
+		_, err := tx.Delete(fmt.Sprintf("scene:%s", id))
+		if err != nil {
+			return err
+		}
+
+		_, err = tx.Delete(fmt.Sprintf("scene_meta:%s", id))
 		return err
 	})
 }

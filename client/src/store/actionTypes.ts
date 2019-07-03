@@ -10,6 +10,10 @@ import { Action as ReduxAction } from "redux";
 import { SetTabAction } from "./actions/setTab";
 import { WebsocketActions } from "./websocket/actions";
 import { AddScene } from "./actions/addScene";
+import {
+  DeleteSceneRequestAction,
+  DeleteSceneResponseAction,
+} from "./actions/deleteScene";
 
 export interface BaseAction extends ReduxAction<string> {
   hidden?: boolean;
@@ -21,6 +25,8 @@ export type Action =
   | LoadSceneResponseAction
   | LoadSceneListRequestAction
   | LoadSceneListResponseAction
+  | DeleteSceneRequestAction
+  | DeleteSceneResponseAction
   | AddScene
   | RunSceneAction
   | StopSceneAction

@@ -18,6 +18,7 @@ import { Action } from "../actionTypes";
 import { NewEffect, NewStep, Scene } from "../../types";
 import { LOAD_SCENE_RESPONSE } from "../actions/loadScene";
 import { ADD_SCENE } from "../actions/addScene";
+import { DELETE_SCENE_RESPONSE } from "../actions/deleteScene";
 
 type EditorStore = {
   ui: EditorUiStore;
@@ -64,6 +65,15 @@ export const editor = (
       return {
         ...state,
         scene: action.payload.scene,
+      };
+    case DELETE_SCENE_RESPONSE:
+      if (state.ui.selectedScene !== action.payload.id) {
+        return state;
+      }
+      return {
+        ...state,
+        scene: null,
+        ui: uiInitialValue,
       };
     case EDIT_TIMINGS:
       return {

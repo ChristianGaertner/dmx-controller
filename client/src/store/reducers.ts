@@ -22,6 +22,7 @@ import {
   SEND_RUN_PARAMS,
 } from "./websocket/messages";
 import { ADD_SCENE } from "./actions/addScene";
+import { DELETE_SCENE_RESPONSE } from "./actions/deleteScene";
 
 export { editor, websocket };
 
@@ -58,6 +59,9 @@ export const scenes = (scenes: SceneStore = {}, action: Action): SceneStore => {
           scene: action.payload.scene,
         },
       };
+    case DELETE_SCENE_RESPONSE:
+      const { [action.payload.id]: omit, ...rest } = scenes;
+      return rest;
     default:
       return scenes;
   }
@@ -88,6 +92,13 @@ export const sceneList = (
       return {
         ...state,
         scenes: [...(state.scenes || []), action.payload.scene.meta],
+      };
+    case DELETE_SCENE_RESPONSE:
+      return {
+        ...state,
+        scenes: (state.scenes || []).filter(
+          meta => meta.id !== action.payload.id,
+        ),
       };
     default:
       return state;

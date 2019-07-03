@@ -26,12 +26,14 @@ func ListenAndServe(ctx context.Context, addr string, engine *run.Engine, gracef
 	r := mux.NewRouter()
 
 	r.HandleFunc("/api/v1/ws", h.handleWebsocket)
-	r.HandleFunc("/api/v1/resources/scene", h.getSceneList).Methods("GET")
-	r.HandleFunc("/api/v1/resources/scene/{id}", h.getSceneHandler).Methods("GET")
-	r.HandleFunc("/api/v1/resources/scene", h.addSceneHandler).Methods("POST")
+	r.HandleFunc("/api/v1/resources/scene", h.getSceneList).Methods(http.MethodGet)
+	r.HandleFunc("/api/v1/resources/scene/{id}", h.getSceneHandler).Methods(http.MethodOptions)
+	r.HandleFunc("/api/v1/resources/scene/{id}", h.deleteSceneHandler).Methods(http.MethodDelete)
+	r.HandleFunc("/api/v1/resources/scene/{id}", h.getSceneHandler).Methods(http.MethodGet)
+	r.HandleFunc("/api/v1/resources/scene", h.addSceneHandler).Methods(http.MethodPost)
 
-	r.HandleFunc("/api/v1/run/scene/{id}", h.runSceneHandler).Methods("POST")
-	r.HandleFunc("/api/v1/stop/scene/{id}", h.stopSceneHandler).Methods("POST")
+	r.HandleFunc("/api/v1/run/scene/{id}", h.runSceneHandler).Methods(http.MethodPost)
+	r.HandleFunc("/api/v1/stop/scene/{id}", h.stopSceneHandler).Methods(http.MethodPost)
 
 	r.Use(panicMiddleware)
 	r.Use(timeoutMiddleware)
@@ -81,6 +83,16 @@ func (h *handlers) addSceneHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+}
+
+func (h *handlers) deleteSceneHandler(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+
+	err := h.engine.Db.DeleteScene(id)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 }
 
 func (h *handlers) getSceneHandler(w http.ResponseWriter, r *http.Request) {

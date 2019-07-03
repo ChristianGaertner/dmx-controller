@@ -7,6 +7,7 @@ import { FixtureValueEditor } from "./fixturevalue/FixtureValueEditor";
 import { StepEditor } from "./StepEditor";
 import { ResetButton } from "./ResetButton";
 import { EffectEditor } from "./effect/EffectEditor";
+import { DeleteButton } from "./DeleteButton";
 
 type Props = {};
 
@@ -17,6 +18,7 @@ const EditorComp: React.FunctionComponent<Props> = () => {
       <div className="flex flex-col h-full overflow-auto p-4">
         <div className="flex">
           <DefaultTimings />
+          <DeleteButton />
           <ResetButton />
           <SaveButton />
         </div>

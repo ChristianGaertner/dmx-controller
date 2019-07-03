@@ -1,5 +1,4 @@
 import * as React from "react";
-import { SceneSelector } from "./SceneSelector";
 import { SceneEditor } from "./SceneEditor";
 import { DefaultTimings } from "./DefaultTimings";
 import { SaveButton } from "./SaveButton";
@@ -9,6 +8,7 @@ import { ResetButton } from "./ResetButton";
 import { EffectEditor } from "./effect/EffectEditor";
 import { DeleteButton } from "./DeleteButton";
 import { NoSelection } from "./NoSelection";
+import { SceneSelector } from "./sceneselector/SceneSelector";
 
 type Props = {};
 

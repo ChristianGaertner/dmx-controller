@@ -1,14 +1,16 @@
 import * as React from "react";
 import { Input } from "./Input";
+import useToggle from "../hooks/useToggle";
 
 type Props = {
   display?: React.ReactElement | string;
   value: string;
   onSave: (value: string) => void;
+  requireDoubleClick?: boolean;
 };
 
 export const InlineInputField: React.FunctionComponent<Props> = props => {
-  const [editMode, setEditMode] = React.useState(false);
+  const [editMode, toggleEditMode] = useToggle(false);
   const [value, setValue] = React.useState(props.value);
 
   const propValue = props.value;
@@ -17,11 +19,14 @@ export const InlineInputField: React.FunctionComponent<Props> = props => {
   }, [propValue]);
 
   if (!editMode) {
-    return (
-      <button onClick={() => setEditMode(true)}>
-        {props.display || props.value}
-      </button>
-    );
+    const prop: string = !!props.requireDoubleClick
+      ? "onDoubleClick"
+      : "onClick";
+    const clickProps = {
+      [prop]: toggleEditMode,
+    };
+
+    return <button {...clickProps}>{props.display || props.value}</button>;
   }
 
   return (
@@ -31,7 +36,7 @@ export const InlineInputField: React.FunctionComponent<Props> = props => {
         className="bg-red-600 p-2 hover:bg-red-500"
         onClick={() => {
           setValue(propValue);
-          setEditMode(false);
+          toggleEditMode();
         }}
       >
         <svg viewBox="0 0 20 20" className="fill-current text-red-200 h-3 w-3">
@@ -46,7 +51,7 @@ export const InlineInputField: React.FunctionComponent<Props> = props => {
         className="bg-green-500 p-2 rounded-r hover:bg-green-400"
         onClick={() => {
           props.onSave(value);
-          setEditMode(false);
+          toggleEditMode();
         }}
       >
         <svg

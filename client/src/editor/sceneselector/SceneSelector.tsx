@@ -1,13 +1,13 @@
 import * as React from "react";
-import cx from "classnames";
 import { connect } from "react-redux";
-import { AppState } from "../store";
-import { selectSceneForEditing } from "../store/editor/actions";
-import { getSelectedSceneId } from "../store/editor/selectors";
-import { loadSceneList } from "../store/actions/loadScene";
-import { getSceneList } from "../store/selectors";
-import { SceneMeta } from "../types";
-import { addScene } from "../store/actions/addScene";
+import { AppState } from "../../store";
+import { selectSceneForEditing } from "../../store/editor/actions";
+import { getSelectedSceneId } from "../../store/editor/selectors";
+import { loadSceneList } from "../../store/actions/loadScene";
+import { getSceneList } from "../../store/selectors";
+import { SceneMeta } from "../../types";
+import { addScene } from "../../store/actions/addScene";
+import { SceneListItem } from "./SceneListItem";
 
 type StateProps = {
   selectedScene: string | null;
@@ -32,18 +32,7 @@ const SceneSelectorComp: React.FunctionComponent<Props> = props => {
     <div className="flex flex-col flex-shrink-0">
       <span className="p-2 pr-6 border-b border-blue-900 mt-4">Scenes</span>
       {props.scenes.map(scene => (
-        <button
-          key={scene.id}
-          onClick={() => props.selectScene(scene.id)}
-          className="p-2 pr-6 flex items-center border-b border-blue-900 hover:bg-gray-900"
-        >
-          <div
-            className={cx("h-2 w-2 bg-blue-300 rounded-full", {
-              invisible: props.selectedScene !== scene.id,
-            })}
-          />
-          <span className="pl-2">{scene.name}</span>
-        </button>
+        <SceneListItem key={scene.id} scene={scene} />
       ))}
       <button
         onClick={props.addScene}

@@ -64,7 +64,7 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
         <thead>
           <tr>
             <th className="align-top">Devices</th>
-            {steps.map((step, i) => (
+            {(steps || []).map((step, i) => (
               <th key={step.id} className="align-top">
                 <StepHeader
                   id={step.id}
@@ -108,10 +108,10 @@ const SceneEditorComp: React.FunctionComponent<Props> = ({
                 </div>
               </td>
 
-              {steps.map((step, i) => (
+              {(steps || []).map((step, i) => (
                 <td
                   key={i}
-                  style={{ width: `${100 / steps.length}%` }}
+                  style={{ width: `${100 / (!!steps ? steps.length : 1)}%` }}
                   className="align-top"
                 >
                   <StepValue

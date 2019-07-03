@@ -46,7 +46,7 @@ export const getFixtureValueForEditing = (
 
   const { stepId, deviceId } = uiState.selectedFixtureValue;
 
-  const step = scene.steps.find(step => step.id === stepId);
+  const step = (scene.steps || []).find(step => step.id === stepId);
   if (!step) {
     return null;
   }
@@ -82,7 +82,7 @@ export const getTimingsForEditing = (state: AppState): Timings | null => {
 
   const { selectedStepId } = uiState;
 
-  const step = scene.steps.find(step => step.id === selectedStepId);
+  const step = (scene.steps || []).find(step => step.id === selectedStepId);
 
   if (!step) {
     return null;
@@ -104,7 +104,7 @@ export const getEffectForEditing = (state: AppState): Effect | null => {
     return null;
   }
 
-  const step = scene.steps.find(
+  const step = (scene.steps || []).find(
     step =>
       !!step.effects &&
       step.effects.map(fx => fx.id).includes(selectedEffectId),
@@ -132,7 +132,7 @@ export const getHighlightedEffectDevices = (
   }
 
   const effects = flatMap(
-    scene.steps.filter(s => !!s.effects),
+    (scene.steps || []).filter(s => !!s.effects),
     s => s.effects as Effect[],
   );
 
@@ -151,7 +151,7 @@ export const getStepForEditing = (
   const scene = getSceneForEditing(state);
   if (!scene) return undefined;
 
-  return scene.steps.find(step => step.id === stepId);
+  return (scene.steps || []).find(step => step.id === stepId);
 };
 
 export const isStepPreviewing = (state: AppState, stepId: string): boolean =>

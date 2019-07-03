@@ -12,17 +12,19 @@ type Props = {};
 
 const EditorComp: React.FunctionComponent<Props> = () => {
   return (
-    <div className="flex flex-col p-4">
-      <div className="flex">
-        <SceneSelector />
-        <DefaultTimings />
-        <ResetButton />
-        <SaveButton />
+    <div className="flex flex-row">
+      <SceneSelector />
+      <div className="flex flex-col h-full overflow-auto p-4">
+        <div className="flex">
+          <DefaultTimings />
+          <ResetButton />
+          <SaveButton />
+        </div>
+        <SceneEditor />
+        <FixtureValueEditor />
+        <StepEditor />
+        <EffectEditor />
       </div>
-      <SceneEditor />
-      <FixtureValueEditor />
-      <StepEditor />
-      <EffectEditor />
     </div>
   );
 };

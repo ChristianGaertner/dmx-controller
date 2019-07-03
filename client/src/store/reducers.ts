@@ -1,8 +1,6 @@
 import {
   FixtureDefinition,
-  RunMode,
   RunParams,
-  RunType,
   Scene,
   SceneMeta,
   SerialisedDeviceSetup,
@@ -23,6 +21,7 @@ import {
   ON_PROGRESS_CHANGE,
   SEND_RUN_PARAMS,
 } from "./websocket/messages";
+import { ADD_SCENE } from "./actions/addScene";
 
 export { editor, websocket };
 
@@ -33,7 +32,7 @@ type SceneStore = {
   };
 };
 
-export const scenes = (scenes: SceneStore = {}, action: Action) => {
+export const scenes = (scenes: SceneStore = {}, action: Action): SceneStore => {
   switch (action.type) {
     case LOAD_SCENE_REQUEST:
       return {
@@ -51,6 +50,14 @@ export const scenes = (scenes: SceneStore = {}, action: Action) => {
           scene: action.payload.scene,
         },
       };
+    case ADD_SCENE:
+      return {
+        ...scenes,
+        [action.payload.scene.id]: {
+          isFetching: false,
+          scene: action.payload.scene,
+        },
+      };
     default:
       return scenes;
   }
@@ -64,7 +71,7 @@ type SceneListStore = {
 export const sceneList = (
   state: SceneListStore = { isFetching: false, scenes: undefined },
   action: Action,
-) => {
+): SceneListStore => {
   switch (action.type) {
     case LOAD_SCENE_LIST_REQUEST:
       return {
@@ -76,6 +83,11 @@ export const sceneList = (
         ...state,
         isFetching: false,
         scenes: action.payload.scenes,
+      };
+    case ADD_SCENE:
+      return {
+        ...state,
+        scenes: [...(state.scenes || []), action.payload.scene.meta],
       };
     default:
       return state;

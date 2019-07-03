@@ -17,6 +17,7 @@ import {
 import { Action } from "../actionTypes";
 import { NewEffect, NewStep, Scene } from "../../types";
 import { LOAD_SCENE_RESPONSE } from "../actions/loadScene";
+import { ADD_SCENE } from "../actions/addScene";
 
 type EditorStore = {
   ui: EditorUiStore;
@@ -89,7 +90,7 @@ export const editor = (
 
       const { stepId, deviceId } = state.ui.selectedFixtureValue;
 
-      const steps = state.scene.steps.map(step => {
+      const steps = (state.scene.steps || []).map(step => {
         if (step.id !== stepId) {
           return step;
         }
@@ -119,7 +120,7 @@ export const editor = (
         ...state,
         scene: {
           ...state.scene,
-          steps: [...state.scene.steps, NewStep()],
+          steps: [...(state.scene.steps || []), NewStep()],
         },
       };
     case SET_STEP_TIMINGS: {
@@ -129,7 +130,7 @@ export const editor = (
 
       const { selectedStepId } = state.ui;
 
-      const steps = state.scene.steps.map(step => {
+      const steps = (state.scene.steps || []).map(step => {
         if (step.id !== selectedStepId) {
           return step;
         }
@@ -153,7 +154,7 @@ export const editor = (
         return state;
       }
 
-      const steps = state.scene.steps.map(step => {
+      const steps = (state.scene.steps || []).map(step => {
         if (!step.effects) {
           return step;
         }
@@ -193,7 +194,7 @@ export const editor = (
         return state;
       }
 
-      const steps = state.scene.steps.map(step => {
+      const steps = (state.scene.steps || []).map(step => {
         if (step.id !== action.payload.stepId) {
           return step;
         }
@@ -212,6 +213,11 @@ export const editor = (
         },
       };
     }
+    case ADD_SCENE:
+      return {
+        ...state,
+        scene: action.payload.scene,
+      };
     default:
       return {
         ...state,

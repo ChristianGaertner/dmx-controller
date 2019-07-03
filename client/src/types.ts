@@ -4,7 +4,25 @@ export type Scene = {
   id: string;
   meta: SceneMeta;
   defaultTimings: Timings;
-  steps: Step[];
+  steps: Step[] | null;
+};
+
+export const NewScene = (): Scene => {
+  const id = uuid();
+
+  return {
+    id,
+    meta: {
+      id,
+      name: "Untitiled Scene",
+    },
+    defaultTimings: {
+      duration: 1000000000, // 1.0s
+      fadeUp: 500000000, // 0.5s
+      fadeDown: 500000000, // 0.5s
+    },
+    steps: [NewStep()],
+  };
 };
 
 export type SceneMeta = {

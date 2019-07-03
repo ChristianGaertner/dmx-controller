@@ -1,12 +1,13 @@
 import * as React from "react";
+import cx from "classnames";
 import { connect } from "react-redux";
 import { AppState } from "../store";
 import { selectSceneForEditing } from "../store/editor/actions";
 import { getSelectedSceneId } from "../store/editor/selectors";
 import { loadSceneList } from "../store/actions/loadScene";
 import { getSceneList } from "../store/selectors";
-import { Select } from "../components/Select";
 import { SceneMeta } from "../types";
+import { addScene } from "../store/actions/addScene";
 
 type StateProps = {
   selectedScene: string | null;
@@ -14,6 +15,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
+  addScene: () => void;
   selectScene: (id: string) => void;
   loadScenes: () => void;
 };
@@ -27,29 +29,35 @@ const SceneSelectorComp: React.FunctionComponent<Props> = props => {
   }, [loadScenes]);
 
   return (
-    <div className="flex flex-row">
-      <div className="relative flex">
-        <Select
-          value={props.selectedScene || "-1"}
-          onChange={props.selectScene}
+    <div className="flex flex-col flex-shrink-0">
+      <span className="p-2 pr-6 border-b border-blue-900 mt-4">Scenes</span>
+      {props.scenes.map(scene => (
+        <button
+          key={scene.id}
+          onClick={() => props.selectScene(scene.id)}
+          className="p-2 pr-6 flex items-center border-b border-blue-900 hover:bg-gray-900"
         >
-          {!props.selectedScene && <option value="-1">Select...</option>}
-          {props.scenes.map(scene => (
-            <option key={scene.id} value={scene.id}>
-              {scene.name}
-            </option>
-          ))}
-        </Select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-          <svg
-            className="fill-current h-4 w-4"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-          >
-            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-          </svg>
-        </div>
-      </div>
+          <div
+            className={cx("h-2 w-2 bg-blue-300 rounded-full", {
+              invisible: props.selectedScene !== scene.id,
+            })}
+          />
+          <span className="pl-2">{scene.name}</span>
+        </button>
+      ))}
+      <button
+        onClick={props.addScene}
+        className="p-2 pr-6 flex items-center border-b border-blue-900 hover:bg-gray-900"
+      >
+        <svg viewBox="0 0 20 20" className="h-4 w-4 fill-current mr-2">
+          <g stroke="none" strokeWidth="1" fillRule="evenodd">
+            <g>
+              <path d="M11,9 L11,5 L9,5 L9,9 L5,9 L5,11 L9,11 L9,15 L11,15 L11,11 L15,11 L15,9 L11,9 Z M10,20 C15.5228475,20 20,15.5228475 20,10 C20,4.4771525 15.5228475,0 10,0 C4.4771525,0 0,4.4771525 0,10 C0,15.5228475 4.4771525,20 10,20 Z M10,18 C14.418278,18 18,14.418278 18,10 C18,5.581722 14.418278,2 10,2 C5.581722,2 2,5.581722 2,10 C2,14.418278 5.581722,18 10,18 Z" />
+            </g>
+          </g>
+        </svg>
+        <span>NEW</span>
+      </button>
     </div>
   );
 };
@@ -61,6 +69,7 @@ const mapStateToProps = (state: AppState): StateProps => ({
 
 const mapDispatchToProps: DispatchProps = {
   selectScene: selectSceneForEditing,
+  addScene: addScene,
   loadScenes: loadSceneList,
 };
 

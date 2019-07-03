@@ -31,7 +31,7 @@ interface SelectScene extends BaseAction {
   };
 }
 
-export const selectSceneForEditing = (id: string) => ({
+export const selectSceneForEditing = (id: string): SelectScene => ({
   type: SELECT_SCENE,
   payload: { id },
 });

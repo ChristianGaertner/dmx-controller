@@ -8,6 +8,7 @@ import { StepEditor } from "./StepEditor";
 import { ResetButton } from "./ResetButton";
 import { EffectEditor } from "./effect/EffectEditor";
 import { DeleteButton } from "./DeleteButton";
+import { NoSelection } from "./NoSelection";
 
 type Props = {};
 
@@ -22,6 +23,7 @@ const EditorComp: React.FunctionComponent<Props> = () => {
           <ResetButton />
           <SaveButton />
         </div>
+        <NoSelection />
         <SceneEditor />
         <FixtureValueEditor />
         <StepEditor />

@@ -1,14 +1,12 @@
 import * as React from "react";
 import { SceneEditor } from "./SceneEditor";
 import { DefaultTimings } from "./DefaultTimings";
-import { SaveButton } from "./SaveButton";
 import { FixtureValueEditor } from "./fixturevalue/FixtureValueEditor";
 import { StepEditor } from "./StepEditor";
-import { ResetButton } from "./ResetButton";
 import { EffectEditor } from "./effect/EffectEditor";
-import { DeleteButton } from "./DeleteButton";
 import { NoSelection } from "./NoSelection";
 import { SceneSelector } from "./sceneselector/SceneSelector";
+import { ActionBar } from "./ActionBar";
 
 type Props = {};
 
@@ -19,9 +17,7 @@ const EditorComp: React.FunctionComponent<Props> = () => {
       <div className="flex flex-col h-full overflow-auto p-4">
         <div className="flex">
           <DefaultTimings />
-          <DeleteButton />
-          <ResetButton />
-          <SaveButton />
+          <ActionBar />
         </div>
         <NoSelection />
         <SceneEditor />

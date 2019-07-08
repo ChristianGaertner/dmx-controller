@@ -1,4 +1,11 @@
-import { Effect, EffectType, FixtureValue, Scene, Timings } from "../../types";
+import {
+  Effect,
+  EffectType,
+  FixtureValue,
+  Scene,
+  SceneMeta,
+  Timings,
+} from "../../types";
 import { BaseAction } from "../actionTypes";
 import { ThunkAction } from "redux-thunk";
 import { AppState } from "../index";
@@ -16,6 +23,7 @@ export type EditorAction =
   | SaveSceneResponse
   | SelectFixtureValue
   | SetFixtureValue
+  | SetSceneMeta
   | AddStep
   | SelectStep
   | SetStepTimings
@@ -80,6 +88,9 @@ interface SaveSceneRequest extends BaseAction {
 
 interface SaveSceneResponse extends BaseAction {
   type: typeof SAVE_SCENE_RESPONSE;
+  payload: {
+    scene: Scene;
+  };
 }
 
 export const saveScene = (): ThunkAction<
@@ -90,12 +101,17 @@ export const saveScene = (): ThunkAction<
 > => async (dispatch, getState) => {
   dispatch({ type: SAVE_SCENE_REQUEST });
 
+  const scene = getSceneForEditing(getState());
+  if (!scene) {
+    throw new Error("no scene selected for editing");
+  }
+
   await fetch(`${apiBasePath}/resources/scene`, {
     method: "POST",
-    body: JSON.stringify(getSceneForEditing(getState())),
+    body: JSON.stringify(scene),
   });
 
-  dispatch({ type: SAVE_SCENE_RESPONSE });
+  dispatch({ type: SAVE_SCENE_RESPONSE, payload: { scene } });
 };
 
 export const SELECT_FIXTURE_VALUE = "@editor/SELECT_FIXTURE_VALUE";
@@ -121,6 +137,19 @@ export const selectFixtureValue = (
 export const deselectFixtureValue = (): SelectFixtureValue => ({
   type: SELECT_FIXTURE_VALUE,
   payload: null,
+});
+
+export const SET_SCENE_META = "@editor/SET_SCENE_META";
+interface SetSceneMeta extends BaseAction {
+  type: typeof SET_SCENE_META;
+  payload: {
+    meta: Partial<SceneMeta>;
+  };
+}
+
+export const setSceneMeta = (meta: Partial<SceneMeta>): SetSceneMeta => ({
+  type: SET_SCENE_META,
+  payload: { meta },
 });
 
 export const SET_FIXTURE_VALUE = "@editor/SET_FIXTURE_VALUE";

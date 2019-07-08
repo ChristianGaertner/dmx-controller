@@ -32,7 +32,9 @@ module.exports = {
       },
     },
   },
-  variants: {},
+  variants: {
+    backgroundColor: ["responsive", "hover", "focus", "active"],
+  },
   plugins: [
     require("tailwindcss-transition")({
       standard: "all .3s ease",

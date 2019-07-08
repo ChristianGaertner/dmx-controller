@@ -23,6 +23,7 @@ import {
 } from "./websocket/messages";
 import { ADD_SCENE } from "./actions/addScene";
 import { DELETE_SCENE_RESPONSE } from "./actions/deleteScene";
+import { SAVE_SCENE_RESPONSE } from "./editor/actions";
 
 export { editor, websocket };
 
@@ -99,6 +100,13 @@ export const sceneList = (
         scenes: (state.scenes || []).filter(
           meta => meta.id !== action.payload.id,
         ),
+      };
+    case SAVE_SCENE_RESPONSE:
+      return {
+        ...state,
+        scenes: (state.scenes || [])
+          .filter(meta => meta.id !== action.payload.scene.id)
+          .concat(action.payload.scene.meta),
       };
     default:
       return state;

@@ -13,6 +13,7 @@ import {
   ON_HIGHLIGHT_EFFECT,
   SET_EFFECT,
   ADD_EFFECT,
+  SET_SCENE_META,
 } from "./actions";
 import { Action } from "../actionTypes";
 import { NewEffect, NewStep, Scene } from "../../types";
@@ -76,12 +77,29 @@ export const editor = (
         ui: uiInitialValue,
       };
     case EDIT_TIMINGS:
+      if (!state.scene) {
+        return state;
+      }
       return {
         ...state,
         scene: {
           ...state.scene,
           defaultTimings: action.payload.timings,
-        } as Scene,
+        },
+      };
+    case SET_SCENE_META:
+      if (!state.scene) {
+        return state;
+      }
+      return {
+        ...state,
+        scene: {
+          ...state.scene,
+          meta: {
+            ...state.scene.meta,
+            ...action.payload.meta,
+          },
+        },
       };
     case SAVE_SCENE_REQUEST:
       return {
